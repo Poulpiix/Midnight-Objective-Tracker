@@ -1,0 +1,9 @@
+## Interface: 120001
+## Title: Midnight Objective Tracker
+## Notes: Suivi d'objectifs pour le lancement de Midnight
+## Author: Poulpix (twitch.tv/poulpi_x)
+## Version: 2.0
+## SavedVariables: MidnightTrackerDB
+
+MidnightObjectiveTracker.lua
+MidnightObjectiveTracker.planning.lua
