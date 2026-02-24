@@ -6,7 +6,7 @@ MidnightTrackerDB = MidnightTrackerDB or {}
 
 local weeks = {
     {
-        title = "Accès Anticipé (26 fév. - 2 mars)",
+        title = "Accès Anticipé (27 fév. - 2 mars)",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
             "XP : mettez à jour les personnages au niveau 90 que vous souhaitez jouer pendant Midnight.",
@@ -19,7 +19,7 @@ local weeks = {
         title = "Hors-saison - Semaine 1 (3 - 10 mars)",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Renom : atteignez le rang 7 du renom « Singularité » pour un bijou Champion 1/6 (246).",
             "Renom : atteignez le rang 8 du renom « Hara'ti » pour une ceinture Champion 1/6 (246).",
             "Renom : atteignez le rang 9 du renom « Cour de Lune-d'Argent » pour un casque Champion 1/6 (246).",
@@ -35,7 +35,7 @@ local weeks = {
         title = "Hors-saison - Semaine 2 (11 - 17 mars)",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Gouffre : débloquez le palier 3 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
             "Expédition : accomplissez des expéditions offrant de préférence des améliorations d'équipement.",
             "Traque : accomplissez des Traques en mode normal, offrant de l'équipement Aventurier 1/6 (220).",
@@ -47,7 +47,7 @@ local weeks = {
         title = "Saison 1 - Semaine 1 (18 - 24 mars)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Set de classe : utilisez l'outil Raids (LFR) pour obtenir des pièces de sets.",
             "Mythique 0 (Pré-saison): réalisez un World Tour des donjons Mythique 0 (Pré-saison), offrant désormais de l'équipement Champion 2/6 (250).",
             "Boss monde : tuez le Boss monde pour obtenir de l'équipement Champion 2/6 (250).",
@@ -64,13 +64,13 @@ local weeks = {
         title = "Semaine 2 (25 - 31 mars)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
-            "Artisanat : si votre discord de classe le recommande, utilisez 1 étincelle pour fabriquer un Mythe 1/6 (272) avec embellissement (ce cas de figure sera plutôt rare, donc adaptez-vous pour la suite du guide).",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
+            "Artisanat : si votre discord de classe le recommande, utilisez 1 étincelle pour fabriquer un Mythe 1/5 (272) avec embellissement (ce cas de figure sera plutôt rare, donc adaptez-vous pour la suite du guide).",
             "Set de classe : utilisez l'outil Raids (LFR) pour obtenir des pièces de sets.",
             "Boss monde : tuez le Boss monde pour obtenir de l'équipement Champion 2/6 (250).",
             "Traque : accomplissez des Traques en mode cauchemar, offrant de l'équipement Champion 1/6 (246).",
             "Gouffre : accomplissez des Gouffres abondants (palier 11) avec clés et carte pour obtenir de l'équipement Champion 2/6 (250).",
-            "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour obtenir de l'équipement Hero 3/6 (266), si c'est trop difficile, faites du +8 pour obtenir de l'équipement Héro 2/6 (263).",
+            "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour obtenir de l'équipement Hero 3/6 (266), si c'est trop difficile, faites du +8 pour obtenir de l'équipement Hero 2/6 (263).",
             "Raid : accomplissez le mode Normal et Héroïque avant de commencer la progression Mythique.",
             "Raid Mythique : améliorez 11 équipements Hero 3/6 (266) -> 4/6 (269) contre 220x Écus Héroïques (priorisez les bagues / bijoux ou pièce de set que vous comptez garder longtemps).",
             "Astuce : si vous avez la chance d'obtenir de l'équipement Mythe en raid, vous pouvez l'améliorer 2 fois (ajustez simplement les conseils jusqu'à ce que cela s'équilibre à nouveau).",
@@ -82,7 +82,7 @@ local weeks = {
         title = "Semaine 3 (1 - 7 avril)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+. Les armes à 2H sont d'excellents choix si vous avez de la chance. Améliorez là seulement après avoir lu l'instruction ci-dessous.",
             "Artisanat : à moins d'avoir eu une arme 2H Mythe en raid ou dans la Grande Chambre forte, fabriquez une arme 2H Mythe 5/5 (285) contre 60x Écu Mythique, sauf si votre Discord de classe le déconseille fortement.",
             "Set de classe : si vous n'avez pas encore votre bonus 4-pièces (4p), utilisez l'outil Raids (LFR) pour récupérer les pièces manquantes.",
@@ -99,7 +99,7 @@ local weeks = {
         title = "Semaine 4 (8 - 14 avril)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : ccomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Hypothèse : nous partons du principe que vous avez obtenu 1 pièce de butin Mythique (2/6, ilvl 276).",
@@ -114,7 +114,7 @@ local weeks = {
         title = "Semaine 5 (15 - 21 avril)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Artisanat : fabriquez votre second équipement Mythe 5/5 (285) contre 80x Écus Mythiques. Privilégiez si possible un emplacement où vous possédez déjà un équipement Héro.",
@@ -128,7 +128,7 @@ local weeks = {
         title = "Semaine 6 (22 - 28 avril)",
         objectives = {
             "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
-            "Écus : atteignez le cap hebdomadaire de tous vos Écus",
+            "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : accomplissez des donjons +12 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Hypothèse : nous partons du principe que vous avez obtenu 1 pièce Mythe 2/6 (276)",
@@ -142,7 +142,7 @@ local weeks = {
     {
         title = "Semaine 7+ (29 avril et après)",
         objectives = {
-            "Artisanat : ne fabriquez aucun objet dans un emplacement si vous avez la possibilité d'obtenir des objets dans votre Grande Chambre Forte à un rang supérieur à 1/6 Mythe 1/6 (272).",
+            "Artisanat : ne fabriquez aucun objet dans un emplacement si vous avez la possibilité d'obtenir dans votre Grande Chambre Forte des équipements supérieur à Mythe 1/6 (272).",
             "Priorité d'amélioration : améliorez vos équipements Mythe au fur et à mesure que vous les obtenez. Privilégiez une amélioration complète jusqu'a 6/6 (289) pour profiter du saut important de +4 niveaux d'objet.",
             "Optimisation d'arme : commencez à envisager la fabrication d'une main gauche (OH) à un moment donné si vous souhaitez porter une arme principale (MH) 6/6 tout en conservant un embellissement sur votre arme."
         }
@@ -212,7 +212,7 @@ scrollFrame:SetPoint("BOTTOMRIGHT", -16, 10)
 
 local content = CreateFrame("Frame", nil, scrollFrame)
 content:SetSize(430, 1)
-content:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 10, -4)
+content:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 2, -4)
 scrollFrame:SetScrollChild(content)
 
 local function computeAvailableW(offset)
@@ -291,7 +291,9 @@ local function ScrollToWeek(idx)
     scrollFrame:SetVerticalScroll(target)
 end
 
-local function CreateObjective(parent, text, index, yOffset)
+local function CreateObjective(parent, text, index, yOffset, weekIndex)
+    MidnightTrackerDB = MidnightTrackerDB or {}
+    MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
     local function colorizeText(s)
         if not s or s == "" then return s end
         s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff7FB8FF%0|r")
@@ -341,14 +343,14 @@ local function CreateObjective(parent, text, index, yOffset)
             return centerLabel:GetStringHeight() + 12
         end
     end
+
     local num = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    num:SetPoint("TOPLEFT", parent, "TOPLEFT", 12, yOffset)
+    num:SetPoint("TOPLEFT", parent, "TOPLEFT", 16, yOffset)
     num:SetText(index .. ".")
     num:SetTextColor(1, 0.82, 0)
 
     local label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     label:SetPoint("TOPLEFT", parent, "TOPLEFT", 36, yOffset)
-    
     do
         local offset = 36
         label:SetWidth(computeAvailableW(offset))
@@ -357,23 +359,10 @@ local function CreateObjective(parent, text, index, yOffset)
     label:SetWordWrap(true)
     label:SetTextColor(1,1,1)
 
-    local function highlightPrefix(s)
-        if not s then return s end
-        local prefix, rest = s:match("^(.-:)%s*(.*)$")
-        if prefix then
-            prefix = "|cff7CFFB8" .. prefix .. "|r"
-            if rest == "" then
-                return prefix
-            else
-                return prefix .. " " .. colorizeText(rest)
-            end
-        end
-        return colorizeText(s)
-    end
-
-    
-
     label:SetText(highlightPrefix(text))
+    label:SetTextColor(1,1,1)
+    label:SetAlpha(1)
+    num:SetTextColor(1, 0.82, 0)
 
     return label:GetStringHeight() + 12
 end
@@ -407,10 +396,10 @@ function Midnight:Refresh()
         weekScrolls[wIndex] = -yOffset - 4
         yOffset = yOffset - 30
 
-        for oIndex, objective in ipairs(week.objectives) do
-            local height = CreateObjective(content, objective, oIndex, yOffset)
-            yOffset = yOffset - height
-        end
+            for oIndex, objective in ipairs(week.objectives) do
+                local height = CreateObjective(content, objective, oIndex, yOffset, wIndex)
+                yOffset = yOffset - height
+            end
 
         yOffset = yOffset - 24
     end
@@ -528,7 +517,6 @@ local resourcesButton = createLetterButton("R", 0.2, 0.6, 0.2, 62, -10,
             editBox:Insert(url)
             editBox:HighlightText()
         else
-            print("[Midnight] URL ressources: "..url)
         end
     end,
     "Ressources",
@@ -553,7 +541,6 @@ planningButton:SetScript("OnClick", function()
             MidnightPlanning.Show()
         end
     else
-        print("[Midnight] Module Planning non chargé.")
     end
 end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
@@ -567,4 +554,6 @@ SlashCmdList["MIDNIGHTTRACKER"] = function()
         Midnight:Refresh()
     end
 end
+
+print("|cffFFD100[Midnight]|r Tapez /som pour ouvrir le suivi d'objectifs.")
 
