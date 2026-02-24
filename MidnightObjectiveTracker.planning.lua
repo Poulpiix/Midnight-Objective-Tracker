@@ -11,15 +11,15 @@ local csv_data = [[
 (18 mars)",,,,,,
 220,,(3 mars),,"Écu d'aventure 
 (Qualité 1)","Normal
-(3 mars)",,,"Tier 1
+(3 mars)",,,"Palier 1
 (18 mars)",,,,,
 224,,,,"Écu d'aventure 
-(Qualité 2)",,,,Tier 2,,,"Héroique (hors saison)
+(Qualité 2)",,,,Palier 2,,,"Héroique (hors saison)
 (3 mars)",,
 227,,,,"Écu d'aventure 
-(Qualité 3)",,,,Tier 3,,,,,
+(Qualité 3)",,,,Palier 3,,,,,
 230,,,,"Écu d'aventure 
-(Qualité 4)",,,,Tier 4,,,"Héroique (Pre Saison)
+(Qualité 4)",,,,Palier 4,,,"Héroique (Pre Saison)
 (18 mars)",,
 233,,,,"Écu d'aventure 
 (Qualité 5)",,,,,,,,,
@@ -27,18 +27,18 @@ local csv_data = [[
 233,,,,"Écu vétéran 
 (Qualité 1)","Difficile
 (18 mars)","Normal
-(3 mars)",,Tier 5,,,,,"LFR
+(3 mars)",,Palier 5,,,,,"LFR
 Aile 1 (18 mars)
 Aile 2 (25 mars)
 Aile 3 (01 avril)"
 237,,,,"Écu vétéran 
-(Qualité 2)",,,,Tier 6,"Tier 4
+(Qualité 2)",,,,Palier 6,"Palier 4
 (18 mars)",,,,
 240,,,,"Écu vétéran 
 (Qualité 3)",,,,,,,"Mythique 0 (Pre Saison)
 (18 mars)",,
 243,,,,"Écu vétéran 
-(Qualité 4)",,,,,Tier 5,,,"Héroique (hors saison)
+(Qualité 4)",,,,,Palier 5,,,"Héroique (hors saison)
 (3 mars)",
 246,,,,"Écu vétéran 
 (Qualité 5)",,,"Mode guerre (276)
@@ -48,25 +48,25 @@ Aile 3 (01 avril)"
 (Qualité 1)","Cauchemar
 (18 mars)","Difficile
 (18 mars)","Conquête (289)
-(18 mars)",Tier 7,Tier 6, Tier 5,"Mythique (saison 1)
+(18 mars)",Palier 7,Palier 6, Palier 5,"Mythique (saison 1)
 (25 mars)",,"Normal
 (18 mars)"
 249,,,,"Étincelle
 (Qualité 2)",,,,,,,,,,
-250,,,(18 mars),,,,,Tier 8 - 11,Tier 7,,Mythique + (+2-3),,
+250,,,(18 mars),,,,,Palier 8 - 11,Palier 7,,Mythique + (+2-3),,
 252,,,,"Étincelle
 (Qualité 3)",,,,,,,,,,
-253,,,,,,,,,,Tier  6,Mythique + (+4),,
+253,,,,,,,,,,Palier  6,Mythique + (+4),,
 255,,,,"Étincelle
 (Qualité 4)",,,,,,,,,,
-256,,,,,,,,,,Tier 7,Mythique + (+5),"Mythique 0 (Pre Saison)
+256,,,,,,,,,,Palier 7,Mythique + (+5),"Mythique 0 (Pre Saison)
 (18 mars)",
 259,,,,"Étincelle
 (Qualité 5",,,,,,,,,,
 263,,,,,,,,,,,,
 259,,,,"Étincelle + Écu Héroique
 (Qualité 1)",,"Cauchemar
-(18 mars)",,,Tier 8 - 11,Tier 8 - 11,Mythique + (+6-7),"Mythique + (+2-3)
+(18 mars)",,,Palier 8 - 11,Palier 8 - 11,Mythique + (+6-7),"Mythique + (+2-3)
 (25 mars)","Héroique
 (18 mars)"
 262,,,,"Étincelle + Écu Héroique
@@ -251,7 +251,7 @@ pframe:SetBackdrop({
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
 
-pframe:SetBackdropColor(0, 0, 0, 0.94)
+pframe:SetBackdropColor(0, 0, 0, 1)
 pframe:SetBackdropBorderColor(1, 0.82, 0, 1)
 pframe:SetMovable(true)
 pframe:EnableMouse(true)
@@ -261,7 +261,7 @@ pframe:SetScript("OnDragStop", pframe.StopMovingOrSizing)
 pframe:Hide()
 
 local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-ptitle:SetPoint("TOP", 0, -8)
+ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
 ptitle:SetText("Planning")
 
 local pclose = CreateFrame("Button", nil, pframe, "UIPanelCloseButton")
@@ -276,7 +276,7 @@ headerFrame:SetBackdrop({
     edgeSize = 12,
     insets = { left = 6, right = 6, top = 6, bottom = 6 },
 })
-headerFrame:SetBackdropColor(0, 0, 0, 0.95)
+headerFrame:SetBackdropColor(0, 0, 0, 1)
 headerFrame:SetBackdropBorderColor(0.9, 0.7, 0.2, 1)
 
 local prevColBtn = CreateFrame("Button", nil, pframe, "UIPanelButtonTemplate")
@@ -530,33 +530,47 @@ local function RefreshPlanning()
     end
     y = y - 22
 
-    local rowHeight = 22
+    local defaultRowHeight = 26
     local firstCellObj = nil
     for ri = 1, #dataRows do
         local row = dataRows[ri]
+        local x = 10
+        local maxContentH = 0
+        local cellObjects = {}
+        for vi, ci in ipairs(visibleCols) do
+            local cell = row[ci] or ""
+            local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            local thisWidth = widths[vi] or 80
+            f:SetWidth(thisWidth)
+            f:SetJustifyH("CENTER")
+            f:SetWordWrap(true)
+            f:SetText(cell)
+            f:SetTextColor(1,1,1)
+            table.insert(rows, f)
+            table.insert(cellObjects, {obj = f, x = x})
+            if not firstCellObj then firstCellObj = f end
+            local fh = f:GetStringHeight() or 0
+            if fh > maxContentH then maxContentH = fh end
+            x = x + thisWidth + colSpacing
+        end
+
+        local usedHeight = math.max(defaultRowHeight, math.ceil(maxContentH) + 8)
+
+        for _, co in ipairs(cellObjects) do
+            local fh = co.obj:GetStringHeight() or 0
+            local yOffset = y - math.floor((usedHeight - fh) / 2)
+            co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, yOffset)
+        end
+
         if (ri % 2) == 0 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
-            bg:SetColorTexture(0, 0, 0, 0.12)
-            bg:SetPoint("TOPLEFT", content, "TOPLEFT", 5, y+2)
-            bg:SetPoint("TOPRIGHT", content, "TOPRIGHT", -5, y+2)
-            bg:SetHeight(rowHeight)
+            bg:SetColorTexture(0, 0, 0, 0.28)
+            bg:SetPoint("TOPLEFT", content, "TOPLEFT", 10, y)
+            bg:SetPoint("TOPRIGHT", content, "TOPRIGHT", -10, y)
+            bg:SetHeight(usedHeight)
             table.insert(rows, bg)
         end
-            local x = 10
-            for vi, ci in ipairs(visibleCols) do
-                local cell = row[ci] or ""
-                local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-                f:SetPoint("TOPLEFT", content, "TOPLEFT", x, y)
-                local thisWidth = widths[vi] or 80
-                f:SetWidth(thisWidth)
-                f:SetJustifyH("CENTER")
-                f:SetWordWrap(true)
-                f:SetText(cell)
-                f:SetTextColor(1,1,1)
-                table.insert(rows, f)
-                if not firstCellObj then firstCellObj = f end
-                x = x + thisWidth + colSpacing
-            end
+
         if truncated then
             local more = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             more:SetPoint("TOPLEFT", content, "TOPLEFT", x, y)
@@ -564,7 +578,8 @@ local function RefreshPlanning()
             more:SetTextColor(1,1,1)
             table.insert(rows, more)
         end
-        y = y - rowHeight
+
+        y = y - usedHeight
     end
 
     content:SetHeight(-y)
@@ -606,3 +621,4 @@ end
 function Planning.Hide()
     pframe:Hide()
 end
+

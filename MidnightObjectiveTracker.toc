@@ -2,8 +2,9 @@
 ## Title: Midnight Objective Tracker
 ## Notes: Suivi d'objectifs pour le lancement de Midnight
 ## Author: Poulpix (twitch.tv/poulpi_x)
-## Version: 2.0
+## Version: 2.1
 ## SavedVariables: MidnightTrackerDB
+## IconTexture: Interface\AddOns\MidnightObjectiveTracker\IconMOT
 
 MidnightObjectiveTracker.lua
 MidnightObjectiveTracker.planning.lua
