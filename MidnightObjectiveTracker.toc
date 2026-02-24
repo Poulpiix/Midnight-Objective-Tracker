@@ -4,7 +4,7 @@
 ## Author: Poulpix (twitch.tv/poulpi_x)
 ## Version: 2.1
 ## SavedVariables: MidnightTrackerDB
-## IconTexture: Interface\AddOns\MidnightObjectiveTracker\IconMOT
+## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
 
 MidnightObjectiveTracker.lua
 MidnightObjectiveTracker.planning.lua
