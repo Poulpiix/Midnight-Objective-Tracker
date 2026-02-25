@@ -1,8 +1,10 @@
-## Interface: 120001
-## Title: Midnight Objective Tracker
-## Notes: Suivi d'objectifs pour le lancement de Midnight
+## Interface: 120000, 120001
+## Title: MidnightObjectiveTracker
 ## Author: Poulpix (twitch.tv/poulpi_x)
-## Version: 2.1
+## Version: 2.3
+## License: All Rights Reserved
+## Notes: Suivi d'objectifs pour le lancement de Midnight
+## X-Curse-Project-ID: 1469813
 ## SavedVariables: MidnightTrackerDB
 ## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
 

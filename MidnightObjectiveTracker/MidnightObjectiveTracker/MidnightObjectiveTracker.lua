@@ -465,7 +465,6 @@ local function createLetterButton(letter, xOff, yOff, onClick, title, desc)
     btn:SetNormalFontObject("GameFontNormalSmall")
     btn:SetHighlightFontObject("GameFontNormalSmall")
 
-    -- Ensure the button text is centered vertically and horizontally
     local fs = btn:GetFontString()
     if fs then
         fs:ClearAllPoints()
@@ -523,7 +522,7 @@ local resourcesButton = createLetterButton("R", 76, -10,
         end
     end,
     "Ressources",
-    "Copie l'URL des ressources ayant permis de créer ce guide créé par Larias (un joueur anglophone), un grand merci à lui pour son travail de compilation et d'analyse des données de la bêta !")
+    "Copie l'URL des ressources ayant permis de créer ce guide, les données proviennent de différentes sources comme : Larias, WoW Head, Icy Vein, Judge Hype ou Blizz Spirit, elles ont été entrecroisées pour créer un guide de progression cohérent et optimisé.")
 
 local xButton = createLetterButton("X", 32, -10,
     function()
@@ -535,7 +534,7 @@ local xButton = createLetterButton("X", 32, -10,
         end
     end,
     "X",
-    "Copie l'URL de mon compte X (Twitter), où je poste principalement des annonces de streams et des trucs sur mes passions.")
+    "Copie l'URL de mon compte X (Twitter), si des questions il y a.")
 
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -6)
