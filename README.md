@@ -22,6 +22,4 @@ Ce document explique comment installer manuellement l'addon MidnightObjectiveTra
 7. Connectez-vous à un personnage et tapez `/som` pour ouvrir l'addon.dans le chat pour recharger l'interface si l'addon ne se charge pas immédiatement.
 
 **Dépannage rapide**
-- Vérifiez que le nom du dossier est exactement MidnightObjectiveTracker (majuscules/minuscules généralement sans importance sous Windows, mais le nom doit correspondre au nom dans le `.toc`).
-- Assurez-vous que le fichier `.toc` liste bien les fichiers `.lua` utilisés et qu'il n'est pas vide.
 - Si l'addon affiche des erreurs, capturez les et envoyez les moi sur X (https://x.com/poulpi_x)
