@@ -189,19 +189,7 @@ local function parseCSV(s)
     return rows
 end
 
-local function highlightPrefix(s)
-    if not s then return s end
-    local prefix, rest = s:match("^(.-:)%s*(.*)$")
-    if prefix then
-        prefix = "|cffFFD27A" .. prefix .. "|r"
-        if rest == "" then
-            return prefix
-        else
-            return prefix .. " " .. colorizeText(rest)
-        end
-    end
-    return colorizeText(s)
-end
+-- highlightPrefix removed: was referencing undefined colorizeText in this scope
 
 local function buildPlanningTableFromCSV(csv)
     local rows = parseCSV(csv)
@@ -227,6 +215,28 @@ end
 local colRangeLabel = nil
 local headerHeight = 36
 local DEBUG_ALIGN = false
+
+local function getUsedCols(headers, dataRows)
+    local maxCols = #headers
+    for _, r in ipairs(dataRows) do if #r > maxCols then maxCols = #r end end
+    local usedCols = {}
+    for ci = 1, maxCols do
+        local keep = false
+        if headers[ci] and headers[ci]:match('%S') and not isHeaderHidden(headers[ci]) then
+            keep = true
+        end
+        if not keep then
+            for _, r in ipairs(dataRows) do
+                if r[ci] and r[ci]:match('%S') then
+                    if not isHeaderHidden(headers[ci]) then keep = true end
+                    break
+                end
+            end
+        end
+        if keep then table.insert(usedCols, ci) end
+    end
+    return usedCols
+end
 
 local function ensurePlanningBuilt()
     if planningBuilt then return end
@@ -285,31 +295,11 @@ prevColBtn:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -84, -8)
 prevColBtn:SetText("<")
 prevColBtn:SetScript("OnClick", function()
     ensurePlanningBuilt()
-    local headers = planningTable.headers or {}
-    local dataRows = planningTable.rows or {}
-    local maxCols = #headers
-    for _, r in ipairs(dataRows) do if #r > maxCols then maxCols = #r end end
-    local usedCols = {}
-    for ci = 1, maxCols do
-        local keep = false
-        if headers[ci] and headers[ci]:match('%S') and not isHeaderHidden(headers[ci]) then
-            keep = true
-        end
-        if not keep then
-            for _, r in ipairs(dataRows) do
-                if r[ci] and r[ci]:match('%S') then
-                    if not isHeaderHidden(headers[ci]) then keep = true end
-                    break
-                end
-            end
-        end
-        if keep then table.insert(usedCols, ci) end
-    end
+    local usedCols = getUsedCols(planningTable.headers or {}, planningTable.rows or {})
     local total = #usedCols
     local maxVisible = maxVisibleColumns or 8
     columnOffset = math.max(0, columnOffset - 1)
     columnOffset = math.min(columnOffset, math.max(0, total - maxVisible))
-    print(string.format("[Midnight] Prev clicked -> offset=%d total=%d", columnOffset, total))
     RefreshPlanning()
 end)
 prevColBtn:Hide()
@@ -320,30 +310,10 @@ nextColBtn:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -48, -8)
 nextColBtn:SetText(">")
 nextColBtn:SetScript("OnClick", function()
     ensurePlanningBuilt()
-    local headers = planningTable.headers or {}
-    local dataRows = planningTable.rows or {}
-    local maxCols = #headers
-    for _, r in ipairs(dataRows) do if #r > maxCols then maxCols = #r end end
-    local usedCols = {}
-    for ci = 1, maxCols do
-        local keep = false
-        if headers[ci] and headers[ci]:match('%S') and not isHeaderHidden(headers[ci]) then
-            keep = true
-        end
-        if not keep then
-            for _, r in ipairs(dataRows) do
-                if r[ci] and r[ci]:match('%S') then
-                    if not isHeaderHidden(headers[ci]) then keep = true end
-                    break
-                end
-            end
-        end
-        if keep then table.insert(usedCols, ci) end
-    end
+    local usedCols = getUsedCols(planningTable.headers or {}, planningTable.rows or {})
     local total = #usedCols
     local maxVisible = maxVisibleColumns or 8
     columnOffset = math.min(columnOffset + 1, math.max(0, total - maxVisible))
-    print(string.format("[Midnight] Next clicked -> offset=%d total=%d", columnOffset, total))
     RefreshPlanning()
 end)
 nextColBtn:Hide()
@@ -354,17 +324,17 @@ colRangeLabel:SetText("")
 colRangeLabel:Hide()
 
 local scroll = CreateFrame("ScrollFrame", nil, pframe, "UIPanelScrollFrameTemplate")
-scroll:SetPoint("TOPLEFT", pframe, "TOPLEFT", 6, - (36 + headerHeight + 6))
-scroll:SetPoint("BOTTOMRIGHT", pframe, "BOTTOMRIGHT", -30, 10)
+scroll:SetPoint("TOPLEFT", pframe, "TOPLEFT", 10, - (36 + headerHeight + 6))
+scroll:SetPoint("BOTTOMRIGHT", pframe, "BOTTOMRIGHT", -10, 10)
 
 local content = CreateFrame("Frame", nil, scroll)
 content:SetSize(1140, 1)
-content:SetPoint("TOPLEFT", scroll, "TOPLEFT", 4, -4)
+content:SetPoint("TOPLEFT", scroll, "TOPLEFT", 10, -4)
 scroll:SetScrollChild(content)
 
 headerFrame:ClearAllPoints()
-headerFrame:SetPoint("TOPLEFT", pframe, "TOPLEFT", 10, -36)
-headerFrame:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -30, -36)
+    headerFrame:SetPoint("TOPLEFT", pframe, "TOPLEFT", 10, -36)
+    headerFrame:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -10, -36)
 headerFrame:SetFrameLevel((pframe:GetFrameLevel() or 0) + 10)
 
 local rows = {}
@@ -372,7 +342,7 @@ local rows = {}
 local function RefreshPlanning()
     for _, r in ipairs(rows) do r:Hide() end
     rows = {}
-    local y = -10
+    local y = -6
     ensurePlanningBuilt()
     local headers = planningTable.headers or {}
     local dataRows = planningTable.rows or {}
@@ -388,33 +358,16 @@ local function RefreshPlanning()
         content:SetHeight(-y)
         return
     end
-    local maxCols = #headers
-    for _, r in ipairs(dataRows) do if #r > maxCols then maxCols = #r end end
-    local usedCols = {}
-    for ci = 1, maxCols do
-        local keep = false
-        if headers[ci] and headers[ci]:match('%S') and not isHeaderHidden(headers[ci]) then
-            keep = true
-        end
-        if not keep then
-            for _, r in ipairs(dataRows) do
-                if r[ci] and r[ci]:match('%S') then
-                    if not isHeaderHidden(headers[ci]) then keep = true end
-                    break
-                end
-            end
-        end
-        if keep then table.insert(usedCols, ci) end
-    end
+    local usedCols = getUsedCols(headers, dataRows)
     if #usedCols == 0 then usedCols = {1} end
-        local maxVisible = maxVisibleColumns or 8
-        local totalUsed = #usedCols
+    local maxVisible = maxVisibleColumns or 8
+    local totalUsed = #usedCols
 
     local visibleCols = {}
     for _, ci in ipairs(usedCols) do table.insert(visibleCols, ci) end
     local truncated = false
 
-    local totalWidth = math.max(100, math.floor((scroll:GetWidth() or content:GetWidth()) - 20))
+    local totalWidth = math.max(100, math.floor((headerFrame:GetWidth() or scroll:GetWidth() or content:GetWidth()) - 20))
     local colSpacing = 8
     local nCols = #visibleCols
 
@@ -485,36 +438,36 @@ local function RefreshPlanning()
     local sumWidths = 0
     for _, w in ipairs(widths) do sumWidths = sumWidths + w end
     local allowed = math.max(50, totalWidth - startX - padding - (nCols-1)*colSpacing)
-    if sumWidths > 0 and sumWidths > allowed then
-        local scale = allowed / sumWidths
-        for vi = 1, nCols do
-            local nw = math.max(40, math.floor(widths[vi] * scale))
-            widths[vi] = nw
+        if sumWidths > 0 and sumWidths > allowed then
+            local scale = allowed / sumWidths
+            for vi = 1, nCols do
+                local nw = math.max(40, math.floor(widths[vi] * scale))
+                widths[vi] = nw
+            end
+            sumWidths = 0
+            for _, w in ipairs(widths) do sumWidths = sumWidths + w end
         end
+
+    -- Distribute leftover space equally to first and last columns
+    local usedWidth = startX + sumWidths + (nCols - 1) * colSpacing + padding
+    local frameAvail = headerFrame:GetWidth() or totalWidth
+    local leftover = frameAvail - usedWidth
+    if leftover > 2 and nCols >= 2 then
+        local half = math.floor(leftover / 2)
+        widths[1] = widths[1] + half
+        widths[nCols] = widths[nCols] + (leftover - half)
         sumWidths = 0
         for _, w in ipairs(widths) do sumWidths = sumWidths + w end
-        local requiredWidth = startX + sumWidths + (nCols-1)*colSpacing + padding
-        content:SetWidth(math.max(content:GetWidth() or 0, requiredWidth))
-    else
-        local requiredWidth = startX + sumWidths + (nCols-1)*colSpacing + padding
-        content:SetWidth(math.max(content:GetWidth() or 0, requiredWidth))
     end
+
+    local requiredWidth = startX + sumWidths + (nCols - 1) * colSpacing + padding
+    content:SetWidth(math.max(content:GetWidth() or 0, requiredWidth, frameAvail))
 
     for _, v in ipairs({headerFrame:GetChildren()}) do if type(v.Hide) == 'function' then v:Hide() end end
     local hx = 10
     local firstHeaderObj = nil
     for idx, ci in ipairs(visibleCols) do
-        local htext
-        if ci == 1 then
-            htext = (headers[ci] and headers[ci] ~= "") and headers[ci] or "ilvl"
-        else
-            local rawh = headers[ci] and headers[ci] ~= "" and headers[ci] or ("Col "..ci)
-            if rawh:match("[Qq]u[eè]te") then
-                htext = "Expédition"
-            else
-                htext = rawh
-            end
-        end
+        local htext = headerTexts[idx]
         local thisWidth = widths[idx] or 80
         local h = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         h:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", hx, 0)
@@ -528,7 +481,6 @@ local function RefreshPlanning()
         if not firstHeaderObj then firstHeaderObj = h end
         hx = hx + thisWidth + colSpacing
     end
-    y = y - 22
 
     local defaultRowHeight = 26
     local firstCellObj = nil
@@ -562,11 +514,18 @@ local function RefreshPlanning()
             co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, yOffset)
         end
 
-        if (ri % 2) == 0 then
+        if (ri % 2) == 1 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
             bg:SetColorTexture(0, 0, 0, 0.28)
-            bg:SetPoint("TOPLEFT", content, "TOPLEFT", 10, y)
-            bg:SetPoint("TOPRIGHT", content, "TOPRIGHT", -10, y)
+            bg:SetPoint("TOPLEFT", content, "TOPLEFT", startX, y)
+            local totalColsSpacing = math.max(0, (nCols - 1) * colSpacing)
+            local availableWidth = 0
+            if headerFrame and headerFrame.GetWidth then
+                availableWidth = (headerFrame:GetWidth() or 0) - startX - padding
+            end
+            local targetWidth = math.max(0, sumWidths + totalColsSpacing)
+            if availableWidth > 0 then targetWidth = math.max(targetWidth, availableWidth) end
+            bg:SetWidth(targetWidth)
             bg:SetHeight(usedHeight)
             table.insert(rows, bg)
         end

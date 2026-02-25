@@ -1,4 +1,13 @@
-**MidnightObjectiveTracker — Installation Manuelle**
+## MidnightObjectiveTracker
+
+### Fonctionnalités
+- **Guide de progression et de préparation en jeu :** Accédez à un guide étape par étape via une fenêtre mobile et redimensionnable qui détaille exactement quoi faire semaine après semaine dès le lancement de Midnight.
+- **Feuille de route du contenu et de l'équipement :** Comprend un calendrier détaillé incluant les objectifs de niveau d'objet (ilvl) et les dates de sortie officielles pour tout le contenu de haut niveau.
+- **Progression optimisée :** Gardez une longueur d'avance en suivant vos objectifs en temps réel sans avoir à faire de Alt-Tab.
+- **Chat commandes:** /som → Activer/désactiver l'addon
+
+
+### Installation manuelle**
 
 Ce document explique comment installer manuellement l'addon MidnightObjectiveTracker pour World of Warcraft.
 
@@ -22,6 +31,4 @@ Ce document explique comment installer manuellement l'addon MidnightObjectiveTra
 7. Connectez-vous à un personnage et tapez `/som` pour ouvrir l'addon.dans le chat pour recharger l'interface si l'addon ne se charge pas immédiatement.
 
 **Dépannage rapide**
-- Vérifiez que le nom du dossier est exactement MidnightObjectiveTracker (majuscules/minuscules généralement sans importance sous Windows, mais le nom doit correspondre au nom dans le `.toc`).
-- Assurez-vous que le fichier `.toc` liste bien les fichiers `.lua` utilisés et qu'il n'est pas vide.
 - Si l'addon affiche des erreurs, capturez les et envoyez les moi sur X (https://x.com/poulpi_x)

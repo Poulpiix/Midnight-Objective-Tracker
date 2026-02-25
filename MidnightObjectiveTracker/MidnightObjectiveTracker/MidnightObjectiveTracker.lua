@@ -4,6 +4,9 @@ _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
 
+local MPLUS_ICON_TEST = true
+_G.MPLUS_ICON_TEST = MPLUS_ICON_TEST
+
 local weeks = {
     {
         title = "Accès Anticipé (27 fév. - 2 mars)",
@@ -46,7 +49,7 @@ local weeks = {
     {
         title = "Saison 1 - Semaine 1 (18 - 24 mars)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Set de classe : utilisez l'outil Raids (LFR) pour obtenir des pièces de sets.",
             "Mythique 0 (Pré-saison): réalisez un World Tour des donjons Mythique 0 (Pré-saison), offrant désormais de l'équipement Champion 2/6 (250).",
@@ -54,16 +57,16 @@ local weeks = {
             "Traque : accomplissez des Traques en mode cauchemar, offrant de l'équipement Champion 1/6 (246).",
             "JcJ : faites la quête JcJ pour obtenir le collier ou l'anneau Hero garanti (si disponible, car disparu de la bêta recemment).",
             "Gouffre : accomplissez des Gouffres abondants (palier 11) avec clés et carte pour obtenir de l'équipement Champion 2/6 (250).",
-            "Artisanat : fabriquez 2 équipements Veteran 5/5 (246) en utilisant 80x Écu Veteran chacun avec 2 embellissements (Priorisez les Poignets, Ceinture et Bottes).",
+            "Artisanat : fabriquez 2 équipements Veteran 5/5 (246) en utilisant 80x Écu de l'aube Veteran chacun avec 2 embellissements (Priorisez les Poignets, Ceinture et Bottes).",
             "Raid : accomplissez le mode Normal et Héroïque.",
-            "Optimisation : dépensez tous les Écus Veteran et Champion avant d'entrer en raid.",
-            "Écus dépensés : 0/100 Écus Héroïques et 0/100 Écus Mythiques."
+            "Optimisation : dépensez tous les Ecus de l'aube Veteran et les Ecus de l'aube de Champion avant d'entrer en raid.",
+            "Écus dépensés : 0/100 Ecus de l'aube héroïque et 0/100 Ecus de l'aube mythique."
         }
     },
     {
         title = "Semaine 2 (25 - 31 mars)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Artisanat : si votre discord de classe le recommande, utilisez 1 étincelle pour fabriquer un Mythe 1/5 (272) avec embellissement (ce cas de figure sera plutôt rare, donc adaptez-vous pour la suite du guide).",
             "Set de classe : utilisez l'outil Raids (LFR) pour obtenir des pièces de sets.",
@@ -72,70 +75,70 @@ local weeks = {
             "Gouffre : accomplissez des Gouffres abondants (palier 11) avec clés et carte pour obtenir de l'équipement Champion 2/6 (250).",
             "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour obtenir de l'équipement Hero 3/6 (266), si c'est trop difficile, faites du +8 pour obtenir de l'équipement Hero 2/6 (263).",
             "Raid : accomplissez le mode Normal et Héroïque avant de commencer la progression Mythique.",
-            "Raid Mythique : améliorez 11 équipements Hero 3/6 (266) -> 4/6 (269) contre 220x Écus Héroïques (priorisez les bagues / bijoux ou pièce de set que vous comptez garder longtemps).",
+            "Raid Mythique : améliorez 11 équipements Hero 3/6 (266) -> 4/6 (269) contre 220x Ecus de l'aube héroïque (priorisez les bagues / bijoux ou pièce de set que vous comptez garder longtemps).",
             "Astuce : si vous avez la chance d'obtenir de l'équipement Mythe en raid, vous pouvez l'améliorer 2 fois (ajustez simplement les conseils jusqu'à ce que cela s'équilibre à nouveau).",
-            "Écus dépensés : 220/220 Écus Héroïques et 0/100 Écus Mythiques.",
+            "Écus dépensés : 220/220 Ecus de l'aube héroïque et 0/100 Ecus de l'aube mythique.",
             "Niveau d'équipement estimé (selon RNG) : 4x 266, 11x 269"
         }
     },
     {
         title = "Semaine 3 (1 - 7 avril)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+. Les armes à 2H sont d'excellents choix si vous avez de la chance. Améliorez là seulement après avoir lu l'instruction ci-dessous.",
-            "Artisanat : à moins d'avoir eu une arme 2H Mythe en raid ou dans la Grande Chambre forte, fabriquez une arme 2H Mythe 5/5 (285) contre 60x Écu Mythique, sauf si votre Discord de classe le déconseille fortement.",
+            "Artisanat : à moins d'avoir eu une arme 2H Mythe en raid ou dans la Grande Chambre forte, fabriquez une arme 2H Mythe 5/5 (285) contre 60x Ecus de l'aube mythique, sauf si votre Discord de classe le déconseille fortement.",
             "Set de classe : si vous n'avez pas encore votre bonus 4-pièces (4p), utilisez l'outil Raids (LFR) pour récupérer les pièces manquantes.",
             "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Raid : accomplissez le mode Normal, Héroique et Mythique.",
-            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Écus Héroïques. Gardez 20x Écus Héroïques pour l'étape suivante.",
-            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Écus Héroïques. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) contre 80x Écus Mythiques.",
+            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Ecus de l'aube héroïque. Gardez 20x Ecus de l'aube héroïque pour l'étape suivante.",
+            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Ecus de l'aube héroïque. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) contre 80x Ecus de l'aube mythique.",
             "Second Mythe : si vous possédez un second équipement Mythe, attendez les conseils d'amélioration de la semaine suivante.",
-            "Écus dépensés : 320/320 Écus Héroïques et 160/320 Écus Mythiques.",
+            "Écus dépensés : 320/320 Ecus de l'aube héroïque et 160/320 Ecus de l'aube mythique.",
             "Niveau d'équipement estimé (selon RNG) : 3x 266, 8x 269, 2x 276, 1x 285, 1x 289"
         }
     },
     {
         title = "Semaine 4 (8 - 14 avril)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : ccomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Hypothèse : nous partons du principe que vous avez obtenu 1 pièce de butin Mythique (2/6, ilvl 276).",
-            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Écus Héroïques. Gardez 20x Écus Héroïques pour l'étape suivante.",
-            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Écus Héroïques. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) contre 80x Écus Mythiques.",
-            "Palier Mythe (Raid) : améliorez la pièce obtenue en raid du rang 2/6 (276) vers le 6/6 (289) contre 80 Écus Mythiques.",
-            "Écus dépensés : 420 / 420 Écus Héroïques et 320 / 420 Écus Mythiques",
+            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Ecus de l'aube héroïque. Gardez 20x Ecus de l'aube héroïque pour l'étape suivante.",
+            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Ecus de l'aube héroïque. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) contre 80x Ecus de l'aube mythique.",
+            "Palier Mythe (Raid) : améliorez la pièce obtenue en raid du rang 2/6 (276) vers le 6/6 (289) contre 80x Ecus de l'aube mythique.",
+            "Écus dépensés : 420/420 Ecus de l'aube héroïque et 320/420 Ecus de l'aube mythique",
             "Niveau d'équipement estimé (selon RNG) : 2x 266, 5x 269, 4x 276, 1x 285, 3x 289"
         }
     },
     {
         title = "Semaine 5 (15 - 21 avril)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
-            "Artisanat : fabriquez votre second équipement Mythe 5/5 (285) contre 80x Écus Mythiques. Privilégiez si possible un emplacement où vous possédez déjà un équipement Héro.",
-            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Écus Héroïques. Gardez 20x Écus Héroïques pour l'étape suivante",
-            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Écus Héroïques. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) pour 80x Écus Mythiques.",
-            "Écus dépensés : 520 / 520 Écus Héroïques et 480 / 480 Écus Mythiques",
+            "Artisanat : fabriquez votre second équipement Mythe 5/5 (285) contre 80x Ecus de l'aube mythique. Privilégiez si possible un emplacement où vous possédez déjà un équipement Héro.",
+            "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Ecus de l'aube héroïque. Gardez 20x Ecus de l'aube héroïque pour l'étape suivante",
+            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Ecus de l'aube héroïque. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) pour 80x Ecus de l'aube mythique.",
+            "Écus dépensés : 520/520 Ecus de l'aube héroïque et 480/480 Ecus de l'aube mythique.",
             "Niveau d'équipement estimé (selon RNG) : 1x 266, 2x 269, 6x 276, 2x 285, 4x 289"
         }
     },
     {
         title = "Semaine 6 (22 - 28 avril)",
         objectives = {
-            "Ne dépensez aucun Écu Héroïque et Mythique sauf si demandé.",
+            "Ne dépensez aucun Ecus de l'aube héroïque et Ecus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
             "Mythique + (Saison 1) : accomplissez des donjons +12 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Hypothèse : nous partons du principe que vous avez obtenu 1 pièce Mythe 2/6 (276)",
-            "Palier Héroïque : améliorez un de vos Hero 4/6 (269) -> 6/6 (276) contre 40x Écus Héroïques.",
-            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Écus Héroïques. Améliorez ensuite votre Mythe 1/6 (272) -> 6/6 (289) pour 80x Écus Mythiques.",
-            "Palier Mythe (Raid) : améliorez l'équipement Mythe 2/6 (276) -> 5/6 (285) contre 60x Écus Mythiques",
-            "Écus dépensés : 560 / 620 Écus Héroïques (Terminé) et 620 / 620 Écus Mythiques.",
+            "Palier Héroïque : améliorez un de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 40x Ecus de l'aube héroïque.",
+            "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Ecus de l'aube héroïque. Améliorez ensuite votre Mythe 1/6 (272) -> 6/6 (289) pour 80x Ecus de l'aube mythique.",
+            "Palier Mythe (Raid) : améliorez l'équipement Mythe 2/6 (276) -> 5/6 (285) contre 60x Ecus de l'aube mythique",
+            "Écus dépensés : 560/620 Ecus de l'aube héroïque et 620/620 Ecus de l'aube mythique.",
             "Niveau d'équipement estimé (selon RNG) : 7x 276, 2x 285, 1x 285, 5x 289."        
         }
     },
@@ -149,7 +152,7 @@ local weeks = {
     }
 }
 
-local frame = CreateFrame("Frame", "MidnightTrackerFrame", UIParent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", "MidnightTrackerFrame", UIParent, "BackdropTemplate")
 frame:SetSize(500, 400)
 frame:SetPoint("CENTER")
 frame:SetBackdrop({
@@ -159,7 +162,7 @@ frame:SetBackdrop({
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
 
-frame:SetBackdropColor(0,0,0,0.92)
+frame:SetBackdropColor(0,0,0,1)
 frame:SetBackdropBorderColor(1, 0.82, 0, 1)
 frame:SetMovable(true)
 frame:EnableMouse(true)
@@ -183,7 +186,7 @@ menu:SetBackdrop({
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-menu:SetBackdropColor(0,0,0,0.92)
+menu:SetBackdropColor(0,0,0,1)
 menu:SetBackdropBorderColor(1, 0.82, 0, 1)
 
 
@@ -297,10 +300,24 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
     local function colorizeText(s)
         if not s or s == "" then return s end
         s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff7FB8FF%0|r")
-        s = s:gsub("%f[%a][Vv][e]t[e]ran%f[%A]", "|cffC0A0FF%0|r")
-        s = s:gsub("[Cc]hampion", "|cffff3b3b%0|r")
         s = s:gsub("%f[%a][Hh][e]ro%f[%A]", "|cffFFB86A%0|r")
         s = s:gsub("%f[%a][Mm]ythe%f[%A]", "|cffFFE07A%0|r")
+
+        s = s:gsub('[Ee]cu[s]? de l[\'\"]aube de [Cc]hampion', '|cffff3b3b%0|r')
+        s = s:gsub('[Ee]cu[s]? de l[\'\"]aube [Vv]eteran', '|cffC0A0FF%0|r')
+        if MPLUS_ICON_TEST then
+            s = s:gsub("([Ee]cu[s]? de l['\\\"]aube [Hh]éroïque)", "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cffFFB86A%1|r")
+        else
+            s = s:gsub('[Ee]cu[s]? de l[\'\"]aube [Hh]éroïque', '|cffFFB86A%0|r')
+        end
+        if MPLUS_ICON_TEST then
+            s = s:gsub("([Ee]cu[s]? de l['\\\"]aube mythique)", "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cffFFE07A%1|r")
+        else
+            s = s:gsub('[Ee]cu[s]? de l[\'\"]aube mythique', '|cffFFE07A%0|r')
+        end
+
+        s = s:gsub("%f[%a][Vv][e]t[e]ran%f[%A]", "|cffC0A0FF%0|r")
+        s = s:gsub("[Cc]hampion", "|cffff3b3b%0|r")
         return s
     end
 
@@ -329,7 +346,27 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             rest = rest or ""
             local display = "|cffFFD100" .. prefix .. "|r"
             if rest ~= "" then
-                display = display .. " " .. "|cffffffff" .. rest .. "|r"
+                local coloredRest
+                if pat:find("Niveau d") then
+                    local stripped = rest:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+                    coloredRest = "|cffffffff" .. stripped .. "|r"
+                else
+                    coloredRest = colorizeText(rest) or rest
+                    coloredRest = coloredRest:gsub("(%d+/%d+)", "|cffffffff%1|r")
+                    coloredRest = coloredRest:gsub("(%s)et(%s)", "%1|cffffffffet|r%2")
+                end
+
+                display = display .. " " .. coloredRest
+
+                local centerLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                local leftPad = 10
+                centerLabel:SetWidth(computeAvailableW(leftPad))
+                centerLabel:SetJustifyH("LEFT")
+                centerLabel:SetWordWrap(true)
+                centerLabel:SetText(display)
+                centerLabel:SetPoint("TOPLEFT", parent, "TOPLEFT", leftPad, yOffset)
+
+                return centerLabel:GetStringHeight() + 12
             end
 
             local centerLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -338,7 +375,6 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             centerLabel:SetJustifyH("LEFT")
             centerLabel:SetWordWrap(true)
             centerLabel:SetText(display)
-            local leftPad = 10
             centerLabel:SetPoint("TOPLEFT", parent, "TOPLEFT", leftPad, yOffset)
             return centerLabel:GetStringHeight() + 12
         end
@@ -518,7 +554,6 @@ local resourcesButton = createLetterButton("R", 76, -10,
             ChatEdit_ActivateChat(editBox)
             editBox:Insert(url)
             editBox:HighlightText()
-        else
         end
     end,
     "Ressources",
@@ -544,7 +579,7 @@ end)
 closeBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local planningButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-planningButton:SetSize(70, 22)
+planningButton:SetSize(57, 22)
 planningButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -34, -6)
 planningButton:SetText("Planning")
 planningButton:SetScript("OnClick", function()
@@ -554,10 +589,24 @@ planningButton:SetScript("OnClick", function()
         else
             MidnightPlanning.Show()
         end
-    else
     end
 end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+
+local mplusButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+mplusButton:SetSize(43, 22)
+mplusButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -2, 0)
+mplusButton:SetText("Écus")
+mplusButton:SetScript("OnClick", function()
+    if MidnightMplus and MidnightMplus.Show and MidnightMplus.Hide then
+        if MidnightMplusFrame and MidnightMplusFrame:IsShown() then
+            MidnightMplus.Hide()
+        else
+            MidnightMplus.Show()
+        end
+    end
+end)
+mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 SLASH_MIDNIGHTTRACKER1 = "/som"
 SlashCmdList["MIDNIGHTTRACKER"] = function()
