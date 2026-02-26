@@ -250,6 +250,26 @@ local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t "
 local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t "
 local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t "
 
+local function colorizeIlvlNumber(text)
+    if not text or text == "" then return text end
+    return text:gsub("(%d+)", function(numStr)
+        local n = tonumber(numStr)
+        if not n then return numStr end
+        if n >= 272 and n <= 289 then
+            return "|cffFFE07A" .. numStr .. "|r"
+        elseif n >= 259 and n <= 271 then
+            return "|cffFFB86A" .. numStr .. "|r"
+        elseif n >= 246 and n <= 258 then
+            return "|cffff3b3b" .. numStr .. "|r"
+        elseif n >= 233 and n <= 245 then
+            return "|cffC0A0FF" .. numStr .. "|r"
+        elseif n >= 207 and n <= 232 then
+            return "|cff7FB8FF" .. numStr .. "|r"
+        end
+        return numStr
+    end)
+end
+
 local function colorizePlanningCell(text)
     if not text or text == "" then return text end
     text = text:gsub(" +\n", "\n")
@@ -424,7 +444,11 @@ local function RefreshPlanning()
         local cellObjects = {}
         for vi, ci in ipairs(visibleCols) do
             local cell = row[ci] or ""
-            cell = colorizePlanningCell(cell)
+            if ci == 1 then
+                cell = colorizeIlvlNumber(cell)
+            else
+                cell = colorizePlanningCell(cell)
+            end
             local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             local thisWidth = widths[vi] or 80
             f:SetWidth(thisWidth)

@@ -36,11 +36,14 @@ L.fr.resources = "Ressources"
 L.fr.discord_desc = "Copie l'adresse du serveur Discord de la guilde dont je suis membre (nous recherchons d'ailleurs nos derniers membres pour notre roster Mythique)"
 L.fr.twitch_desc = "Copie l'URL de ma chaîne Twitch, je live généralement du mardi au vendredi dès 18h."
 L.fr.resources_desc = "Copie l'URL des ressources ayant permis de créer ce guide, les données proviennent de différentes sources comme : Larias, WoW Head, Icy Vein, Judge Hype ou Blizz Spirit, elles ont été entrecroisées pour créer un guide de progression cohérent et optimisé."
+L.fr.resources_short_desc = "Les données proviennent de différentes sources comme : Larias, WoW Head, Icy Vein, Judge Hype ou Blizz Spirit, elles ont été entrecroisées pour créer un guide de progression cohérent et optimisé."
+L.fr.reset_info = "Les dates correspondent au reset hebdomadaire Français. Selon où vous jouez dans le monde, votre réinitialisation hebdomadaire sera décalée. A vous de vous adapter au besoin."
 L.fr.x_desc = "Copie l'URL de mon compte X (Twitter), si des questions il y a."
 L.fr.reset_checks = "Reset"
 L.fr.reset_checks_desc = "Réinitialise toutes les cases cochées du suivi d'objectifs."
 L.fr.ilvl_label = "Niveau d'objet"
 L.fr.ilvl_no_data = "N/A"
+L.fr.crest_panel_title = "Écus"
 L.fr.slash_msg = "|cffFFD100[Midnight]|r Tapez /som pour ouvrir le suivi d'objectifs."
 L.fr.no_data = "Aucune donnée."
 L.fr.no_csv_data = "Aucune donnée importée depuis le CSV."
@@ -214,11 +217,11 @@ L.fr.weeks = {
 
 L.fr.mplus_csv = [[
 Source,Quantités
-M0,TBA
 Raid LFR,TBA
 Raid Normal,TBA
 Raid Héroïque,TBA
 Raid Mythique,TBA
+M0,TBA
 Mythique +2,10 x Ecu de l'aube héroïque
 Gouffre Palier 2,TBA
 Mythique +3,12 x Ecu de l'aube héroïque
@@ -237,7 +240,9 @@ Mythique +9,14 x Ecu de l'aube mythique
 Gouffre Palier 9,TBA
 Mythique +10,16 x Ecu de l'aube mythique
 Gouffre Palier 10,TBA
+Mythique +11,18 x Ecu de l'aube mythique
 Gouffre Palier 11,TBA
+Mythique +12,20 x Ecu de l'aube mythique
 ]]
 
 L.fr.planning_csv = [[
@@ -305,23 +310,23 @@ Aile 3 (01 avril)"
 263,,,,,,,,,,,,
 259,,,,"Etincelle de radiance + Ecu de l'aube héroïque
 (Qualité 1)",,"Cauchemar
-(18 mars)",,,Palier 8 - 11,Palier 8 - 11,Mythique + (+6-7),"Mythique + (+2-3)
+(18 mars)",,,Palier 8 - 11,Palier 8 - 11,Mythique +6-7),"Mythique + (+2-3)
 (25 mars)","Héroique
 (18 mars)"
 262,,,,"Etincelle de radiance + Ecu de l'aube héroïque
 (Qualité 2)",,,,,,,,,,
-263,,,,,,,,,,,Mythique + (+8-9),Mythique + (+4-5),
+263,,,,,,,,,,,Mythique +8-9,Mythique +4-5,
 265,,,,"Etincelle de radiance + Ecu de l'aube héroïque
 (Qualité 3)",,,,,,,,,,
-266,,,,,,,,,,,Mythique + (+10 et +),Mythique + (+6),
+266,,,,,,,,,,,Mythique +10 et +,Mythique +6,
 268,,,,"Etincelle de radiance + Ecu de l'aube héroïque
 (Qualité 4)",,,,,,,,,,
-269,,,,,,,,,,,,Mythique + (+7-9),
+269,,,,,,,,,,,,Mythique +7-9,
 272,,,,"Etincelle de radiance + Ecu de l'aube héroïque
 (Qualité 5)",,,,,,,,,,
 276,,,,,,,,,,,,,
 272,,,,"Etincelle de radiance + Ecu de l'aube mythique
-(Qualité 1)",,,,,,,,Mythique + (+10 et +),"Mythique
+(Qualité 1)",,,,,,,,Mythique +10 et +,"Mythique
 Raid 1 & 2 (25 mars)
 Raid 3 (01 avril)"
 275,,,,"Etincelle de radiance + Ecu de l'aube mythique
@@ -347,11 +352,14 @@ L.en.resources = "Resources"
 L.en.discord_desc = "Copies the Discord server address of the guild I'm a member of (we are also looking for our last members for our Mythic roster)"
 L.en.twitch_desc = "Copies my Twitch channel URL, I usually stream Tuesday to Friday from 6PM (CET)."
 L.en.resources_desc = "Copies the URL of resources used to create this guide, data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
+L.en.resources_short_desc = "Data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
+L.en.reset_info = "Dates correspond to the French weekly reset. Depending on where you play in the world, your weekly reset may differ. Adjust accordingly."
 L.en.x_desc = "Copies my X (Twitter) account URL, if you have any questions."
 L.en.reset_checks = "Reset"
 L.en.reset_checks_desc = "Resets all checked objectives in the tracker."
 L.en.ilvl_label = "Item Level"
 L.en.ilvl_no_data = "N/A"
+L.en.crest_panel_title = "Crests"
 L.en.slash_msg = "|cffFFD100[Midnight]|r Type /som to open the objective tracker."
 L.en.no_data = "No data."
 L.en.no_csv_data = "No data imported from CSV."

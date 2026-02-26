@@ -86,6 +86,49 @@ ilvlText:SetJustifyH("CENTER")
 ilvlText:SetText("...")
 ilvlText:SetTextColor(1, 1, 1)
 
+local CREST_CURRENCY_IDS = {
+    adventurer = 3383,
+    veteran    = 3341,
+    champion   = 3343,
+    heroic     = 3345,
+    mythic     = 3347,
+}
+local SPARK_CURRENCY_ID = 3212
+
+local crestPanel = CreateFrame("Frame", "MidnightCrestPanel", frame, "BackdropTemplate")
+crestPanel:SetHeight(28)
+crestPanel:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 4)
+crestPanel:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 4)
+crestPanel:SetBackdrop({
+    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+crestPanel:SetBackdropColor(0,0,0,1)
+crestPanel:SetBackdropBorderColor(1, 0.82, 0, 1)
+
+local currencyRows = {
+    { key = "adventurer", color = "7FB8FF", currID = 3383, icon = "Interface\\Icons\\inv_120_crest_adventurer" },
+    { key = "veteran",    color = "C0A0FF", currID = 3341, icon = "Interface\\Icons\\inv_120_crest_veteran" },
+    { key = "champion",   color = "ff3b3b", currID = 3343, icon = "Interface\\Icons\\inv_120_crest_champion" },
+    { key = "heroic",     color = "FFB86A", currID = 3345, icon = "Interface\\Icons\\inv_120_crest_hero" },
+    { key = "mythic",     color = "FFE07A", currID = 3347, icon = "Interface\\Icons\\inv_120_crest_myth" },
+    { key = "sparks",     color = "FFD100", itemID = 232875, icon = "Interface\\Icons\\inv_12_profession_questandcrafting_sparkwhole_gold" },
+}
+
+local crestLineRows = {}
+local crestContent = CreateFrame("Frame", nil, crestPanel)
+crestContent:SetPoint("TOPLEFT", 10, 0)
+crestContent:SetPoint("BOTTOMRIGHT", -10, 0)
+
+for i, cr in ipairs(currencyRows) do
+    local fs = crestContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetJustifyH("CENTER")
+    fs:SetWordWrap(false)
+    crestLineRows[cr.key] = { fs = fs, currID = cr.currID, itemID = cr.itemID, color = cr.color, icon = cr.icon, idx = i }
+end
+
 local weekEstimatedIlvl = {}
 local weekScrolls = {}
 local menuButtons = {}
@@ -109,6 +152,16 @@ local function parseEstimatedIlvl(objectives)
     return nil
 end
 
+local function getCrestInfo(currencyID)
+    if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
+        local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        if info then
+            return info.quantity or 0, info.maxQuantity or 0
+        end
+    end
+    return 0, 0
+end
+
 local function UpdateIlvlPanel()
     local currentIlvl = 0
     if GetAverageItemLevel then
@@ -121,6 +174,41 @@ local function UpdateIlvlPanel()
         ilvlText:SetText("|cffffffff" .. currentIlvl .. "|r / |cffFFD100" .. estimated .. "|r")
     else
         ilvlText:SetText("|cffffffff" .. currentIlvl .. "|r / |cff888888" .. MidnightL.S("ilvl_no_data") .. "|r")
+    end
+end
+
+local function UpdateCrestPanel()
+    local nItems = #currencyRows
+    local totalW = crestContent:GetWidth() or (frame:GetWidth() - 20)
+    local sep = "  |cff555555-|r  "
+    local parts = {}
+    for i, cr in ipairs(currencyRows) do
+        local entry = crestLineRows[cr.key]
+        if entry then
+            local cur
+            if entry.itemID then
+                cur = GetItemCount and GetItemCount(entry.itemID, true) or 0
+            else
+                cur = getCrestInfo(entry.currID)
+            end
+            local valStr = tostring(cur)
+            local valColor = cur <= 0 and "ffff4040" or "ffffd34d"
+            local icon = "|T" .. entry.icon .. ":14:14:0:0|t"
+            local piece = icon .. " |c" .. valColor .. valStr .. "|r"
+            table.insert(parts, piece)
+        end
+    end
+    -- Use a single centered FontString for the whole bar
+    local allFs = crestLineRows[currencyRows[1].key].fs
+    allFs:ClearAllPoints()
+    allFs:SetPoint("CENTER", crestContent, "CENTER", 0, 0)
+    allFs:SetWidth(totalW)
+    allFs:SetJustifyH("CENTER")
+    allFs:SetText(table.concat(parts, sep))
+    -- Hide unused FontStrings
+    for i = 2, nItems do
+        local e = crestLineRows[currencyRows[i].key]
+        if e and e.fs then e.fs:SetText("") end
     end
 end
 
@@ -172,6 +260,7 @@ local function UpdateMenuForScroll(cur)
         activeMenuIndex = bestIdx
         UpdateMenuActive()
         UpdateIlvlPanel()
+        UpdateCrestPanel()
     end
 end
 
@@ -198,6 +287,7 @@ ilvlPanel:SetScript("OnUpdate", function(self, elapsed)
     if ilvlPoll.timer < 2 then return end
     ilvlPoll.timer = 0
     UpdateIlvlPanel()
+    UpdateCrestPanel()
 end)
 
 local function ScrollToWeek(idx)
@@ -210,6 +300,31 @@ local function ScrollToWeek(idx)
     if target < 0 then target = 0 end
     if target > maxScroll then target = maxScroll end
     scrollFrame:SetVerticalScroll(target)
+end
+
+local function isWeekFullyChecked(weekIndex, objectives)
+    if not objectives or #objectives == 0 then return false end
+    MidnightTrackerDB = MidnightTrackerDB or {}
+    MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
+    local summaryPrefixPatterns = getSummaryPatterns()
+    local hasCheckable = false
+    for oIndex, objective in ipairs(objectives) do
+        local isSummary = false
+        for _, pat in ipairs(summaryPrefixPatterns) do
+            if objective:match(pat) then
+                isSummary = true
+                break
+            end
+        end
+        if not isSummary then
+            hasCheckable = true
+            local checkKey = "w" .. weekIndex .. "_" .. oIndex
+            if not MidnightTrackerDB.checks[checkKey] then
+                return false
+            end
+        end
+    end
+    return hasCheckable
 end
 
 local function CreateObjective(parent, text, index, yOffset, weekIndex)
@@ -348,6 +463,11 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
         local checked = self:GetChecked()
         MidnightTrackerDB.checks[checkKey] = checked or nil
         applyCheckState(checked)
+        if checked and Midnight.weekInfo and Midnight.weekInfo[weekIndex] then
+            if isWeekFullyChecked(weekIndex, Midnight.weekInfo[weekIndex]) then
+                C_Timer.After(0.3, function() Midnight:Refresh() end)
+            end
+        end
     end)
 
     Midnight.allCheckboxes = Midnight.allCheckboxes or {}
@@ -365,6 +485,10 @@ function Midnight:Refresh()
         c:Hide()
         c:SetParent(nil)
     end
+    for _, r in ipairs({content:GetRegions()}) do
+        r:Hide()
+        r:SetParent(nil)
+    end
 
     weekScrolls = {}
 
@@ -376,22 +500,37 @@ function Midnight:Refresh()
     local yOffset = -10
 
     local weeks = getWeeks()
+    Midnight.weekInfo = {}
+    local visibleWeeks = {}
     for wIndex, week in ipairs(weeks) do
+        Midnight.weekInfo[wIndex] = week.objectives
+        if not isWeekFullyChecked(wIndex, week.objectives) then
+            table.insert(visibleWeeks, wIndex)
+        end
+    end
+
+    for vIdx, wIndex in ipairs(visibleWeeks) do
+        local week = weeks[wIndex]
+
+        if vIdx > 1 then
+            yOffset = yOffset - 20
+        end
+
         local weekTitle = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
         weekTitle:SetPoint("TOPLEFT", 10, yOffset)
         weekTitle:SetText(week.title)
         weekTitle:SetTextColor(1, 0.82, 0)
         
-        weekScrolls[wIndex] = -yOffset - 4
+        weekScrolls[vIdx] = -yOffset - 4
         yOffset = yOffset - 30
 
             for oIndex, objective in ipairs(week.objectives) do
                 local height = CreateObjective(content, objective, oIndex, yOffset, wIndex)
                 yOffset = yOffset - height
             end
-
-        yOffset = yOffset - 24
     end
+
+    yOffset = yOffset - 10
 
     content:SetHeight(-yOffset)
     content:Show()
@@ -400,10 +539,11 @@ function Midnight:Refresh()
     
     menuButtons = {}
     local menuLabels = getMenuLabels()
-    for i, week in ipairs(weeks) do
+    for vIdx, wIndex in ipairs(visibleWeeks) do
+        local week = weeks[wIndex]
         local btn = CreateFrame("Button", nil, menuContent)
         btn:SetSize(menuWidth - 16, 18)
-        btn:SetPoint("TOPLEFT", 0, -((i - 1) * 20))
+        btn:SetPoint("TOPLEFT", 0, -((vIdx - 1) * 20))
         btn:EnableMouse(true)
         btn:SetFrameLevel(menu:GetFrameLevel() + 2)
         btn:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
@@ -416,42 +556,43 @@ function Midnight:Refresh()
         local txt = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         txt:SetPoint("LEFT", 14, 0)
         txt:SetJustifyH("LEFT")
-        txt:SetText(menuLabels[i] or week.title or ("Week " .. i))
+        txt:SetText(menuLabels[wIndex] or week.title or ("Week " .. wIndex))
         txt:SetTextColor(1,1,1)
 
-        menuButtons[i] = { btn = btn, txt = txt, bullet = bullet }
+        menuButtons[vIdx] = { btn = btn, txt = txt, bullet = bullet }
 
         btn:SetScript("OnClick", function()
-            activeMenuIndex = i
+            activeMenuIndex = vIdx
             UpdateMenuActive()
             UpdateIlvlPanel()
-            ScrollToWeek(i)
+            UpdateCrestPanel()
+            ScrollToWeek(vIdx)
         end)
         btn:SetScript("OnEnter", function(self)
-            if menuButtons[i] and menuButtons[i].txt then
-                menuButtons[i].txt:SetTextColor(1, 0.82, 0)
+            if menuButtons[vIdx] and menuButtons[vIdx].txt then
+                menuButtons[vIdx].txt:SetTextColor(1, 0.82, 0)
             end
             if self.LockHighlight then self:LockHighlight() end
         end)
         btn:SetScript("OnLeave", function(self)
-            if activeMenuIndex == i then
-                if menuButtons[i] and menuButtons[i].txt then menuButtons[i].txt:SetTextColor(1, 0.82, 0) end
+            if activeMenuIndex == vIdx then
+                if menuButtons[vIdx] and menuButtons[vIdx].txt then menuButtons[vIdx].txt:SetTextColor(1, 0.82, 0) end
             else
-                if menuButtons[i] and menuButtons[i].txt then menuButtons[i].txt:SetTextColor(1,1,1) end
+                if menuButtons[vIdx] and menuButtons[vIdx].txt then menuButtons[vIdx].txt:SetTextColor(1,1,1) end
             end
             if self.UnlockHighlight then self:UnlockHighlight() end
         end)
     end
     
     weekEstimatedIlvl = {}
-    local weeks2 = getWeeks()
-    for i, week in ipairs(weeks2) do
-        weekEstimatedIlvl[i] = parseEstimatedIlvl(week.objectives)
+    for vIdx, wIndex in ipairs(visibleWeeks) do
+        weekEstimatedIlvl[vIdx] = parseEstimatedIlvl(weeks[wIndex].objectives)
     end
 
-    if not activeMenuIndex then activeMenuIndex = 1 end
+    activeMenuIndex = (#visibleWeeks > 0) and 1 or nil
     UpdateMenuActive()
     UpdateIlvlPanel()
+    UpdateCrestPanel()
 end
 
 local function createLetterButton(letter, xOff, yOff, onClick, title, desc)
@@ -507,18 +648,10 @@ local twitchButton = createLetterButton("T", 54, -10,
     "Twitch",
     MidnightL.S("twitch_desc"))
 
-local resourcesButton = createLetterButton("R", 76, -10,
-    function()
-        local url = "https://docs.google.com/document/u/1/d/e/2PACX-1vTAN9Hjl-_ZhxofBUn4qKM0UNkEx2MTePWg61IcD_b5Vo6istu8YAivtINMz5QX5oxY7prnKfACIQcx/pub"
-        if ChatEdit_ChooseBoxForSend then
-            local editBox = ChatEdit_ChooseBoxForSend()
-            ChatEdit_ActivateChat(editBox)
-            editBox:Insert(url)
-            editBox:HighlightText()
-        end
-    end,
+local resourcesButton = createLetterButton("?", 76, -10,
+    function() end,
     MidnightL.S("resources"),
-    MidnightL.S("resources_desc"))
+    MidnightL.S("resources_short_desc"))
 
 local xButton = createLetterButton("X", 32, -10,
     function()
@@ -540,16 +673,7 @@ resetButton:SetNormalFontObject("GameFontNormalSmall")
 resetButton:SetHighlightFontObject("GameFontNormalSmall")
 resetButton:SetScript("OnClick", function()
     MidnightTrackerDB.checks = {}
-    if Midnight.allCheckboxes then
-        for _, entry in ipairs(Midnight.allCheckboxes) do
-            if entry.cb and entry.cb.SetChecked then
-                entry.cb:SetChecked(false)
-            end
-            if entry.applyFn then
-                entry.applyFn(false)
-            end
-        end
-    end
+    Midnight:Refresh()
 end)
 resetButton:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
@@ -561,6 +685,22 @@ end)
 resetButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 resetButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
+local helpBtn = CreateFrame("Button", nil, frame)
+helpBtn:SetSize(20, 20)
+helpBtn:SetPoint("TOPRIGHT", menu, "TOPRIGHT", 6, 6)
+helpBtn:SetNormalTexture("Interface/Common/help-i")
+helpBtn:SetHighlightTexture("Interface/Common/help-i")
+helpBtn:GetHighlightTexture():SetAlpha(0.4)
+helpBtn:SetFrameLevel(menu:GetFrameLevel() + 5)
+helpBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine("Info")
+    GameTooltip:AddLine(MidnightL.S("reset_info"), 1,1,1, true)
+    GameTooltip:Show()
+end)
+helpBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -6)
 closeBtn:SetScript("OnClick", function()
@@ -569,8 +709,8 @@ end)
 closeBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local planningButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-planningButton:SetSize(57, 22)
-planningButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -34, -6)
+planningButton:SetSize(57, 20)
+planningButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -34, -10)
 planningButton:SetText(MidnightL.S("planning"))
 planningButton:SetScript("OnClick", function()
     if MidnightPlanning and MidnightPlanning.Show and MidnightPlanning.Hide then
@@ -584,7 +724,7 @@ end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local mplusButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-mplusButton:SetSize(43, 22)
+mplusButton:SetSize(43, 20)
 mplusButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -2, 0)
 mplusButton:SetText(MidnightL.S("crests"))
 mplusButton:SetScript("OnClick", function()
