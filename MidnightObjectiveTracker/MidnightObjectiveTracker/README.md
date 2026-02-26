@@ -1,34 +1,101 @@
-## MidnightObjectiveTracker
+# MidnightObjectiveTracker
 
-### Fonctionnalités
-- **Guide de progression et de préparation en jeu :** Accédez à un guide étape par étape via une fenêtre mobile et redimensionnable qui détaille exactement quoi faire semaine après semaine dès le lancement de Midnight.
-- **Feuille de route du contenu et de l'équipement :** Comprend un calendrier détaillé incluant les objectifs de niveau d'objet (ilvl) et les dates de sortie officielles pour tout le contenu de haut niveau.
-- **Progression optimisée :** Gardez une longueur d'avance en suivant vos objectifs en temps réel sans avoir à faire de Alt-Tab.
-- **Chat commandes:** /som → Activer/désactiver l'addon
+> **A week-by-week in-game progression guide for World of Warcraft: Midnight.**
+> Automatically switches between English and French based on your game client language.
 
+---
 
-### Installation manuelle**
+## Features
 
-Ce document explique comment installer manuellement l'addon MidnightObjectiveTracker pour World of Warcraft.
+- **Step-by-step weekly guide** — A draggable, in-game window detailing exactly what to do each week from Midnight launch to endgame optimization.
+- **Crest tracker (Écus)** — Dedicated panel showing crest sources and quantities per Mythic+ level, Raid difficulty and Delve tier.
+- **Gear planning table** — Full ilvl roadmap with official release dates for all high-end content (Raids, Mythic+, Delves, Crafting, PvP, World Boss, Preys…).
+- **Automatic language detection** — If your WoW client is set to `enUS` or `enGB`, the entire addon displays in English. Otherwise it defaults to French.
+- **Side navigation menu** — Quick-jump to any week from the sidebar.
+- **Checkbox persistence** — Each objective has a checkbox. Checking it greys out the text so you can track your progress. Your checked state is saved between sessions via `SavedVariables`.
+- **Reset button** — A "Reset" button in the toolbar resets all checkboxes at once.
+- **Social links** — One-click buttons to copy Discord, Twitch, X (Twitter) and Resources URLs into chat.
+- **Slash command** — `/som` to toggle the tracker window.
 
-**Prérequis**
-- **WoW installé**: Accès au dossier AddOns de votre installation World of Warcraft.
-- **Chemin typique (Windows)**: C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns\
+---
 
-**Étapes d'installation**
+## Installation
+
+### Via CurseForge / WoWUp
+Search for **MidnightObjectiveTracker** (Project ID: `1469813`) and install.
+
+### Manual Installation
+
+1. Close World of Warcraft if running.
+2. Navigate to your AddOns folder:
+   ```
+   C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns\
+   ```
+3. Create a folder named `MidnightObjectiveTracker` (if it doesn't already exist).
+4. Copy the following files into that folder:
+   - `MidnightObjectiveTracker.toc`
+   - `MidnightObjectiveTracker.locales.lua`
+   - `MidnightObjectiveTracker.lua`
+   - `MidnightObjectiveTracker.planning.lua`
+   - `MidnightObjectiveTracker.mplus.lua`
+5. Launch WoW. On the character select screen, click **AddOns** (bottom-left) and make sure **MidnightObjectiveTracker** is enabled. Enable *Load out of date AddOns* if needed.
+6. Log in and type `/som` in chat to open the tracker.
+
+---
+
+## Troubleshooting
+
+If the addon shows errors, take a screenshot and send it to me on [X (Twitter)](https://x.com/poulpi_x) or on [Discord](https://discord.gg/D7zMBtPfGn).
+
+---
+
+---
+
+# MidnightObjectiveTracker (FR)
+
+> **Un guide de progression semaine par semaine, directement en jeu, pour World of Warcraft: Midnight.**
+> L'addon bascule automatiquement entre le français et l'anglais selon la langue de votre client de jeu.
+
+---
+
+## Fonctionnalités
+
+- **Guide hebdomadaire étape par étape** — Une fenêtre déplaçable en jeu détaillant exactement quoi faire chaque semaine, du lancement de Midnight jusqu'à l'optimisation endgame.
+- **Suivi des Écus** — Panneau dédié affichant les sources et quantités d'Écus par niveau de Mythique+, difficulté de Raid et palier de Gouffre.
+- **Tableau de planning d'équipement** — Feuille de route complète des ilvl avec les dates de sortie officielles de tout le contenu haut niveau (Raids, Mythique+, Gouffres, Artisanat, JcJ, Boss Monde, Traques…).
+- **Détection automatique de la langue** — Si votre client WoW est en `enUS` ou `enGB`, l'intégralité de l'addon s'affiche en anglais. Sinon, il est en français par défaut.
+- **Menu de navigation latéral** — Accès rapide à n'importe quelle semaine depuis la barre latérale.
+- **Sauvegarde des cases cochées** — Chaque objectif possède une case à cocher. La cocher grise le texte pour suivre votre progression. L'état est sauvegardé entre les sessions via les `SavedVariables`.
+- **Bouton de réinitialisation** — Un bouton "Reset" dans la barre d'outils réinitialise toutes les cases d'un coup.
+- **Liens sociaux** — Boutons pour copier les URLs Discord, Twitch, X (Twitter) et Ressources directement dans le chat.
+- **Commande slash** — `/som` pour afficher/masquer la fenêtre de suivi.
+
+---
+
+## Installation
+
+### Via CurseForge / WoWUp
+Recherchez **MidnightObjectiveTracker** (Project ID : `1469813`) et installez.
+
+### Installation manuelle
+
 1. Fermez World of Warcraft s'il est ouvert.
-2. Ouvrez l'explorateur de fichiers et allez dans le dossier AddOns de votre installation WoW (exemple ci-dessus).
-3. Créez un dossier nommé MidnightObjectiveTracker (si ce n'est pas déjà un dossier). Le dossier final doit ressembler à : Interface\AddOns\MidnightObjectiveTracker\
-
+2. Naviguez vers le dossier AddOns :
+   ```
+   C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns\
+   ```
+3. Créez un dossier nommé `MidnightObjectiveTracker` (s'il n'existe pas déjà).
 4. Copiez les fichiers suivants dans ce dossier :
-- MidnightObjectiveTracker.toc
-- MidnightObjectiveTracker.lua
-- MidnightObjectiveTracker.planning.lua
+   - `MidnightObjectiveTracker.toc`
+   - `MidnightObjectiveTracker.locales.lua`
+   - `MidnightObjectiveTracker.lua`
+   - `MidnightObjectiveTracker.planning.lua`
+   - `MidnightObjectiveTracker.mplus.lua`
+5. Lancez WoW. À l'écran de sélection de personnage, cliquez sur **AddOns** (en bas à gauche) et vérifiez que **MidnightObjectiveTracker** est activé. Activez *Charger les addons obsolètes* si nécessaire.
+6. Connectez-vous et tapez `/som` dans le chat pour ouvrir le suivi.
 
-5. Lancez World of Warcraft. À l'écran de sélection de personnage, cliquez sur le bouton "AddOns" en bas à gauche et assurez-vous que "MidnightObjectiveTracker" est coché.
-   - Si l'addon n'apparaît pas, activez l'option "Load out of date AddOns" (Charger les addons obsolètes) si nécessaire.
+---
 
-7. Connectez-vous à un personnage et tapez `/som` pour ouvrir l'addon.dans le chat pour recharger l'interface si l'addon ne se charge pas immédiatement.
+## Dépannage
 
-**Dépannage rapide**
-- Si l'addon affiche des erreurs, capturez les et envoyez les moi sur X (https://x.com/poulpi_x)
+Si l'addon affiche des erreurs, faites une capture d'écran et envoyez-la sur [X (Twitter)](https://x.com/poulpi_x) ou sur [Discord](https://discord.gg/D7zMBtPfGn).

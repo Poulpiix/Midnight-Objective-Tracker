@@ -1,33 +1,9 @@
 local Mplus = {}
 _G["MidnightMplus"] = Mplus
 
-local csv_data = [[
-Source,Quantités
-M0,TBA
-Raid LFR,TBA
-Raid Normal,TBA
-Raid Héroïque,TBA
-Raid Mythique,TBA
-Mythique +2,10 x Écu de l'aube héroïque
-Gouffre Palier 2,TBA
-Mythique +3,12 x Écu de l'aube héroïque
-Gouffre Palier 3,TBA
-Mythique +4,14 x Écu de l'aube héroïque
-Gouffre Palier 4,TBA
-Mythique +5,16 x Écu de l'aube héroïque
-Gouffre Palier 5,TBA
-Mythique +6,18 x Écu de l'aube héroïque
-Gouffre Palier 6,TBA
-Mythique +7,10 x Écu de l'aube mythique
-Gouffre Palier 7,TBA
-Mythique +8,12 x Écu de l'aube mythique
-Gouffre Palier 8,TBA
-Mythique +9,14 x Écu de l'aube mythique
-Gouffre Palier 9,TBA
-Mythique +10,16 x Écu de l'aube mythique
-Gouffre Palier 10,TBA
-Gouffre Palier 11,TBA
-]]
+local function getCSV()
+    return MidnightL[MidnightL.GetLocale()].mplus_csv
+end
 
 local function parseCSV(s)
     local marker = "<<NL>>"
@@ -131,7 +107,7 @@ mframe:Hide()
 
 local mtitle = mframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 mtitle:SetPoint("TOP", mframe, "TOP", 0, -15)
-mtitle:SetText("Écus")
+mtitle:SetText(MidnightL.S("mplus_title"))
 
 local headerHeight = 36
 local headerFrame = CreateFrame("Frame", "MidnightMplusHeader", mframe, "BackdropTemplate")
@@ -167,12 +143,13 @@ local function RefreshMplus()
     rows = {}
     for _, v in ipairs({headerFrame:GetChildren()}) do if type(v.Hide) == 'function' then v:Hide() end end
     local y = -6
+    local csv_data = getCSV()
     local parsed = parseCSV(csv_data)
     if #parsed == 0 then
         local placeholder = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         placeholder:SetPoint("TOPLEFT", 10, y)
         placeholder:SetJustifyH("LEFT")
-        placeholder:SetText("Aucune donnée.")
+        placeholder:SetText(MidnightL.S("no_data"))
         placeholder:SetTextColor(1,0.7,0)
         table.insert(rows, placeholder)
         content:SetHeight(-y)
@@ -188,11 +165,9 @@ local function RefreshMplus()
     local colW = math.floor(availableW / nCols)
     local colWidths = {}
     for c = 1, nCols do colWidths[c] = colW end
-    -- give leftover to last column
     local leftover = availableW - colW * nCols
     if leftover > 0 then colWidths[nCols] = colWidths[nCols] + leftover end
 
-    -- Create header labels
     local curX = hx
     for c = 1, nCols do
         local hh = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -224,7 +199,6 @@ local function RefreshMplus()
             f:SetJustifyH("CENTER")
             f:SetWordWrap(true)
 
-            -- Colorize écu text
             local displayText = cell
             if cell == "TBA" then
                 displayText = "|cff888888TBA|r"
@@ -240,14 +214,14 @@ local function RefreshMplus()
                     restCore = restCore or rest
                     local norm = restCore:gsub("\226\128\153", "'"):lower()
                     local coloredCore = "|cffffffff" .. restCore .. "|r"
-                    if norm:find("mythique", 1, true) then
-                        coloredCore = "|cffFFE07A" .. restCore .. "|r"
-                    elseif norm:find("aube h", 1, true) then
-                        coloredCore = "|cffFFB86A" .. restCore .. "|r"
-                    elseif norm:find("aventure", 1, true) then
+                    if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true) then
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cffFFE07A" .. restCore .. "|r"
+                    elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true) then
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cffFFB86A" .. restCore .. "|r"
+                    elseif norm:find("aventure", 1, true) or norm:find("adventurer", 1, true) then
                         coloredCore = "|cff69C864" .. restCore .. "|r"
-                    elseif norm:find("ran", 1, true) and norm:find("aube", 1, true) then
-                        coloredCore = "|cff6699FF" .. restCore .. "|r"
+                    elseif (norm:find("ran", 1, true) and norm:find("aube", 1, true)) or norm:find("veteran dawn", 1, true) then
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff6699FF" .. restCore .. "|r"
                     end
                     displayText = lead ~= "" and (whiteNum .. lead .. " " .. coloredCore) or (whiteNum .. " " .. coloredCore)
                 elseif cell ~= "" then
@@ -291,6 +265,7 @@ local function RefreshMplus()
 end
 
 function Mplus.Show()
+    mtitle:SetText(MidnightL.S("mplus_title"))
     RefreshMplus()
     mframe:Show()
 end
@@ -299,4 +274,4 @@ function Mplus.Hide()
     mframe:Hide()
 end
 
-MidnightMplusData = csv_data
+MidnightMplusData = getCSV()

@@ -1,103 +1,9 @@
 local Planning = {}
 _G["MidnightPlanning"] = Planning
 
-local csv_data = [[
-,Quêtes,Expédition,"Boss Monde",Artisanat,"Traque", Traque Vault,Arène & BG,Gouffre Abondant,Gouffre Prime,Gouffre Vault,Donjon,Donjon Vault,Raid & Vault
-207,(3 mars),,,,,,,,,,,,
-210,,,,,,,,,,,,,
-214,,,,,,,,,,,"Normal
-(3 mars)",,
-217,,,,,,,"Honneur (276)
-(18 mars)",,,,,,
-220,,(3 mars),,"Écu d'aventure 
-(Qualité 1)","Normal
-(3 mars)",,,"Palier 1
-(18 mars)",,,,,
-224,,,,"Écu d'aventure 
-(Qualité 2)",,,,Palier 2,,,"Héroique (hors saison)
-(3 mars)",,
-227,,,,"Écu d'aventure 
-(Qualité 3)",,,,Palier 3,,,,,
-230,,,,"Écu d'aventure 
-(Qualité 4)",,,,Palier 4,,,"Héroique (Pre Saison)
-(18 mars)",,
-233,,,,"Écu d'aventure 
-(Qualité 5)",,,,,,,,,
-237,,,,,,,,,,,,,
-233,,,,"Écu vétéran 
-(Qualité 1)","Difficile
-(18 mars)","Normal
-(3 mars)",,Palier 5,,,,,"LFR
-Aile 1 (18 mars)
-Aile 2 (25 mars)
-Aile 3 (01 avril)"
-237,,,,"Écu vétéran 
-(Qualité 2)",,,,Palier 6,"Palier 4
-(18 mars)",,,,
-240,,,,"Écu vétéran 
-(Qualité 3)",,,,,,,"Mythique 0 (Pre Saison)
-(18 mars)",,
-243,,,,"Écu vétéran 
-(Qualité 4)",,,,,Palier 5,,,"Héroique (hors saison)
-(3 mars)",
-246,,,,"Écu vétéran 
-(Qualité 5)",,,"Mode guerre (276)
-(18 mars)",,,,,,
-250,,,,,,,,,,,,,
-246,,,,"Étincelle
-(Qualité 1)","Cauchemar
-(18 mars)","Difficile
-(18 mars)","Conquête (289)
-(18 mars)",Palier 7,Palier 6, Palier 5,"Mythique (saison 1)
-(25 mars)",,"Normal
-(18 mars)"
-249,,,,"Étincelle
-(Qualité 2)",,,,,,,,,,
-250,,,(18 mars),,,,,Palier 8 - 11,Palier 7,,Mythique + (+2-3),,
-252,,,,"Étincelle
-(Qualité 3)",,,,,,,,,,
-253,,,,,,,,,,Palier  6,Mythique + (+4),,
-255,,,,"Étincelle
-(Qualité 4)",,,,,,,,,,
-256,,,,,,,,,,Palier 7,Mythique + (+5),"Mythique 0 (Pre Saison)
-(18 mars)",
-259,,,,"Étincelle
-(Qualité 5",,,,,,,,,,
-263,,,,,,,,,,,,
-259,,,,"Étincelle + Écu Héroique
-(Qualité 1)",,"Cauchemar
-(18 mars)",,,Palier 8 - 11,Palier 8 - 11,Mythique + (+6-7),"Mythique + (+2-3)
-(25 mars)","Héroique
-(18 mars)"
-262,,,,"Étincelle + Écu Héroique
-(Qualité 2)",,,,,,,,,,
-263,,,,,,,,,,,Mythique + (+8-9),Mythique + (+4-5),
-265,,,,"Étincelle + Écu Héroique
-(Qualité 3)",,,,,,,,,,
-266,,,,,,,,,,,Mythique + (+10 et +),Mythique + (+6),
-268,,,,"Étincelle + Écu Héroique
-(Qualité 4)",,,,,,,,,,
-269,,,,,,,,,,,,Mythique + (+7-9),
-272,,,,"Étincelle + Écu Héroique
-(Qualité 5)",,,,,,,,,,
-276,,,,,,,,,,,,,
-272,,,,"Étincelle + Écu Mythique
-(Qualité 1)",,,,,,,,Mythique + (+10 et +),"Mythique
-Raid 1 & 2 (25 mars)
-Raid 3 (01 avril)"
-275,,,,"Étincelle + Écu Mythique
-(Qualité 2)",,,,,,,,,,
-276,,,,,,,,,,,,,
-278,,,,"Étincelle + Écu Mythique
-(Qualité 3)",,,,,,,,,,
-279,,,,,,,,,,,,,
-282,,,,"Étincelle + Écu Mythique
-(Qualité 4)",,,,,,,,,,
-282,,,,,,,,,,,,,
-285,,,,"Étincelle + Écu Mythique
-(Qualité 5)",,,,,,,,,,
-289,,,,,,,,,,,,,
-]]
+local function getPlanningCSV()
+    return MidnightL[MidnightL.GetLocale()].planning_csv
+end
 
 local function parseCSV(s)
     local marker = "<<NL>>"
@@ -189,8 +95,6 @@ local function parseCSV(s)
     return rows
 end
 
--- highlightPrefix removed: was referencing undefined colorizeText in this scope
-
 local function buildPlanningTableFromCSV(csv)
     local rows = parseCSV(csv)
     if #rows == 0 then return { headers = {}, rows = {} } end
@@ -209,7 +113,7 @@ local maxVisibleColumns = 11
 local function isHeaderHidden(h)
     if not h then return false end
     h = (h:gsub("^%s+", ""):gsub("%s+$", ""))
-    if h:match("^[Qq]u[eè]t") or h:match("^Quêtes") then return true end
+    if h:match("^[Qq]u[eè]t") or h:match("^Quêtes") or h:match("^[Qq]uests") then return true end
     return false
 end
 local colRangeLabel = nil
@@ -240,9 +144,9 @@ end
 
 local function ensurePlanningBuilt()
     if planningBuilt then return end
-    local ok, res = pcall(buildPlanningTableFromCSV, csv_data)
+    local ok, res = pcall(buildPlanningTableFromCSV, getPlanningCSV())
     if not ok then
-        print("[Midnight] Erreur lors du parsing du CSV Planning : " .. tostring(res))
+        print(MidnightL.S("csv_error") .. tostring(res))
         planningTable = { headers = {}, rows = {} }
         planningBuilt = true
         return
@@ -272,7 +176,7 @@ pframe:Hide()
 
 local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
-ptitle:SetText("Planning")
+ptitle:SetText(MidnightL.S("planning_title"))
 
 local pclose = CreateFrame("Button", nil, pframe, "UIPanelCloseButton")
 pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -6, -6)
@@ -339,10 +243,40 @@ headerFrame:SetFrameLevel((pframe:GetFrameLevel() or 0) + 10)
 
 local rows = {}
 
+local ICON_SPARK = "|TInterface\\Icons\\inv_12_profession_questandcrafting_sparkwhole_gold:14:14:0:0|t "
+local ICON_ADV   = "|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t "
+local ICON_VET   = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t "
+local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t "
+local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t "
+local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t "
+
+local function colorizePlanningCell(text)
+    if not text or text == "" then return text end
+    text = text:gsub(" +\n", "\n")
+    local loc = MidnightL.GetLocale()
+    if loc == "en" then
+        text = text:gsub("(Spark of Radiance)", ICON_SPARK .. "|cffFFD100%1|r")
+        text = text:gsub("(Champion Dawn Crest[s]?)", ICON_CHAMP .. "|cffff3b3b%1|r")
+        text = text:gsub("(Veteran Dawn Crest[s]?)", ICON_VET .. "|cffC0A0FF%1|r")
+        text = text:gsub("(Heroic Dawn Crest[s]?)", ICON_HERO .. "|cffFFB86A%1|r")
+        text = text:gsub("(Mythic Dawn Crest[s]?)", ICON_MYTH .. "|cffFFE07A%1|r")
+        text = text:gsub("(Adventurer Dawn Crest[s]?)", ICON_ADV .. "|cff7FB8FF%1|r")
+    else
+        text = text:gsub("(Etincelle de radiance)", ICON_SPARK .. "|cffFFD100%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube de [Cc]hampion)", ICON_CHAMP .. "|cffff3b3b%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube vétéran)", ICON_VET .. "|cffC0A0FF%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube héroïque)", ICON_HERO .. "|cffFFB86A%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube mythique)", ICON_MYTH .. "|cffFFE07A%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)", ICON_ADV .. "|cff7FB8FF%1|r")
+    end
+    return text
+end
+
 local function RefreshPlanning()
     for _, r in ipairs(rows) do r:Hide() end
     rows = {}
     local y = -6
+    planningBuilt = false
     ensurePlanningBuilt()
     local headers = planningTable.headers or {}
     local dataRows = planningTable.rows or {}
@@ -351,7 +285,7 @@ local function RefreshPlanning()
         local placeholder = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         placeholder:SetPoint("TOPLEFT", 10, y)
         placeholder:SetJustifyH("LEFT")
-        placeholder:SetText("Aucune donnée importée depuis le CSV.")
+        placeholder:SetText(MidnightL.S("no_csv_data"))
         placeholder:SetTextColor(1,0.7,0)
         table.insert(rows, placeholder)
         y = y - 18
@@ -378,8 +312,8 @@ local function RefreshPlanning()
         if ci == 1 then
             htext = (headers[ci] and headers[ci] ~= "") and headers[ci] or "ilvl"
         else
-            if rawh:match("[Qq]u[eè]te") then
-                htext = "Expédition"
+            if rawh:match("[Qq]u[eè]te") or rawh:match("[Qq]uests?") then
+                htext = MidnightL.GetLocale() == "en" and "Expedition" or "Expédition"
             else
                 htext = rawh
             end
@@ -390,17 +324,17 @@ local function RefreshPlanning()
     local fixedByIdx = {}
     local flexCandidates = {}
     for vi, txt in ipairs(headerTexts) do
-        if txt:match("Chambre forte") then
+        if txt:match("Chambre forte") or txt:match("Vault") then
             fixedByIdx[vi] = 80
-        elseif txt:match("Gouffre Abondant") then
+        elseif txt:match("Gouffre Abondant") or txt:match("Bountiful") then
             fixedByIdx[vi] = 70
-        elseif txt:match("Gouffre Primes") or txt:match("Gouffre Prime") then
+        elseif txt:match("Gouffre Primes") or txt:match("Gouffre Prime") or txt:match("Prime Delve") then
             fixedByIdx[vi] = 72
-        elseif txt:match("Traque") then
+        elseif txt:match("Traque") or txt:match("Prey") then
             fixedByIdx[vi] = 90
-        elseif txt:match("[Qq]u[eè]te") or txt:match("Expédition") then
+        elseif txt:match("[Qq]u[eè]te") or txt:match("Expédition") or txt:match("Expedition") then
             fixedByIdx[vi] = 110
-        elseif txt:match("[Bb]oss") or txt:match("Boss Monde") then
+        elseif txt:match("[Bb]oss") or txt:match("Boss Monde") or txt:match("World Boss") then
             fixedByIdx[vi] = 100
         else
 
@@ -448,7 +382,6 @@ local function RefreshPlanning()
             for _, w in ipairs(widths) do sumWidths = sumWidths + w end
         end
 
-    -- Distribute leftover space equally to first and last columns
     local usedWidth = startX + sumWidths + (nCols - 1) * colSpacing + padding
     local frameAvail = headerFrame:GetWidth() or totalWidth
     local leftover = frameAvail - usedWidth
@@ -491,6 +424,7 @@ local function RefreshPlanning()
         local cellObjects = {}
         for vi, ci in ipairs(visibleCols) do
             local cell = row[ci] or ""
+            cell = colorizePlanningCell(cell)
             local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             local thisWidth = widths[vi] or 80
             f:SetWidth(thisWidth)
@@ -573,6 +507,7 @@ function Planning.SetData(tbl)
 end
 
 function Planning.Show()
+    ptitle:SetText(MidnightL.S("planning_title"))
     RefreshPlanning()
     pframe:Show()
 end
