@@ -173,6 +173,7 @@ pframe:RegisterForDrag("LeftButton")
 pframe:SetScript("OnDragStart", pframe.StartMoving)
 pframe:SetScript("OnDragStop", pframe.StopMovingOrSizing)
 pframe:Hide()
+table.insert(UISpecialFrames, "MidnightPlanningFrame")
 
 local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
@@ -183,7 +184,6 @@ pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -6, -6)
 
 local headerFrame = CreateFrame("Frame", "MidnightPlanningHeader", pframe, "BackdropTemplate")
 headerFrame:SetHeight(headerHeight)
-headerFrame:SetPoint("TOPLEFT", nil, "TOPLEFT", 0, 0)
 headerFrame:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
@@ -229,7 +229,7 @@ colRangeLabel:Hide()
 
 local scroll = CreateFrame("ScrollFrame", nil, pframe, "UIPanelScrollFrameTemplate")
 scroll:SetPoint("TOPLEFT", pframe, "TOPLEFT", 10, - (36 + headerHeight + 6))
-scroll:SetPoint("BOTTOMRIGHT", pframe, "BOTTOMRIGHT", -10, 10)
+scroll:SetPoint("BOTTOMRIGHT", pframe, "BOTTOMRIGHT", -16, 10)
 
 local content = CreateFrame("Frame", nil, scroll)
 content:SetSize(1140, 1)
@@ -250,24 +250,55 @@ local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t "
 local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t "
 local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t "
 
+local function colorizeIlvlNumber(text)
+    if not text or text == "" then return text end
+    local cMyth = MidnightL.C("mythic")
+    local cHero = MidnightL.C("heroic")
+    local cChamp = MidnightL.C("champion")
+    local cVet = MidnightL.C("veteran")
+    local cAdv = MidnightL.C("adventurer")
+    return text:gsub("(%d+)", function(numStr)
+        local n = tonumber(numStr)
+        if not n then return numStr end
+        if n >= 272 and n <= 289 then
+            return "|cff" .. cMyth .. numStr .. "|r"
+        elseif n >= 259 and n <= 271 then
+            return "|cff" .. cHero .. numStr .. "|r"
+        elseif n >= 246 and n <= 258 then
+            return "|cff" .. cChamp .. numStr .. "|r"
+        elseif n >= 233 and n <= 245 then
+            return "|cff" .. cVet .. numStr .. "|r"
+        elseif n >= 207 and n <= 232 then
+            return "|cff" .. cAdv .. numStr .. "|r"
+        end
+        return numStr
+    end)
+end
+
 local function colorizePlanningCell(text)
     if not text or text == "" then return text end
     text = text:gsub(" +\n", "\n")
     local loc = MidnightL.GetLocale()
+    local cSpark = MidnightL.C("spark")
+    local cChamp = MidnightL.C("champion")
+    local cVet = MidnightL.C("veteran")
+    local cHero = MidnightL.C("heroic")
+    local cMyth = MidnightL.C("mythic")
+    local cAdv = MidnightL.C("adventurer")
     if loc == "en" then
-        text = text:gsub("(Spark of Radiance)", ICON_SPARK .. "|cffFFD100%1|r")
-        text = text:gsub("(Champion Dawn Crest[s]?)", ICON_CHAMP .. "|cffff3b3b%1|r")
-        text = text:gsub("(Veteran Dawn Crest[s]?)", ICON_VET .. "|cffC0A0FF%1|r")
-        text = text:gsub("(Heroic Dawn Crest[s]?)", ICON_HERO .. "|cffFFB86A%1|r")
-        text = text:gsub("(Mythic Dawn Crest[s]?)", ICON_MYTH .. "|cffFFE07A%1|r")
-        text = text:gsub("(Adventurer Dawn Crest[s]?)", ICON_ADV .. "|cff7FB8FF%1|r")
+        text = text:gsub("(Spark of Radiance)", ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
+        text = text:gsub("(Champion Dawn Crest[s]?)", ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
+        text = text:gsub("(Veteran Dawn Crest[s]?)", ICON_VET .. "|cff" .. cVet .. "%1|r")
+        text = text:gsub("(Heroic Dawn Crest[s]?)", ICON_HERO .. "|cff" .. cHero .. "%1|r")
+        text = text:gsub("(Mythic Dawn Crest[s]?)", ICON_MYTH .. "|cff" .. cMyth .. "%1|r")
+        text = text:gsub("(Adventurer Dawn Crest[s]?)", ICON_ADV .. "|cff" .. cAdv .. "%1|r")
     else
-        text = text:gsub("(Etincelle de radiance)", ICON_SPARK .. "|cffFFD100%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube de [Cc]hampion)", ICON_CHAMP .. "|cffff3b3b%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube vétéran)", ICON_VET .. "|cffC0A0FF%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube héroïque)", ICON_HERO .. "|cffFFB86A%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube mythique)", ICON_MYTH .. "|cffFFE07A%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)", ICON_ADV .. "|cff7FB8FF%1|r")
+        text = text:gsub("(Etincelle de radiance)", ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube de [Cc]hampion)", ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube vétéran)", ICON_VET .. "|cff" .. cVet .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube héroïque)", ICON_HERO .. "|cff" .. cHero .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube mythique)", ICON_MYTH .. "|cff" .. cMyth .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)", ICON_ADV .. "|cff" .. cAdv .. "%1|r")
     end
     return text
 end
@@ -299,7 +330,6 @@ local function RefreshPlanning()
 
     local visibleCols = {}
     for _, ci in ipairs(usedCols) do table.insert(visibleCols, ci) end
-    local truncated = false
 
     local totalWidth = math.max(100, math.floor((headerFrame:GetWidth() or scroll:GetWidth() or content:GetWidth()) - 20))
     local colSpacing = 8
@@ -424,7 +454,11 @@ local function RefreshPlanning()
         local cellObjects = {}
         for vi, ci in ipairs(visibleCols) do
             local cell = row[ci] or ""
-            cell = colorizePlanningCell(cell)
+            if ci == 1 then
+                cell = colorizeIlvlNumber(cell)
+            else
+                cell = colorizePlanningCell(cell)
+            end
             local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             local thisWidth = widths[vi] or 80
             f:SetWidth(thisWidth)
@@ -462,14 +496,6 @@ local function RefreshPlanning()
             bg:SetWidth(targetWidth)
             bg:SetHeight(usedHeight)
             table.insert(rows, bg)
-        end
-
-        if truncated then
-            local more = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            more:SetPoint("TOPLEFT", content, "TOPLEFT", x, y)
-            more:SetText("...")
-            more:SetTextColor(1,1,1)
-            table.insert(rows, more)
         end
 
         y = y - usedHeight

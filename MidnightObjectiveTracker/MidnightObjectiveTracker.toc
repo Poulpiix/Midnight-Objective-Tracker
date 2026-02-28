@@ -1,7 +1,7 @@
 ## Interface: 120000, 120001
 ## Title: MidnightObjectiveTracker
 ## Author: Poulpix (twitch.tv/poulpi_x)
-## Version: 4.1
+## Version: 4.6
 ## License: All Rights Reserved
 ## Notes: Suivi d'objectifs pour le lancement de Midnight
 ## X-Curse-Project-ID: 1469813

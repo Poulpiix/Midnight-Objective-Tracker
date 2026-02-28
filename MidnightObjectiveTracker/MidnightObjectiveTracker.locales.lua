@@ -47,7 +47,31 @@ L.fr.crest_panel_title = "Écus"
 L.fr.slash_msg = "|cffFFD100[Midnight]|r Tapez /som pour ouvrir le suivi d'objectifs."
 L.fr.no_data = "Aucune donnée."
 L.fr.no_csv_data = "Aucune donnée importée depuis le CSV."
+L.fr.scale_up = "Zoom +"
+L.fr.scale_up_desc = "Augmente la taille de l'interface (police et fenêtres)."
+L.fr.scale_down = "Zoom -"
+L.fr.scale_down_desc = "Réduit la taille de l'interface (police et fenêtres)."
+L.fr.scale_reset = "Zoom par défaut"
+L.fr.scale_reset_desc = "Réinitialise le zoom à sa valeur par défaut (clic droit)."
 L.fr.csv_error = "[Midnight] Erreur lors du parsing du CSV Planning : "
+
+L.fr.colorblind_title = "Accessibilité - Daltonisme"
+L.fr.colorblind_none = "Vision normale"
+L.fr.colorblind_none_desc = "Palette de couleurs par défaut."
+L.fr.colorblind_protanopia = "Protanopie"
+L.fr.colorblind_protanopia_desc = "Absence totale de perception du rouge."
+L.fr.colorblind_protanomaly = "Protanomalie"
+L.fr.colorblind_protanomaly_desc = "Perception affaiblie du rouge."
+L.fr.colorblind_deuteranopia = "Deutéranopie"
+L.fr.colorblind_deuteranopia_desc = "Absence totale de perception du vert."
+L.fr.colorblind_deuteranomaly = "Deutéranomalie"
+L.fr.colorblind_deuteranomaly_desc = "Perception affaiblie du vert."
+L.fr.colorblind_tritanopia = "Tritanopie"
+L.fr.colorblind_tritanopia_desc = "Absence de perception du bleu."
+L.fr.colorblind_tritanomaly = "Tritanomalie"
+L.fr.colorblind_tritanomaly_desc = "Perception altérée du bleu."
+L.fr.colorblind_setting_btn = "Accessibilité"
+L.fr.colorblind_setting_desc = "Options d'accessibilité pour les daltoniens."
 
 L.fr.mplus_title = "Ecus"
 L.fr.planning_title = "Planning"
@@ -76,7 +100,7 @@ L.fr.weeks = {
         objectives = {
             "Ne dépensez aucun Ecu sauf si demandé.",
             "XP : mettez à jour les personnages au niveau 90 que vous souhaitez jouer pendant Midnight.",
-            "Renom : utilisez le bonus de la « Foire de Sombrelune » pour monter les renoms dès dimanche grâce aux quêtes secondaires.",
+            "Renom : inutile d'attendre dimanche pour le bonus de réputation de la « Foire de Sombrelune », ce dernier a été nerf et apporte désormais un MALUS pour les renoms de Midnight.",
             "Si disponible : accomplissez les expéditions hebdomadaires dès leur apparition, offrant de l'équipement Aventurier 1/6 (220) et 2/6 (224).",
             "Si disponible : accomplissez les Traques en mode normal, offrant de l'équipement Aventurier 1/6 (220)."
         }
@@ -363,7 +387,31 @@ L.en.crest_panel_title = "Crests"
 L.en.slash_msg = "|cffFFD100[Midnight]|r Type /som to open the objective tracker."
 L.en.no_data = "No data."
 L.en.no_csv_data = "No data imported from CSV."
+L.en.scale_up = "Zoom +"
+L.en.scale_up_desc = "Increase interface size (fonts and windows)."
+L.en.scale_down = "Zoom -"
+L.en.scale_down_desc = "Decrease interface size (fonts and windows)."
+L.en.scale_reset = "Default zoom"
+L.en.scale_reset_desc = "Reset zoom to default value (right-click)."
 L.en.csv_error = "[Midnight] Error parsing Planning CSV: "
+
+L.en.colorblind_title = "Accessibility - Color Blindness"
+L.en.colorblind_none = "Normal vision"
+L.en.colorblind_none_desc = "Default color palette."
+L.en.colorblind_protanopia = "Protanopia"
+L.en.colorblind_protanopia_desc = "Complete absence of red perception."
+L.en.colorblind_protanomaly = "Protanomaly"
+L.en.colorblind_protanomaly_desc = "Weakened red perception."
+L.en.colorblind_deuteranopia = "Deuteranopia"
+L.en.colorblind_deuteranopia_desc = "Complete absence of green perception."
+L.en.colorblind_deuteranomaly = "Deuteranomaly"
+L.en.colorblind_deuteranomaly_desc = "Weakened green perception."
+L.en.colorblind_tritanopia = "Tritanopia"
+L.en.colorblind_tritanopia_desc = "Absence of blue perception."
+L.en.colorblind_tritanomaly = "Tritanomaly"
+L.en.colorblind_tritanomaly_desc = "Altered blue perception."
+L.en.colorblind_setting_btn = "Accessibility"
+L.en.colorblind_setting_desc = "Accessibility options for color blindness."
 
 L.en.mplus_title = "Crests"
 L.en.planning_title = "Planning"
@@ -392,7 +440,7 @@ L.en.weeks = {
         objectives = {
             "Do not spend any Crest unless asked.",
             "XP: level up the characters to 90 that you want to play during Midnight.",
-            "Renown: use the Darkmoon Faire bonus to level up reputations starting Sunday through side quests.",
+            "Renown: Renown: No need to wait until Sunday for the 'Darkmoon Faire' reputation bonus; it has been nerfed and now applies a penalty to Midnight renowns.",
             "If available: complete weekly expeditions as they appear, offering Adventurer 1/6 (220) and 2/6 (224) gear.",
             "If available: complete Preys in Normal mode, offering Adventurer 1/6 (220) gear."
         }
@@ -656,3 +704,95 @@ Raid 3 (Apr 1)"
 (Quality 5)",,,,,,,,,,
 289,,,,,,,,,,,,,
 ]]
+
+-- ============================================================
+-- Color Palette System for Colorblind Accessibility
+-- ============================================================
+
+L.ColorblindModes = {
+    "none", "protanopia", "protanomaly",
+    "deuteranopia", "deuteranomaly",
+    "tritanopia", "tritanomaly",
+}
+
+L.ColorPalettes = {
+    none = {
+        adventurer = "7FB8FF",
+        veteran    = "C0A0FF",
+        champion   = "ff3b3b",
+        heroic     = "FFB86A",
+        mythic     = "FFE07A",
+        spark      = "FFD100",
+        prefix     = "7CFFB8",
+    },
+    protanopia = {
+        adventurer = "56B4E9",
+        veteran    = "CC79A7",
+        champion   = "F0E442",
+        heroic     = "E69F00",
+        mythic     = "FFFFFF",
+        spark      = "D4AA00",
+        prefix     = "009E73",
+    },
+    protanomaly = {
+        adventurer = "7FB8FF",
+        veteran    = "CC90D0",
+        champion   = "FF7733",
+        heroic     = "FFCC44",
+        mythic     = "FFF2A0",
+        spark      = "FFD100",
+        prefix     = "60D8B0",
+    },
+    deuteranopia = {
+        adventurer = "56B4E9",
+        veteran    = "CC79A7",
+        champion   = "D55E00",
+        heroic     = "F0E442",
+        mythic     = "FFFFFF",
+        spark      = "D4AA00",
+        prefix     = "0072B2",
+    },
+    deuteranomaly = {
+        adventurer = "7FB8FF",
+        veteran    = "CC90D0",
+        champion   = "FF5522",
+        heroic     = "FFD060",
+        mythic     = "FFF5B0",
+        spark      = "FFD100",
+        prefix     = "40C0B0",
+    },
+    tritanopia = {
+        adventurer = "FF80A0",
+        veteran    = "D0A0D0",
+        champion   = "ff3b3b",
+        heroic     = "FF8844",
+        mythic     = "E8E8E8",
+        spark      = "FF9966",
+        prefix     = "33BB77",
+    },
+    tritanomaly = {
+        adventurer = "A098FF",
+        veteran    = "C8A0E0",
+        champion   = "ff3b3b",
+        heroic     = "FFB86A",
+        mythic     = "FFD8A0",
+        spark      = "FFC060",
+        prefix     = "60D8A0",
+    },
+}
+
+L._colorblindMode = "none"
+
+function L.SetColorblindMode(mode)
+    L._colorblindMode = mode or "none"
+end
+
+function L.GetColorblindMode()
+    return L._colorblindMode or "none"
+end
+
+function L.C(key)
+    local mode = L._colorblindMode or "none"
+    local palette = L.ColorPalettes[mode] or L.ColorPalettes.none
+    return palette[key] or L.ColorPalettes.none[key] or "FFFFFF"
+end

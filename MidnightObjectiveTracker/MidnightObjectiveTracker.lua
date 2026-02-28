@@ -3,11 +3,15 @@ local Midnight = {}
 _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
+MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
+MidnightTrackerDB.scale = MidnightTrackerDB.scale or 1.0
+MidnightTrackerDB.colorblindMode = MidnightTrackerDB.colorblindMode or "none"
 
 local MPLUS_ICON_TEST = true
 _G.MPLUS_ICON_TEST = MPLUS_ICON_TEST
 
 MidnightL.Init()
+MidnightL.SetColorblindMode(MidnightTrackerDB.colorblindMode)
 
 local function getWeeks()
     return MidnightL[MidnightL.GetLocale()].weeks
@@ -21,7 +25,7 @@ local function getSummaryPatterns()
     return MidnightL[MidnightL.GetLocale()].summaryPatterns
 end
 
-    local frame = CreateFrame("Frame", "MidnightTrackerFrame", UIParent, "BackdropTemplate")
+local frame = CreateFrame("Frame", "MidnightTrackerFrame", UIParent, "BackdropTemplate")
 frame:SetSize(500, 400)
 frame:SetPoint("CENTER")
 frame:SetBackdrop({
@@ -39,6 +43,7 @@ frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 frame:Hide()
+table.insert(UISpecialFrames, "MidnightTrackerFrame")
 
 local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOP", 0, -10)
@@ -86,17 +91,19 @@ ilvlText:SetJustifyH("CENTER")
 ilvlText:SetText("...")
 ilvlText:SetTextColor(1, 1, 1)
 
-local CREST_CURRENCY_IDS = {
-    adventurer = 3383,
-    veteran    = 3341,
-    champion   = 3343,
-    heroic     = 3345,
-    mythic     = 3347,
-}
-local SPARK_CURRENCY_ID = 3212
+
+local function getCrestInfo(currencyID)
+    if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
+        local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        if info then
+            return info.quantity or 0, info.maxQuantity or 0
+        end
+    end
+    return 0, 0
+end
 
 local crestPanel = CreateFrame("Frame", "MidnightCrestPanel", frame, "BackdropTemplate")
-crestPanel:SetHeight(28)
+crestPanel:SetHeight(38)
 crestPanel:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 4)
 crestPanel:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 4)
 crestPanel:SetBackdrop({
@@ -122,11 +129,45 @@ local crestContent = CreateFrame("Frame", nil, crestPanel)
 crestContent:SetPoint("TOPLEFT", 10, 0)
 crestContent:SetPoint("BOTTOMRIGHT", -10, 0)
 
+local currencyNames = {
+    adventurer = { fr = "Ecu de l'aube d'aventurier", en = "Adventurer Dawn Crest" },
+    veteran    = { fr = "Ecu de l'aube vétéran", en = "Veteran Dawn Crest" },
+    champion   = { fr = "Ecu de l'aube de champion", en = "Champion Dawn Crest" },
+    heroic     = { fr = "Ecu de l'aube héroïque", en = "Heroic Dawn Crest" },
+    mythic     = { fr = "Ecu de l'aube mythique", en = "Mythic Dawn Crest" },
+    sparks     = { fr = "Etincelle de radiance", en = "Spark of Radiance" },
+}
+
+local crestIconButtons = {}
 for i, cr in ipairs(currencyRows) do
-    local fs = crestContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    fs:SetJustifyH("CENTER")
-    fs:SetWordWrap(false)
-    crestLineRows[cr.key] = { fs = fs, currID = cr.currID, itemID = cr.itemID, color = cr.color, icon = cr.icon, idx = i }
+    local btn = CreateFrame("Button", nil, crestContent)
+    btn:SetSize(20, 20)
+    btn:EnableMouse(true)
+    local tex = btn:CreateTexture(nil, "ARTWORK")
+    tex:SetAllPoints()
+    tex:SetTexture(cr.icon)
+    local valFs = crestContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    valFs:SetJustifyH("CENTER")
+    valFs:SetWordWrap(false)
+    crestLineRows[cr.key] = { fs = valFs, btn = btn, currID = cr.currID, itemID = cr.itemID, color = cr.color, icon = cr.icon, idx = i }
+    crestIconButtons[i] = { btn = btn, valFs = valFs, cr = cr }
+
+    btn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:ClearLines()
+        local loc = MidnightL.GetLocale()
+        local name = currencyNames[cr.key] and currencyNames[cr.key][loc] or cr.key
+        local cur
+        if cr.itemID then
+            cur = GetItemCount and GetItemCount(cr.itemID, true) or 0
+        else
+            cur = getCrestInfo(cr.currID)
+        end
+        GameTooltip:AddLine("|T" .. cr.icon .. ":16:16:0:0|t " .. name, 1, 0.82, 0)
+        GameTooltip:AddLine("|cffffffff" .. tostring(cur) .. "|r", 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
 local weekEstimatedIlvl = {}
@@ -152,16 +193,6 @@ local function parseEstimatedIlvl(objectives)
     return nil
 end
 
-local function getCrestInfo(currencyID)
-    if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
-        local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-        if info then
-            return info.quantity or 0, info.maxQuantity or 0
-        end
-    end
-    return 0, 0
-end
-
 local function UpdateIlvlPanel()
     local currentIlvl = 0
     if GetAverageItemLevel then
@@ -180,8 +211,15 @@ end
 local function UpdateCrestPanel()
     local nItems = #currencyRows
     local totalW = crestContent:GetWidth() or (frame:GetWidth() - 20)
-    local sep = "  |cff555555-|r  "
-    local parts = {}
+    local iconSize = 20
+    local iconValGap = 3
+    local itemSpacing = 12
+    local valEstW = 22
+    local itemW = iconSize + iconValGap + valEstW
+    local totalItemsW = nItems * itemW + (nItems - 1) * itemSpacing
+    local startX = math.floor((totalW - totalItemsW) / 2)
+    if startX < 0 then startX = 0 end
+
     for i, cr in ipairs(currencyRows) do
         local entry = crestLineRows[cr.key]
         if entry then
@@ -193,22 +231,17 @@ local function UpdateCrestPanel()
             end
             local valStr = tostring(cur)
             local valColor = cur <= 0 and "ffff4040" or "ffffd34d"
-            local icon = "|T" .. entry.icon .. ":14:14:0:0|t"
-            local piece = icon .. " |c" .. valColor .. valStr .. "|r"
-            table.insert(parts, piece)
+
+            local x = startX + (i - 1) * (itemW + itemSpacing)
+            entry.btn:ClearAllPoints()
+            entry.btn:SetPoint("LEFT", crestContent, "LEFT", x, 0)
+            entry.btn:SetSize(iconSize, iconSize)
+            entry.btn:Show()
+
+            entry.fs:ClearAllPoints()
+            entry.fs:SetPoint("LEFT", entry.btn, "RIGHT", iconValGap, 0)
+            entry.fs:SetText("|c" .. valColor .. valStr .. "|r")
         end
-    end
-    -- Use a single centered FontString for the whole bar
-    local allFs = crestLineRows[currencyRows[1].key].fs
-    allFs:ClearAllPoints()
-    allFs:SetPoint("CENTER", crestContent, "CENTER", 0, 0)
-    allFs:SetWidth(totalW)
-    allFs:SetJustifyH("CENTER")
-    allFs:SetText(table.concat(parts, sep))
-    -- Hide unused FontStrings
-    for i = 2, nItems do
-        local e = crestLineRows[currencyRows[i].key]
-        if e and e.fs then e.fs:SetText("") end
     end
 end
 
@@ -304,8 +337,6 @@ end
 
 local function isWeekFullyChecked(weekIndex, objectives)
     if not objectives or #objectives == 0 then return false end
-    MidnightTrackerDB = MidnightTrackerDB or {}
-    MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
     local summaryPrefixPatterns = getSummaryPatterns()
     local hasCheckable = false
     for oIndex, objective in ipairs(objectives) do
@@ -328,35 +359,38 @@ local function isWeekFullyChecked(weekIndex, objectives)
 end
 
 local function CreateObjective(parent, text, index, yOffset, weekIndex)
-    MidnightTrackerDB = MidnightTrackerDB or {}
-    MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
     local function colorizeText(s)
         if not s or s == "" then return s end
         local loc = MidnightL.GetLocale()
+        local cAdv = MidnightL.C("adventurer")
+        local cVet = MidnightL.C("veteran")
+        local cChamp = MidnightL.C("champion")
+        local cHero = MidnightL.C("heroic")
+        local cMyth = MidnightL.C("mythic")
         local ph = {}
         if loc == "en" then
-            s = s:gsub('[Cc]hampion [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cffff3b3b'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Vv]eteran [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cffC0A0FF'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Hh]eroic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cffFFB86A'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Mm]ythic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cffFFE07A'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub("[Aa]dventur[^ %.,%(]*", "|cff7FB8FF%0|r")
-            s = s:gsub("%f[%a][Hh]eroic%f[%A]", "|cffFFB86A%0|r")
-            s = s:gsub("%f[%a][Mm]ythic%f[%A]", "|cffFFE07A%0|r")
-            s = s:gsub("%f[%a][Vv]eteran%f[%A]", "|cffC0A0FF%0|r")
-            s = s:gsub("%f[%a][Cc]hampion%f[%A]", "|cffff3b3b%0|r")
-            s = s:gsub("%f[%a][Hh]ero%f[%A]", "|cffFFB86A%0|r")
-            s = s:gsub("%f[%a][Mm]yth%f[%A]", "|cffFFE07A%0|r")
+            s = s:gsub('[Cc]hampion [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Vv]eteran [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Hh]eroic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Mm]ythic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub("[Aa]dventur[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
+            s = s:gsub("%f[%a][Hh]eroic%f[%A]", "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a][Mm]ythic%f[%A]", "|cff" .. cMyth .. "%0|r")
+            s = s:gsub("%f[%a][Vv]eteran%f[%A]", "|cff" .. cVet .. "%0|r")
+            s = s:gsub("%f[%a][Cc]hampion%f[%A]", "|cff" .. cChamp .. "%0|r")
+            s = s:gsub("%f[%a][Hh]ero%f[%A]", "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a][Mm]yth%f[%A]", "|cff" .. cMyth .. "%0|r")
         else
-            s = s:gsub('[Eeé]cu[s]? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cffff3b3b'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube [Vv][eé]t[eé]ran', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cffC0A0FF'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube [Hh]éroïque', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cffFFB86A'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube mythique', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cffFFE07A'..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff7FB8FF%0|r")
-            s = s:gsub("%f[%a][Hh][eé]ro[iï]?que%f[%A]", "|cffFFB86A%0|r")
-            s = s:gsub("%f[%a][Hh][eé]ro%f[%A]", "|cffFFB86A%0|r")
-            s = s:gsub("%f[%a][Mm]ythe%f[%A]", "|cffFFE07A%0|r")
-            s = s:gsub("%f[%a][Vv][eé]t[eé]ran%f[%A]", "|cffC0A0FF%0|r")
-            s = s:gsub("%f[%a][Cc]hampion%f[%A]", "|cffff3b3b%0|r")
+            s = s:gsub('[Eeé]cu[s]? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Eeé]cu[s]? de l.aube [Vv][eé]t[eé]ran', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Eeé]cu[s]? de l.aube [Hh]éroïque', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Eeé]cu[s]? de l.aube mythique', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
+            s = s:gsub("%f[%a][Hh][eé]ro[iï]?que%f[%A]", "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a][Hh][eé]ro%f[%A]", "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a][Mm]ythe%f[%A]", "|cff" .. cMyth .. "%0|r")
+            s = s:gsub("%f[%a][Vv][eé]t[eé]ran%f[%A]", "|cff" .. cVet .. "%0|r")
+            s = s:gsub("%f[%a][Cc]hampion%f[%A]", "|cff" .. cChamp .. "%0|r")
         end
         if #ph > 0 then
             s = s:gsub("@@PH(%d+)@@", function(n) return ph[tonumber(n)] end)
@@ -368,7 +402,7 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
         if not s then return s end
         local prefix, rest = s:match("^(.-:)%s*(.*)$")
         if prefix then
-            prefix = "|cff7CFFB8" .. prefix .. "|r"
+            prefix = "|cff" .. MidnightL.C("prefix") .. prefix .. "|r"
             if rest == "" then
                 return prefix
             else
@@ -492,11 +526,11 @@ function Midnight:Refresh()
 
     weekScrolls = {}
 
-        if not frame or not frame:IsShown() then
-            poll.last = -1
-            poll.timer = 0
-            return
-        end
+    if not frame or not frame:IsShown() then
+        poll.last = -1
+        poll.timer = 0
+        return
+    end
     local yOffset = -10
 
     local weeks = getWeeks()
@@ -613,7 +647,8 @@ local function createLetterButton(letter, xOff, yOff, onClick, title, desc)
 
     btn:SetScript("OnClick", onClick)
     btn:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetOwner(self, "ANCHOR_NONE")
+        GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
         GameTooltip:ClearLines()
         if title then GameTooltip:AddLine(title) end
         if desc then GameTooltip:AddLine(desc, 1,1,1, true) end
@@ -676,7 +711,8 @@ resetButton:SetScript("OnClick", function()
     Midnight:Refresh()
 end)
 resetButton:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:SetOwner(self, "ANCHOR_NONE")
+    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
     GameTooltip:ClearLines()
     GameTooltip:AddLine(MidnightL.S("reset_checks"))
     GameTooltip:AddLine(MidnightL.S("reset_checks_desc"), 1,1,1, true)
@@ -684,6 +720,56 @@ resetButton:SetScript("OnEnter", function(self)
 end)
 resetButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 resetButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+
+local SCALE_MIN = 0.6
+local SCALE_MAX = 1.6
+local SCALE_STEP = 0.05
+
+local function ApplyMidnightScale(scale)
+    scale = math.max(SCALE_MIN, math.min(SCALE_MAX, scale))
+    MidnightTrackerDB.scale = scale
+    frame:SetScale(scale)
+    if MidnightMplusFrame and MidnightMplusFrame.SetScale then
+        MidnightMplusFrame:SetScale(scale)
+    end
+    if MidnightPlanningFrame and MidnightPlanningFrame.SetScale then
+        MidnightPlanningFrame:SetScale(scale)
+    end
+end
+
+local scaleDownBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+scaleDownBtn:SetSize(20, 20)
+scaleDownBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30, 22)
+scaleDownBtn:SetText("-")
+scaleDownBtn:SetNormalFontObject("GameFontNormalSmall")
+scaleDownBtn:SetHighlightFontObject("GameFontNormalSmall")
+scaleDownBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
+scaleDownBtn:SetScript("OnClick", function(self, button)
+    if button == "RightButton" then
+        ApplyMidnightScale(1.0)
+    else
+        local cur = MidnightTrackerDB.scale or 1.0
+        ApplyMidnightScale(cur - SCALE_STEP)
+    end
+end)
+scaleDownBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+
+local scaleUpBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+scaleUpBtn:SetSize(20, 20)
+scaleUpBtn:SetPoint("LEFT", scaleDownBtn, "RIGHT", 2, 0)
+scaleUpBtn:SetText("+")
+scaleUpBtn:SetNormalFontObject("GameFontNormalSmall")
+scaleUpBtn:SetHighlightFontObject("GameFontNormalSmall")
+scaleUpBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
+scaleUpBtn:SetScript("OnClick", function(self, button)
+    if button == "RightButton" then
+        ApplyMidnightScale(1.0)
+    else
+        local cur = MidnightTrackerDB.scale or 1.0
+        ApplyMidnightScale(cur + SCALE_STEP)
+    end
+end)
+scaleUpBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 local helpBtn = CreateFrame("Button", nil, frame)
 helpBtn:SetSize(20, 20)
@@ -738,6 +824,124 @@ mplusButton:SetScript("OnClick", function()
 end)
 mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
+local cbSettingsFrame = CreateFrame("Frame", "MidnightColorblindFrame", UIParent, "BackdropTemplate")
+cbSettingsFrame:SetSize(260, 260)
+cbSettingsFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", -10, 0)
+cbSettingsFrame:SetBackdrop({
+    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+cbSettingsFrame:SetBackdropColor(0, 0, 0, 1)
+cbSettingsFrame:SetBackdropBorderColor(1, 0.82, 0, 1)
+cbSettingsFrame:SetFrameStrata("DIALOG")
+cbSettingsFrame:EnableMouse(true)
+cbSettingsFrame:Hide()
+table.insert(UISpecialFrames, "MidnightColorblindFrame")
+
+local cbTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+cbTitle:SetPoint("TOP", cbSettingsFrame, "TOP", 0, -14)
+cbTitle:SetText(MidnightL.S("colorblind_title"))
+cbTitle:SetTextColor(1, 0.82, 0)
+
+local cbCloseBtn = CreateFrame("Button", nil, cbSettingsFrame, "UIPanelCloseButton")
+cbCloseBtn:SetPoint("TOPRIGHT", cbSettingsFrame, "TOPRIGHT", -2, -2)
+cbCloseBtn:SetScript("OnClick", function() cbSettingsFrame:Hide() end)
+
+local cbRadioButtons = {}
+local cbModes = MidnightL.ColorblindModes
+
+local function UpdateCBRadios()
+    local current = MidnightL.GetColorblindMode()
+    for _, entry in ipairs(cbRadioButtons) do
+        entry.cb:SetChecked(entry.mode == current)
+    end
+end
+
+local function ApplyColorblindMode(mode)
+    MidnightTrackerDB.colorblindMode = mode
+    MidnightL.SetColorblindMode(mode)
+    UpdateCBRadios()
+    if Midnight and Midnight.Refresh then Midnight:Refresh() end
+    if MidnightPlanning and MidnightPlanningFrame and MidnightPlanningFrame:IsShown() and MidnightPlanning.Refresh then
+        MidnightPlanning.Refresh()
+    end
+    if MidnightMplus and MidnightMplusFrame and MidnightMplusFrame:IsShown() and MidnightMplus.Show then
+        MidnightMplus.Show()
+    end
+end
+
+for i, mode in ipairs(cbModes) do
+    local yOff = -36 - (i - 1) * 28
+
+    local cb = CreateFrame("CheckButton", nil, cbSettingsFrame)
+    cb:SetSize(18, 18)
+    cb:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, yOff)
+    cb:SetFrameLevel(cbSettingsFrame:GetFrameLevel() + 2)
+
+    local bgTex = cb:CreateTexture(nil, "BACKGROUND")
+    bgTex:SetAllPoints()
+    bgTex:SetColorTexture(0.2, 0.2, 0.2, 0.8)
+
+    local checkTex = cb:CreateTexture(nil, "OVERLAY")
+    checkTex:SetSize(12, 12)
+    checkTex:SetPoint("CENTER")
+    checkTex:SetColorTexture(1, 0.82, 0, 1)
+    cb:SetCheckedTexture(checkTex)
+
+    local label = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label:SetPoint("LEFT", cb, "RIGHT", 6, 0)
+    label:SetText(MidnightL.S("colorblind_" .. mode))
+    label:SetTextColor(1, 1, 1)
+
+    cb:SetScript("OnClick", function()
+        ApplyColorblindMode(mode)
+    end)
+    cb:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(MidnightL.S("colorblind_" .. mode), 1, 0.82, 0)
+        GameTooltip:AddLine(MidnightL.S("colorblind_" .. mode .. "_desc"), 1, 1, 1, true)
+        local palette = MidnightL.ColorPalettes[mode]
+        if palette then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("|cff" .. palette.adventurer .. "Adventurer|r  |cff" .. palette.veteran .. "Veteran|r  |cff" .. palette.champion .. "Champion|r")
+            GameTooltip:AddLine("|cff" .. palette.heroic .. "Heroic|r  |cff" .. palette.mythic .. "Mythic|r  |cff" .. palette.spark .. "Spark|r")
+        end
+        GameTooltip:Show()
+    end)
+    cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    table.insert(cbRadioButtons, { cb = cb, mode = mode, label = label })
+end
+
+UpdateCBRadios()
+
+local gearBtn = CreateFrame("Button", nil, frame)
+gearBtn:SetSize(20, 20)
+gearBtn:SetPoint("TOPRIGHT", mplusButton, "TOPLEFT", -4, 0)
+gearBtn:SetNormalTexture("Interface\\Scenarios\\ScenarioIcon-Interact")
+gearBtn:SetHighlightTexture("Interface\\Scenarios\\ScenarioIcon-Interact")
+gearBtn:GetHighlightTexture():SetAlpha(0.4)
+gearBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
+gearBtn:SetScript("OnClick", function()
+    if cbSettingsFrame:IsShown() then
+        cbSettingsFrame:Hide()
+    else
+        cbSettingsFrame:Show()
+    end
+end)
+gearBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_NONE")
+    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("colorblind_setting_btn"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("colorblind_setting_desc"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+gearBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
 SLASH_MIDNIGHTTRACKER1 = "/som"
 SlashCmdList["MIDNIGHTTRACKER"] = function()
     if frame:IsShown() then
@@ -747,6 +951,11 @@ SlashCmdList["MIDNIGHTTRACKER"] = function()
         Midnight:Refresh()
     end
 end
+
+C_Timer.After(0, function()
+    local savedScale = MidnightTrackerDB.scale or 1.0
+    ApplyMidnightScale(savedScale)
+end)
 
 print(MidnightL.S("slash_msg"))
 

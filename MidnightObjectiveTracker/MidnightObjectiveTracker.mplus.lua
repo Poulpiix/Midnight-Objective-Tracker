@@ -104,6 +104,7 @@ mframe:RegisterForDrag("LeftButton")
 mframe:SetScript("OnDragStart", mframe.StartMoving)
 mframe:SetScript("OnDragStop", mframe.StopMovingOrSizing)
 mframe:Hide()
+table.insert(UISpecialFrames, "MidnightMplusFrame")
 
 local mtitle = mframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 mtitle:SetPoint("TOP", mframe, "TOP", 0, -15)
@@ -215,13 +216,13 @@ local function RefreshMplus()
                     local norm = restCore:gsub("\226\128\153", "'"):lower()
                     local coloredCore = "|cffffffff" .. restCore .. "|r"
                     if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cffFFE07A" .. restCore .. "|r"
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff" .. MidnightL.C("mythic") .. restCore .. "|r"
                     elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cffFFB86A" .. restCore .. "|r"
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff" .. MidnightL.C("heroic") .. restCore .. "|r"
                     elseif norm:find("aventure", 1, true) or norm:find("adventurer", 1, true) then
-                        coloredCore = "|cff69C864" .. restCore .. "|r"
+                        coloredCore = "|cff" .. MidnightL.C("adventurer") .. restCore .. "|r"
                     elseif (norm:find("ran", 1, true) and norm:find("aube", 1, true)) or norm:find("veteran dawn", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff6699FF" .. restCore .. "|r"
+                        coloredCore = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff" .. MidnightL.C("veteran") .. restCore .. "|r"
                     end
                     displayText = lead ~= "" and (whiteNum .. lead .. " " .. coloredCore) or (whiteNum .. " " .. coloredCore)
                 elseif cell ~= "" then
