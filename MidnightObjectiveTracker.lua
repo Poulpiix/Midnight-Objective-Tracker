@@ -1,7 +1,10 @@
-﻿local Midnight = {}
+local Midnight = {}
 _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
+if MidnightTrackerDB.motd == nil then
+    MidnightTrackerDB.motd = 1
+end
 MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
 MidnightTrackerDB.scale = MidnightTrackerDB.scale or 0.7
 MidnightTrackerDB.colorblindMode = MidnightTrackerDB.colorblindMode or "none"
@@ -1058,13 +1061,28 @@ local welcomeOK = CreateFrame("Button", nil, welcomeFrame, "UIPanelButtonTemplat
 welcomeOK:SetSize(80, 22)
 welcomeOK:SetPoint("BOTTOM", welcomeFrame, "BOTTOM", 0, 12)
 welcomeOK:SetText("OK")
-welcomeOK:SetScript("OnClick", function() welcomeFrame:Hide() end)
+welcomeOK:SetScript("OnClick", function()
+    welcomeFrame:Hide()
+    MidnightTrackerDB.motd = 0
+    if welcomeEvent then
+        welcomeEvent:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        welcomeEvent:SetScript("OnEvent", nil)
+    end
+end)
 
 local welcomeEvent = CreateFrame("Frame")
 welcomeEvent:RegisterEvent("PLAYER_ENTERING_WORLD")
 welcomeEvent:SetScript("OnEvent", function()
-    welcomeTitle:SetText(MidnightL.S("welcome_title"))
-    welcomeMsg:SetText(MidnightL.S("welcome_msg"))
-    C_Timer.After(2, function() welcomeFrame:Show() end)
+    if MidnightTrackerDB.motd == 1 then
+        welcomeTitle:SetText(MidnightL.S("welcome_title"))
+        welcomeMsg:SetText(MidnightL.S("welcome_msg"))
+        C_Timer.After(2, function()
+            if MidnightTrackerDB.motd == 1 then
+                welcomeFrame:Show()
+            end
+        end)
+    else
+        welcomeEvent:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        welcomeEvent:SetScript("OnEvent", nil)
+    end
 end)
-
