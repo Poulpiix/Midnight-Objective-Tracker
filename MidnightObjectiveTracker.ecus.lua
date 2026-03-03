@@ -1,4 +1,4 @@
-local Mplus = {}
+﻿local Mplus = {}
 _G["MidnightMplus"] = Mplus
 
 local function getCSV()
@@ -87,14 +87,13 @@ local function parseCSV(s)
     return rows
 end
 
--- Marges internes
 local PAD_L = 15
 local PAD_R = 15
 local PAD_T = 36
 local PAD_B = 14
 
 local mframe = CreateFrame("Frame", "MidnightMplusFrame", UIParent, "BackdropTemplate")
-mframe:SetSize(360, 200)   -- sera redimensionné dans Refresh
+mframe:SetSize(360, 200)
 mframe:SetPoint("CENTER")
 mframe:SetBackdrop({
     bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -119,10 +118,9 @@ mtitle:SetText(MidnightL.S("mplus_title"))
 local mclose = CreateFrame("Button", nil, mframe, "UIPanelCloseButton")
 mclose:SetPoint("TOPRIGHT", mframe, "TOPRIGHT", -6, -6)
 
--- Contenu direct (pas de ScrollFrame ni de headerFrame séparé)
 local content = CreateFrame("Frame", nil, mframe)
 content:SetPoint("TOPLEFT", mframe, "TOPLEFT", PAD_L, -PAD_T)
-content:SetSize(100, 100)  -- sera redimensionné dans Refresh
+content:SetSize(100, 100)
 
 local rows = {}
 
@@ -146,22 +144,17 @@ local function RefreshMplus()
     local nCols      = #headers
     local colSpacing = 5
 
-    -- Largeur disponible selon la taille actuelle de la fenêtre
     local availW  = math.max(150, mframe:GetWidth() - PAD_L - PAD_R)
     local widths  = { 115, math.max(60, availW - 115 - colSpacing) }
     for ci = 3, nCols do widths[ci] = 80 end
 
-    -- Largeur totale du tableau
     local totalTableW = 0
     for ci = 1, nCols do totalTableW = totalTableW + (widths[ci] or 100) end
     totalTableW = totalTableW + (nCols - 1) * colSpacing
 
-    local y = 0   -- relatif au coin supérieur-gauche du content frame
+    local y = 0
 
-    -- ── Ligne d'en-tête (fond jaune, style planningcontenu) ─────────────
     local headerH = 20
-    -- Extension latérale pour couvrir jusqu'au bord intérieur du cadre
-    -- PAD_L=15, insets backdrop=8 → décalage = 7px de chaque côté
     local bgExtend = 7
     local headerBg = content:CreateTexture(nil, "BACKGROUND")
     headerBg:SetColorTexture(1, 0.78, 0, 0.18)
@@ -190,7 +183,6 @@ local function RefreshMplus()
     end
     y = y - headerH
 
-    -- ── Lignes de données ────────────────────────────────────────────────
     local defaultRowH = 15
     for i = 2, #parsed do
         local row      = parsed[i]
@@ -246,14 +238,12 @@ local function RefreshMplus()
 
         local usedH = math.max(defaultRowH, math.ceil(maxH) + 4)
 
-        -- Positionner chaque cellule et aligner verticalement au milieu
         for _, co in ipairs(cellObjs) do
             co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, y)
             co.obj:SetHeight(usedH)
             co.obj:SetJustifyV("MIDDLE")
         end
 
-        -- Fond alterné sur toute la ligne
         if (i % 2) == 0 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
             bg:SetColorTexture(0, 0, 0, 0.25)
@@ -265,7 +255,6 @@ local function RefreshMplus()
         y = y - usedH
     end
 
-    -- ── Redimensionnement automatique ────────────────────────────────────
     local contentH = -y
     content:SetSize(totalTableW, contentH)
     local frameW = totalTableW + PAD_L + PAD_R
@@ -276,14 +265,10 @@ local function RefreshMplus()
     content:Hide(); content:Show()
 end
 
--- ============================================================
--- Public API
--- ============================================================
 function Mplus.Show()
     mtitle:SetText(MidnightL.S("mplus_title"))
     RefreshMplus()
     mframe:Show()
-    -- Deferred refresh : GetStringHeight() est correct après le premier rendu
     C_Timer.After(0, RefreshMplus)
 end
 

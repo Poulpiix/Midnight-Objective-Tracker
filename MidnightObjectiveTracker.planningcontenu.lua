@@ -1,4 +1,4 @@
-local PlanningContenu = {}
+﻿local PlanningContenu = {}
 _G["MidnightPlanningContenu"] = PlanningContenu
 
 local function getPlanningCSV()
@@ -140,7 +140,6 @@ local function colorizePlanningCell(text)
         text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)",     ICON_ADV   .. "|cff" .. cAdv   .. "%1|r")
     end
 
-    -- Colorize ilvl numbers
     text = text:gsub("(%d+)", function(numStr)
         local n = tonumber(numStr)
         if not n or n < 207 then return numStr end
@@ -154,14 +153,13 @@ local function colorizePlanningCell(text)
     return text
 end
 
--- Marges internes
-local PAD_L  = 15   -- espace gauche entre bordure et tableau
-local PAD_R  = 15   -- espace droit
-local PAD_T  = 36   -- zone titre en haut
-local PAD_B  = 14   -- espace bas
+local PAD_L  = 15
+local PAD_R  = 15
+local PAD_T  = 36
+local PAD_B  = 14
 
 local pframe = CreateFrame("Frame", "MidnightPlanningContenuFrame", UIParent, "BackdropTemplate")
-pframe:SetSize(300, 100)   -- sera redimensionné dans Refresh
+pframe:SetSize(300, 100)
 pframe:SetPoint("CENTER")
 pframe:SetBackdrop({
     bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -186,16 +184,11 @@ ptitle:SetText(MidnightL.S("planning_title"))
 local pclose = CreateFrame("Button", nil, pframe, "UIPanelCloseButton")
 pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -6, -6)
 
--- Contenu direct (pas de ScrollFrame)
 local content = CreateFrame("Frame", nil, pframe)
 content:SetPoint("TOPLEFT", pframe, "TOPLEFT", PAD_L, -PAD_T)
-content:SetSize(100, 100)  -- sera redimensionné dans Refresh
+content:SetSize(100, 100)
 
 local rows = {}
-
--- ============================================================
--- Refresh
--- ============================================================
 
 local function RefreshPlanningContenu()
     for _, r in ipairs(rows) do r:Hide() end
@@ -219,8 +212,6 @@ local function RefreshPlanningContenu()
     local nCols = #headers
     local colSpacing = 5
 
-    -- ── Calcul des largeurs ──────────────────────────────────
-    -- ~7px par caractère, on mesure la ligne la plus longue de chaque cellule
     local function measureTxt(txt)
         local maxLen = 0
         for line in ((txt or "") .. "\n"):gmatch("([^\n]*)\n") do
@@ -236,22 +227,17 @@ local function RefreshPlanningContenu()
             local cw = measureTxt(r[ci] or "")
             if cw > w then w = cw end
         end
-        -- cap : col1 max 120px, autres max 200px
         widths[ci] = math.min(w, ci == 1 and 120 or 200)
     end
 
-    -- Largeur totale du tableau
     local totalTableW = 0
     for _, w in ipairs(widths) do totalTableW = totalTableW + w end
     totalTableW = totalTableW + (nCols - 1) * colSpacing
 
-    -- ── Rendu ────────────────────────────────────────────────
-    local y = 0   -- y relatif au coin supérieur-gauche du content frame
+    local y = 0
 
-    -- Ligne d'en-tête
     local headerH = 20
 
-    -- Fond jaune sur toute la ligne d'en-tête (comme les titres de section dans ilvl.lua)
     local headerBg = content:CreateTexture(nil, "BACKGROUND")
     headerBg:SetColorTexture(1, 0.78, 0, 0.18)
     headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", 0, y)
@@ -271,9 +257,8 @@ local function RefreshPlanningContenu()
         table.insert(rows, h)
         hx = hx + widths[ci] + colSpacing
     end
-    y = y - headerH   -- pas de gap : on colle directement
+    y = y - headerH
 
-    -- Lignes de données
     local defaultRowH = 16
     for ri, row in ipairs(dataRows) do
         local rx = 0
@@ -310,7 +295,6 @@ local function RefreshPlanningContenu()
             co.obj:SetJustifyV("MIDDLE")
         end
 
-        -- Fond alterné (lignes impaires) sur toute la ligne
         if (ri % 2) == 1 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
             bg:SetColorTexture(0, 0, 0, 0.3)
@@ -322,24 +306,19 @@ local function RefreshPlanningContenu()
         y = y - usedH
     end
 
-    -- ── Redimensionnement exact de la fenêtre ────────────────
-    local contentH = -y                           -- hauteur réelle du contenu
+    local contentH = -y
     content:SetSize(totalTableW, contentH)
 
     local frameW = totalTableW + PAD_L + PAD_R
     local frameH = PAD_T + contentH + PAD_B
     pframe:SetSize(math.max(200, frameW), math.max(80, frameH))
 
-    -- Repositionner content au centre horizontal de pframe
     content:ClearAllPoints()
     content:SetPoint("TOP", pframe, "TOP", 0, -PAD_T)
 
     content:Hide(); content:Show()
 end
 
--- ============================================================
--- Public API
--- ============================================================
 function PlanningContenu.Show()
     ptitle:SetText(MidnightL.S("planning_title"))
     RefreshPlanningContenu()

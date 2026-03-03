@@ -1,4 +1,4 @@
-local Midnight = {}
+﻿local Midnight = {}
 _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
@@ -41,7 +41,6 @@ frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 frame:Hide()
 table.insert(UISpecialFrames, "MidnightTrackerFrame")
 
--- Bandeau titre au-dessus de la fenêtre principale
 local titlePanel = CreateFrame("Frame", "MidnightTitlePanel", frame, "BackdropTemplate")
 titlePanel:SetSize(200, 36)
 titlePanel:SetPoint("BOTTOM", frame, "TOP", 0, 4)
@@ -65,7 +64,6 @@ titlePanel:Hide()
 
 local menuWidth = 110
 
--- Panneau ilvl AU-DESSUS du sommaire
 local ilvlPanel = CreateFrame("Frame", "MidnightIlvlPanel", frame, "BackdropTemplate")
 ilvlPanel:SetSize(menuWidth, 50)
 ilvlPanel:SetPoint("TOPLEFT", frame, "TOPRIGHT", 10, -36)
@@ -90,7 +88,6 @@ ilvlText:SetJustifyH("CENTER")
 ilvlText:SetText("...")
 ilvlText:SetTextColor(1, 1, 1)
 
--- Sommaire des semaines SOUS l'encadré ilvl
 local menu = CreateFrame("Frame", "MidnightSummaryMenu", frame, "BackdropTemplate")
 menu:SetSize(menuWidth, 220)
 menu:SetPoint("TOPLEFT", ilvlPanel, "BOTTOMLEFT", 0, -4)
@@ -396,7 +393,6 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub("%f[%a][Hh]ero%f[%A]", "|cff" .. cHero .. "%0|r")
             s = s:gsub("%f[%a][Mm]yth%f[%A]", "|cff" .. cMyth .. "%0|r")
         else
-            -- Écus avec icônes (patterns littéraux UTF-8 : évite la séquence [eé] brisée en classes de chars)
             s = s:gsub('[Ee]cus? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Écus? de l.aube de [Cc]hampion',   function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Ee]cus? de l.aube [Vv]étéran',    function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r';   return '@@PH'..#ph..'@@' end)
@@ -405,7 +401,6 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('Écus? de l.aube [Hh]éroïque',      function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r';    return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Ee]cus? de l.aube mythique',       function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
             s = s:gsub('Écus? de l.aube mythique',          function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
-            -- Couleurs des mots (chaînes UTF-8 littérales : [eé] dans une classe Lua matche les octets séparément → KO)
             s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
             s = s:gsub("Héroïque",  "|cff" .. cHero .. "%0|r")
             s = s:gsub("héroïque",  "|cff" .. cHero .. "%0|r")
@@ -800,7 +795,6 @@ local function ApplyMidnightScale(scale)
     if MidnightIlvlFrame and MidnightIlvlFrame.SetScale then
         MidnightIlvlFrame:SetScale(scale)
     end
-    -- Rafraîchir les fenêtres ouvertes pour reajuster le layout après le changement d'échelle
     C_Timer.After(0, function()
         if MidnightMplusFrame and MidnightMplusFrame:IsShown() and MidnightMplus then
             MidnightMplus.Show()
@@ -894,7 +888,6 @@ end)
 planningButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
--- Bouton ilvl entre Écus et Planning
 ilvlRefButton:ClearAllPoints()
 ilvlRefButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -2, 0)
 
@@ -1037,9 +1030,6 @@ C_Timer.After(0, function()
     ApplyMidnightScale(savedScale)
 end)
 
--- ============================================================
--- Fenêtre de bienvenue
--- ============================================================
 local welcomeFrame = CreateFrame("Frame", "MidnightWelcomeFrame", UIParent, "BackdropTemplate")
 welcomeFrame:SetSize(380, 110)
 welcomeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 60)

@@ -652,28 +652,21 @@ March of Quel'Danas
 (Story, LFR)"
 ]]
 
--- ============================================================
--- Color Palette System for Colorblind Accessibility
--- ============================================================
-
 L.ColorblindModes = {
     "none", "protanopia", "protanomaly",
     "deuteranopia", "deuteranomaly",
     "tritanopia", "tritanomaly",
 }
 
--- Rotation volontaire des couleurs :
--- prefix (former green) → adventurer  |  adventurer (former blue) → veteran
--- veteran (former purple) → champion   |  champion (former red) → prefix (labels ':')
 L.ColorPalettes = {
     none = {
-        adventurer = "7CFFB8",  -- vert (ancien prefix)
-        veteran    = "7FB8FF",  -- bleu (ancien adventurer)
-        champion   = "C0A0FF",  -- violet (ancien veteran)
+        adventurer = "7CFFB8",
+        veteran    = "7FB8FF",
+        champion   = "C0A0FF",
         heroic     = "FFB86A",
         mythic     = "FFE07A",
         spark      = "FFD100",
-        prefix     = "ff3b3b",  -- rouge (ancien champion) pour les labels ':'
+        prefix     = "ff3b3b",
     },
     protanopia = {
         adventurer = "009E73",

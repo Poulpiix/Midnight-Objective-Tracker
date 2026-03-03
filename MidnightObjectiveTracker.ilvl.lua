@@ -1,9 +1,5 @@
-local Ilvl = {}
+﻿local Ilvl = {}
 _G["MidnightIlvl"] = Ilvl
-
--- ============================================================
--- Helper: Colorize Track by Tier
--- ============================================================
 
 local function colorizeTrack(text)
     local advColor   = MidnightL.C("adventurer")
@@ -38,19 +34,11 @@ local function colorizeTrack(text)
     return colorPart(text)
 end
 
--- ============================================================
--- Crest Icons
--- ============================================================
-
 local ICON_ADV   = "|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t"
 local ICON_VET   = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t"
 local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t"
 local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t"
 local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t"
-
--- ============================================================
--- Build Item Level Reference Tables
--- ============================================================
 
 local function getLocalizedData()
     local locale = MidnightL.GetLocale()
@@ -60,7 +48,6 @@ local function getLocalizedData()
     local hero  = locale == "fr" and "Héro"       or "Hero"
     local myth  = locale == "fr" and "Mythe"      or "Myth"
 
-    -- Pre-colored crest labels with icon
     local crestAdv   = ICON_ADV   .. " |cff" .. MidnightL.C("adventurer") .. MidnightL.S("ilvl_crest_adv")   .. "|r"
     local crestVet   = ICON_VET   .. " |cff" .. MidnightL.C("veteran")    .. MidnightL.S("ilvl_crest_vet")   .. "|r"
     local crestChamp = ICON_CHAMP .. " |cff" .. MidnightL.C("champion")   .. MidnightL.S("ilvl_crest_champ") .. "|r"
@@ -147,10 +134,6 @@ local function getLocalizedData()
     }
 end
 
--- ============================================================
--- Frame Setup
--- ============================================================
-
 local iframe = CreateFrame("Frame", "MidnightIlvlFrame", UIParent, "BackdropTemplate")
 iframe:SetSize(1020, 602)
 iframe:SetPoint("CENTER")
@@ -182,10 +165,6 @@ content:SetPoint("BOTTOMRIGHT", iframe, "BOTTOMRIGHT", -20, 20)
 
 local rows = {}
 
--- ============================================================
--- Helper: Color Numbers by Ilvl
--- ============================================================
-
 local function colorizeIlvl(text, applyToAll)
     if not text or text == "" or text == "?" or text == "-" then return text end
     
@@ -212,20 +191,14 @@ local function colorizeIlvl(text, applyToAll)
     end
 end
 
--- ============================================================
--- Render Table
--- ============================================================
-
 local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirstCol, specialColorCol, noColorCol, fontSize, leftAlignFirstCol, centerCols)
     fontSize = fontSize or "GameFontNormalSmall"
     local titleFont = "GameFontNormal"
 
-    -- Largeur totale du tableau (utilisée pour les fonds de titre et d'en-têtes)
     local totalWidth = 0
     for _, w in ipairs(colWidths) do totalWidth = totalWidth + w end
     local tableWidth = totalWidth + (#colWidths - 1) * 5
 
-    -- Section Title centré dans son fond doré
     if title then
         local titleBg = content:CreateTexture(nil, "BACKGROUND")
         titleBg:SetColorTexture(1, 0.78, 0, 0.18)
@@ -246,7 +219,6 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
         y = y - 20
     end
 
-    -- En-têtes de colonnes avec fond sombre distinctif
     local headerBg = content:CreateTexture(nil, "BACKGROUND")
     headerBg:SetColorTexture(0.08, 0.08, 0.14, 0.85)
     headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", x - 3, y + 3)
@@ -269,7 +241,6 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
     end
     y = y - 18
     
-    -- Data Rows
     for ri, row in ipairs(dataRows) do
         local rowX = x
         for ci, cellText in ipairs(row) do
@@ -277,10 +248,8 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             if ci == 1 and colorFirstCol then
                 displayText = colorizeIlvl(cellText, false)
             elseif noColorCol and ci == noColorCol then
-                -- No coloring for this column (plain white)
                 displayText = cellText
             elseif specialColorCol and ci == specialColorCol then
-                -- Apply special coloring (track colors)
                 if title and (title:find("Paliers") or title:find("Upgrade") or title:find("upgrade")) then
                     displayText = colorizeTrack(cellText)
                 end
@@ -288,7 +257,6 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
                 displayText = colorizeIlvl(cellText, true)
             end
             
-            -- Offset de 2px pour centrer visuellement le texte dans la cellule de 18px
             local f = content:CreateFontString(nil, "OVERLAY", fontSize)
             f:SetPoint("TOPLEFT", content, "TOPLEFT", rowX, y - 2)
             f:SetWidth(colWidths[ci])
@@ -301,7 +269,6 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             rowX = rowX + colWidths[ci] + 5
         end
         
-        -- Alternating row background
         if (ri % 2) == 1 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
             bg:SetColorTexture(0, 0, 0, 0.3)
@@ -317,10 +284,6 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
     return y
 end
 
--- ============================================================
--- Refresh Function
--- ============================================================
-
 local function RefreshIlvl()
     for _, r in ipairs(rows) do
         if type(r.Hide) == 'function' then r:Hide() end
@@ -331,7 +294,6 @@ local function RefreshIlvl()
     
     local data = getLocalizedData()
 
-    -- Layout fixe (fenêtre à taille fixe)
     local col1X = 10
     local col2X = 378
     local col3X = 643
@@ -388,9 +350,6 @@ local function RefreshIlvl()
 
 end
 
--- ============================================================
--- Public API
--- ============================================================
 function Ilvl.Show()
     RefreshIlvl()
     iframe:Show()
