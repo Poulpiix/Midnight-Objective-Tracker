@@ -136,7 +136,7 @@ L.fr.weeks = {
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Event : inutile d'attendre dimanche pour le bonus de réputation de la « Foire de Sombrelune », ce dernier a été nerf et apporte désormais un MALUS pour les renoms de Midnight.",
             "Renom : atteignez le rang 7 du renom « Singularité » pour obtenir un bijou Champion 1/6 (246).",
-            "Renom : atteignez le rang 9 du renom « Tribu des Amani » pour obtenir un collier Champion 1/6 (246).",
+            "Renom : atteignez le rang 9 du renom « Cour de Lune d'Argent » pour obtenir un casque Champion 1/6 (246).",
             "Expédition : accomplissez des expéditions offrant de l'équipement Aventurier 1/6 (220) et 2/6 (224).",
             "Traque : accomplissez des Traques en mode normal (4 par semaine), offrant de l'équipement Aventurier 1/6 (220) (faites les en même temps que les expéditions).",
             "Fulgurion : accomplissez l'Assaut de Fulgurion sur Tempête du Vide pour obtenir de l'équipement Aventurier 1/6 (220) et en même temps réaliser la quête du renom pour le bijou Champion 1/6 (246).",
@@ -149,7 +149,6 @@ L.fr.weeks = {
             "Ne dépensez aucun Écu sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Renom : atteignez le rang 8 du renom « Hara'ti » pour obtenir une ceinture Champion 1/6 (246).",
-            "Renom : atteignez le rang 9 du renom « Cour d'Argentlune » pour obtenir un casque Champion 1/6 (246).",
             "Renom : atteignez le rang 9 du renom « Tribu des Amani » pour obtenir un collier Champion 1/6 (246).",
             "Gouffre : débloquez le palier 3 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
             "Expédition : accomplissez des expéditions offrant de préférence des améliorations d'équipement.",
@@ -331,9 +330,7 @@ Flèche du vide
 (LFR Aile 1 - Normal - Héroïque)","Faille du rêve
 (Mythique)
 Flèche du vide
-(Histoire, LFR Aile 2 - Mythique)","Faille du rêve
-(Mythique)
-Flèche du vide
+(Histoire, LFR Aile 2 - Mythique)","Flèche du vide
 (LFR Aile 3)
 Marche de Quel'Danas
 (Normal, Héroïque, Mythique)","Marche de Quel'Danas

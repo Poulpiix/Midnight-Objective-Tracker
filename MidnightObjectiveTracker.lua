@@ -3,7 +3,7 @@ _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
 MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
-MidnightTrackerDB.scale = MidnightTrackerDB.scale or 0.7
+MidnightTrackerDB.scale = MidnightTrackerDB.scale or 1.0
 MidnightTrackerDB.colorblindMode = MidnightTrackerDB.colorblindMode or "none"
 
 MidnightL.Init()
@@ -1063,6 +1063,8 @@ welcomeOK:SetScript("OnClick", function() welcomeFrame:Hide() end)
 local welcomeEvent = CreateFrame("Frame")
 welcomeEvent:RegisterEvent("PLAYER_ENTERING_WORLD")
 welcomeEvent:SetScript("OnEvent", function()
+    if MidnightTrackerDB.welcomeShown then return end
+    MidnightTrackerDB.welcomeShown = true
     welcomeTitle:SetText(MidnightL.S("welcome_title"))
     welcomeMsg:SetText(MidnightL.S("welcome_msg"))
     C_Timer.After(2, function() welcomeFrame:Show() end)
