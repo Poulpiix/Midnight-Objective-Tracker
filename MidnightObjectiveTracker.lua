@@ -1,14 +1,10 @@
-local addonName = ...
 local Midnight = {}
 _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
 MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
-MidnightTrackerDB.scale = MidnightTrackerDB.scale or 1.0
+MidnightTrackerDB.scale = MidnightTrackerDB.scale or 0.7
 MidnightTrackerDB.colorblindMode = MidnightTrackerDB.colorblindMode or "none"
-
-local MPLUS_ICON_TEST = true
-_G.MPLUS_ICON_TEST = MPLUS_ICON_TEST
 
 MidnightL.Init()
 MidnightL.SetColorblindMode(MidnightTrackerDB.colorblindMode)
@@ -35,7 +31,7 @@ frame:SetBackdrop({
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
 
-frame:SetBackdropColor(0,0,0,1)
+frame:SetBackdropColor(0,0,0,0.95)
 frame:SetBackdropBorderColor(1, 0.82, 0, 1)
 frame:SetMovable(true)
 frame:EnableMouse(true)
@@ -45,38 +41,41 @@ frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 frame:Hide()
 table.insert(UISpecialFrames, "MidnightTrackerFrame")
 
-local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-title:SetPoint("TOP", 0, -10)
-title:SetText(MidnightL.S("title"))
-
-local menuWidth = 110
-local menu = CreateFrame("Frame", "MidnightSummaryMenu", frame, "BackdropTemplate")
-menu:SetSize(menuWidth, 220)
-
-menu:SetPoint("TOPLEFT", frame, "TOPRIGHT", 10, -36)
-menu:SetBackdrop({
+-- Bandeau titre au-dessus de la fenêtre principale
+local titlePanel = CreateFrame("Frame", "MidnightTitlePanel", frame, "BackdropTemplate")
+titlePanel:SetSize(200, 36)
+titlePanel:SetPoint("BOTTOM", frame, "TOP", 0, 4)
+titlePanel:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-menu:SetBackdropColor(0,0,0,1)
-menu:SetBackdropBorderColor(1, 0.82, 0, 1)
+titlePanel:SetBackdropColor(0,0,0,0.95)
+titlePanel:SetBackdropBorderColor(1, 0.82, 0, 1)
 
-local menuContent = CreateFrame("Frame", nil, menu)
-menuContent:SetPoint("TOPLEFT", 8, -8)
-menuContent:SetPoint("BOTTOMRIGHT", -8, 8)
+local title = titlePanel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+title:SetPoint("CENTER", titlePanel, "CENTER", 0, 0)
+title:SetText(MidnightL.S("title"))
+C_Timer.After(0, function()
+    local w = title:GetStringWidth() or 200
+    titlePanel:SetSize(w + 24, 36)
+end)
+titlePanel:Hide()
 
+local menuWidth = 110
+
+-- Panneau ilvl AU-DESSUS du sommaire
 local ilvlPanel = CreateFrame("Frame", "MidnightIlvlPanel", frame, "BackdropTemplate")
 ilvlPanel:SetSize(menuWidth, 50)
-ilvlPanel:SetPoint("TOPLEFT", menu, "BOTTOMLEFT", 0, -4)
+ilvlPanel:SetPoint("TOPLEFT", frame, "TOPRIGHT", 10, -36)
 ilvlPanel:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-ilvlPanel:SetBackdropColor(0,0,0,1)
+ilvlPanel:SetBackdropColor(0,0,0,0.95)
 ilvlPanel:SetBackdropBorderColor(1, 0.82, 0, 1)
 
 local ilvlTitle = ilvlPanel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -91,6 +90,22 @@ ilvlText:SetJustifyH("CENTER")
 ilvlText:SetText("...")
 ilvlText:SetTextColor(1, 1, 1)
 
+-- Sommaire des semaines SOUS l'encadré ilvl
+local menu = CreateFrame("Frame", "MidnightSummaryMenu", frame, "BackdropTemplate")
+menu:SetSize(menuWidth, 220)
+menu:SetPoint("TOPLEFT", ilvlPanel, "BOTTOMLEFT", 0, -4)
+menu:SetBackdrop({
+    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+menu:SetBackdropColor(0,0,0,0.95)
+menu:SetBackdropBorderColor(1, 0.82, 0, 1)
+
+local menuContent = CreateFrame("Frame", nil, menu)
+menuContent:SetPoint("TOPLEFT", 8, -8)
+menuContent:SetPoint("BOTTOMRIGHT", -8, 8)
 
 local function getCrestInfo(currencyID)
     if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
@@ -112,7 +127,7 @@ crestPanel:SetBackdrop({
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-crestPanel:SetBackdropColor(0,0,0,1)
+crestPanel:SetBackdropColor(0,0,0,0.95)
 crestPanel:SetBackdropBorderColor(1, 0.82, 0, 1)
 
 local currencyRows = {
@@ -381,15 +396,26 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub("%f[%a][Hh]ero%f[%A]", "|cff" .. cHero .. "%0|r")
             s = s:gsub("%f[%a][Mm]yth%f[%A]", "|cff" .. cMyth .. "%0|r")
         else
-            s = s:gsub('[Eeé]cu[s]? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube [Vv][eé]t[eé]ran', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube [Hh]éroïque', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r'; return '@@PH'..#ph..'@@' end)
-            s = s:gsub('[Eeé]cu[s]? de l.aube mythique', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r'; return '@@PH'..#ph..'@@' end)
+            -- Écus avec icônes (patterns littéraux UTF-8 : évite la séquence [eé] brisée en classes de chars)
+            s = s:gsub('[Ee]cus? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Écus? de l.aube de [Cc]hampion',   function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Ee]cus? de l.aube [Vv]étéran',    function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r';   return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Écus? de l.aube [Vv]étéran',       function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r';   return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Ee]cus? de l.aube [Hh]éroïque',   function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r';    return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Écus? de l.aube [Hh]éroïque',      function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r';    return '@@PH'..#ph..'@@' end)
+            s = s:gsub('[Ee]cus? de l.aube mythique',       function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Écus? de l.aube mythique',          function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
+            -- Couleurs des mots (chaînes UTF-8 littérales : [eé] dans une classe Lua matche les octets séparément → KO)
             s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
-            s = s:gsub("%f[%a][Hh][eé]ro[iï]?que%f[%A]", "|cff" .. cHero .. "%0|r")
-            s = s:gsub("%f[%a][Hh][eé]ro%f[%A]", "|cff" .. cHero .. "%0|r")
-            s = s:gsub("%f[%a][Mm]ythe%f[%A]", "|cff" .. cMyth .. "%0|r")
-            s = s:gsub("%f[%a][Vv][eé]t[eé]ran%f[%A]", "|cff" .. cVet .. "%0|r")
+            s = s:gsub("Héroïque",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("héroïque",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("Heroïque",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("heroïque",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("Héroique",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("heroique",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("Vétéran",   "|cff" .. cVet  .. "%0|r")
+            s = s:gsub("vétéran",   "|cff" .. cVet  .. "%0|r")
+            s = s:gsub("%f[%a][Mm]ythe%f[%A]",   "|cff" .. cMyth  .. "%0|r")
             s = s:gsub("%f[%a][Cc]hampion%f[%A]", "|cff" .. cChamp .. "%0|r")
         end
         if #ph > 0 then
@@ -550,8 +576,19 @@ function Midnight:Refresh()
             yOffset = yOffset - 20
         end
 
+        local contentW = math.max(100, (scrollFrame:GetWidth() or 0) - 4)
+        if contentW < 10 then contentW = 430 end
+        local titleBg = content:CreateTexture(nil, "BACKGROUND")
+        titleBg:SetColorTexture(1, 0.78, 0, 0.18)
+        titleBg:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
+        titleBg:SetSize(contentW + 2, 26)
+
         local weekTitle = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-        weekTitle:SetPoint("TOPLEFT", 10, yOffset)
+        weekTitle:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
+        weekTitle:SetWidth(contentW + 2)
+        weekTitle:SetHeight(26)
+        weekTitle:SetJustifyH("CENTER")
+        weekTitle:SetJustifyV("MIDDLE")
         weekTitle:SetText(week.title)
         weekTitle:SetTextColor(1, 0.82, 0)
         
@@ -721,6 +758,31 @@ end)
 resetButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 resetButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
+local ilvlRefButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+ilvlRefButton:SetSize(42, 20)
+ilvlRefButton:SetText(MidnightL.S("ilvl_button"))
+ilvlRefButton:SetNormalFontObject("GameFontNormalSmall")
+ilvlRefButton:SetHighlightFontObject("GameFontNormalSmall")
+ilvlRefButton:SetScript("OnClick", function()
+    if MidnightIlvl and MidnightIlvl.Show and MidnightIlvl.Hide then
+        if MidnightIlvlFrame and MidnightIlvlFrame:IsShown() then
+            MidnightIlvl.Hide()
+        else
+            MidnightIlvl.Show()
+        end
+    end
+end)
+ilvlRefButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_NONE")
+    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("ilvl_button_title"))
+    GameTooltip:AddLine(MidnightL.S("ilvl_button_desc"), 1,1,1, true)
+    GameTooltip:Show()
+end)
+ilvlRefButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+ilvlRefButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+
 local SCALE_MIN = 0.6
 local SCALE_MAX = 1.6
 local SCALE_STEP = 0.05
@@ -732,9 +794,24 @@ local function ApplyMidnightScale(scale)
     if MidnightMplusFrame and MidnightMplusFrame.SetScale then
         MidnightMplusFrame:SetScale(scale)
     end
-    if MidnightPlanningFrame and MidnightPlanningFrame.SetScale then
-        MidnightPlanningFrame:SetScale(scale)
+    if MidnightPlanningContenuFrame and MidnightPlanningContenuFrame.SetScale then
+        MidnightPlanningContenuFrame:SetScale(scale)
     end
+    if MidnightIlvlFrame and MidnightIlvlFrame.SetScale then
+        MidnightIlvlFrame:SetScale(scale)
+    end
+    -- Rafraîchir les fenêtres ouvertes pour reajuster le layout après le changement d'échelle
+    C_Timer.After(0, function()
+        if MidnightMplusFrame and MidnightMplusFrame:IsShown() and MidnightMplus then
+            MidnightMplus.Show()
+        end
+        if MidnightPlanningContenuFrame and MidnightPlanningContenuFrame:IsShown() and MidnightPlanningContenu then
+            MidnightPlanningContenu.Show()
+        end
+        if MidnightIlvlFrame and MidnightIlvlFrame:IsShown() and MidnightIlvl then
+            MidnightIlvl.Show()
+        end
+    end)
 end
 
 local scaleDownBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -795,23 +872,35 @@ end)
 closeBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local planningButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-planningButton:SetSize(57, 20)
+planningButton:SetSize(28, 20)
 planningButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -34, -10)
-planningButton:SetText(MidnightL.S("planning"))
+planningButton:SetText("|TInterface\\Icons\\INV_Misc_Note_01:14:14:0:0|t")
 planningButton:SetScript("OnClick", function()
-    if MidnightPlanning and MidnightPlanning.Show and MidnightPlanning.Hide then
-        if MidnightPlanningFrame and MidnightPlanningFrame:IsShown() then
-            MidnightPlanning.Hide()
+    if MidnightPlanningContenu and MidnightPlanningContenu.Show and MidnightPlanningContenu.Hide then
+        if MidnightPlanningContenuFrame and MidnightPlanningContenuFrame:IsShown() then
+            MidnightPlanningContenu.Hide()
         else
-            MidnightPlanning.Show()
+            MidnightPlanningContenu.Show()
         end
     end
 end)
+planningButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_NONE")
+    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("planning_title"))
+    GameTooltip:Show()
+end)
+planningButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+
+-- Bouton ilvl entre Écus et Planning
+ilvlRefButton:ClearAllPoints()
+ilvlRefButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -2, 0)
 
 local mplusButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 mplusButton:SetSize(43, 20)
-mplusButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -2, 0)
+mplusButton:SetPoint("TOPRIGHT", ilvlRefButton, "TOPLEFT", -2, 0)
 mplusButton:SetText(MidnightL.S("crests"))
 mplusButton:SetScript("OnClick", function()
     if MidnightMplus and MidnightMplus.Show and MidnightMplus.Hide then
@@ -825,7 +914,7 @@ end)
 mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local cbSettingsFrame = CreateFrame("Frame", "MidnightColorblindFrame", UIParent, "BackdropTemplate")
-cbSettingsFrame:SetSize(260, 260)
+cbSettingsFrame:SetSize(185, 250)
 cbSettingsFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", -10, 0)
 cbSettingsFrame:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -833,7 +922,7 @@ cbSettingsFrame:SetBackdrop({
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-cbSettingsFrame:SetBackdropColor(0, 0, 0, 1)
+cbSettingsFrame:SetBackdropColor(0, 0, 0, 0.95)
 cbSettingsFrame:SetBackdropBorderColor(1, 0.82, 0, 1)
 cbSettingsFrame:SetFrameStrata("DIALOG")
 cbSettingsFrame:EnableMouse(true)
@@ -864,8 +953,8 @@ local function ApplyColorblindMode(mode)
     MidnightL.SetColorblindMode(mode)
     UpdateCBRadios()
     if Midnight and Midnight.Refresh then Midnight:Refresh() end
-    if MidnightPlanning and MidnightPlanningFrame and MidnightPlanningFrame:IsShown() and MidnightPlanning.Refresh then
-        MidnightPlanning.Refresh()
+    if MidnightPlanningContenu and MidnightPlanningContenuFrame and MidnightPlanningContenuFrame:IsShown() and MidnightPlanningContenu.Show then
+        MidnightPlanningContenu.Show()
     end
     if MidnightMplus and MidnightMplusFrame and MidnightMplusFrame:IsShown() and MidnightMplus.Show then
         MidnightMplus.Show()
@@ -932,15 +1021,6 @@ gearBtn:SetScript("OnClick", function()
         cbSettingsFrame:Show()
     end
 end)
-gearBtn:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_NONE")
-    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("colorblind_setting_btn"), 1, 0.82, 0)
-    GameTooltip:AddLine(MidnightL.S("colorblind_setting_desc"), 1, 1, 1, true)
-    GameTooltip:Show()
-end)
-gearBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 SLASH_MIDNIGHTTRACKER1 = "/som"
 SlashCmdList["MIDNIGHTTRACKER"] = function()
@@ -957,5 +1037,44 @@ C_Timer.After(0, function()
     ApplyMidnightScale(savedScale)
 end)
 
-print(MidnightL.S("slash_msg"))
+-- ============================================================
+-- Fenêtre de bienvenue
+-- ============================================================
+local welcomeFrame = CreateFrame("Frame", "MidnightWelcomeFrame", UIParent, "BackdropTemplate")
+welcomeFrame:SetSize(380, 110)
+welcomeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 60)
+welcomeFrame:SetFrameStrata("DIALOG")
+welcomeFrame:SetBackdrop({
+    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+welcomeFrame:SetBackdropColor(0, 0, 0, 0.95)
+welcomeFrame:SetBackdropBorderColor(1, 0.82, 0, 1)
+welcomeFrame:Hide()
+
+local welcomeTitle = welcomeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+welcomeTitle:SetPoint("TOP", welcomeFrame, "TOP", 0, -14)
+welcomeTitle:SetTextColor(1, 0.82, 0)
+
+local welcomeMsg = welcomeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+welcomeMsg:SetPoint("TOP", welcomeTitle, "BOTTOM", 0, -10)
+welcomeMsg:SetWidth(340)
+welcomeMsg:SetJustifyH("CENTER")
+welcomeMsg:SetTextColor(1, 1, 1)
+
+local welcomeOK = CreateFrame("Button", nil, welcomeFrame, "UIPanelButtonTemplate")
+welcomeOK:SetSize(80, 22)
+welcomeOK:SetPoint("BOTTOM", welcomeFrame, "BOTTOM", 0, 12)
+welcomeOK:SetText("OK")
+welcomeOK:SetScript("OnClick", function() welcomeFrame:Hide() end)
+
+local welcomeEvent = CreateFrame("Frame")
+welcomeEvent:RegisterEvent("PLAYER_ENTERING_WORLD")
+welcomeEvent:SetScript("OnEvent", function()
+    welcomeTitle:SetText(MidnightL.S("welcome_title"))
+    welcomeMsg:SetText(MidnightL.S("welcome_msg"))
+    C_Timer.After(2, function() welcomeFrame:Show() end)
+end)
 

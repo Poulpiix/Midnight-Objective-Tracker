@@ -1,0 +1,352 @@
+local PlanningContenu = {}
+_G["MidnightPlanningContenu"] = PlanningContenu
+
+local function getPlanningCSV()
+    return MidnightL[MidnightL.GetLocale()].planning_csv
+end
+
+local function parseCSV(s)
+    local rows = {}
+    local i = 1
+    local len = #s
+
+    while i <= len do
+        while i <= len and (s:sub(i,i) == '\r' or s:sub(i,i) == '\n') do
+            i = i + 1
+        end
+        if i > len then break end
+
+        local row = {}
+        local lineEnd = false
+
+        while not lineEnd and i <= len do
+            local ch = s:sub(i, i)
+            if ch == '"' then
+                i = i + 1
+                local buf = {}
+                while i <= len do
+                    local c = s:sub(i, i)
+                    if c == '"' then
+                        if s:sub(i+1, i+1) == '"' then
+                            table.insert(buf, '"'); i = i + 2
+                        else
+                            i = i + 1; break
+                        end
+                    else
+                        table.insert(buf, c); i = i + 1
+                    end
+                end
+                local field = table.concat(buf):match("^%s*(.-)%s*$") or ""
+                table.insert(row, field)
+                if s:sub(i, i) == ',' then
+                    i = i + 1
+                else
+                    if s:sub(i, i) == '\r' then i = i + 1 end
+                    if s:sub(i, i) == '\n' then i = i + 1 end
+                    lineEnd = true
+                end
+            else
+                local buf = {}
+                while i <= len do
+                    local c = s:sub(i, i)
+                    if c == ',' then
+                        i = i + 1; break
+                    elseif c == '\r' then
+                        i = i + 1
+                        if s:sub(i, i) == '\n' then i = i + 1 end
+                        lineEnd = true; break
+                    elseif c == '\n' then
+                        i = i + 1; lineEnd = true; break
+                    else
+                        table.insert(buf, c); i = i + 1
+                    end
+                end
+                if i > len then lineEnd = true end
+                local field = table.concat(buf):match("^%s*(.-)%s*$") or ""
+                table.insert(row, field)
+            end
+        end
+
+        if #row > 0 then
+            local hasContent = false
+            for _, v in ipairs(row) do
+                if type(v) == 'string' and v:match('%S') then hasContent = true; break end
+            end
+            if hasContent then table.insert(rows, row) end
+        end
+    end
+
+    return rows
+end
+
+local function buildPlanningTableFromCSV(csv)
+    local rows = parseCSV(csv)
+    if #rows == 0 then return { headers = {}, rows = {} } end
+    local headers = rows[1]
+    local data = {}
+    for i = 2, #rows do
+        table.insert(data, rows[i])
+    end
+    return { headers = headers, rows = data }
+end
+
+local planningTable = {}
+local planningBuilt = false
+
+local function ensurePlanningBuilt()
+    if planningBuilt then return end
+    local ok, res = pcall(buildPlanningTableFromCSV, getPlanningCSV())
+    if not ok then
+        print(MidnightL.S("csv_error") .. tostring(res))
+        planningTable = { headers = {}, rows = {} }
+        planningBuilt = true
+        return
+    end
+    planningTable = res or { headers = {}, rows = {} }
+    planningBuilt = true
+end
+
+local ICON_SPARK = "|TInterface\\Icons\\inv_12_profession_questandcrafting_sparkwhole_gold:14:14:0:0|t "
+local ICON_ADV   = "|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t "
+local ICON_VET   = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t "
+local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t "
+local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t "
+local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t "
+
+local function colorizePlanningCell(text)
+    if not text or text == "" then return text end
+    text = text:gsub(" +\n", "\n")
+    local loc = MidnightL.GetLocale()
+    local cSpark = MidnightL.C("spark")
+    local cChamp = MidnightL.C("champion")
+    local cVet   = MidnightL.C("veteran")
+    local cHero  = MidnightL.C("heroic")
+    local cMyth  = MidnightL.C("mythic")
+    local cAdv   = MidnightL.C("adventurer")
+
+    if loc == "en" then
+        text = text:gsub("(Spark of Radiance)",             ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
+        text = text:gsub("(Champion Dawn Crest[s]?)",       ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
+        text = text:gsub("(Veteran Dawn Crest[s]?)",        ICON_VET   .. "|cff" .. cVet   .. "%1|r")
+        text = text:gsub("(Heroic Dawn Crest[s]?)",         ICON_HERO  .. "|cff" .. cHero  .. "%1|r")
+        text = text:gsub("(Mythic Dawn Crest[s]?)",         ICON_MYTH  .. "|cff" .. cMyth  .. "%1|r")
+        text = text:gsub("(Adventurer Dawn Crest[s]?)",     ICON_ADV   .. "|cff" .. cAdv   .. "%1|r")
+    else
+        text = text:gsub("(Etincelle de radiance)",                ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube de [Cc]hampion)", ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube vétéran)",        ICON_VET   .. "|cff" .. cVet   .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube héroïque)",       ICON_HERO  .. "|cff" .. cHero  .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube mythique)",       ICON_MYTH  .. "|cff" .. cMyth  .. "%1|r")
+        text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)",     ICON_ADV   .. "|cff" .. cAdv   .. "%1|r")
+    end
+
+    -- Colorize ilvl numbers
+    text = text:gsub("(%d+)", function(numStr)
+        local n = tonumber(numStr)
+        if not n or n < 207 then return numStr end
+        if n >= 272 then return "|cff" .. MidnightL.C("mythic")     .. numStr .. "|r"
+        elseif n >= 259 then return "|cff" .. MidnightL.C("heroic")   .. numStr .. "|r"
+        elseif n >= 246 then return "|cff" .. MidnightL.C("champion") .. numStr .. "|r"
+        elseif n >= 233 then return "|cff" .. MidnightL.C("veteran")  .. numStr .. "|r"
+        else return "|cff" .. MidnightL.C("adventurer") .. numStr .. "|r"
+        end
+    end)
+    return text
+end
+
+-- Marges internes
+local PAD_L  = 15   -- espace gauche entre bordure et tableau
+local PAD_R  = 15   -- espace droit
+local PAD_T  = 36   -- zone titre en haut
+local PAD_B  = 14   -- espace bas
+
+local pframe = CreateFrame("Frame", "MidnightPlanningContenuFrame", UIParent, "BackdropTemplate")
+pframe:SetSize(300, 100)   -- sera redimensionné dans Refresh
+pframe:SetPoint("CENTER")
+pframe:SetBackdrop({
+    bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets   = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+pframe:SetBackdropColor(0, 0, 0, 0.95)
+pframe:SetBackdropBorderColor(1, 0.82, 0, 1)
+pframe:SetMovable(true)
+pframe:EnableMouse(true)
+pframe:RegisterForDrag("LeftButton")
+pframe:SetScript("OnDragStart", pframe.StartMoving)
+pframe:SetScript("OnDragStop",  pframe.StopMovingOrSizing)
+pframe:Hide()
+table.insert(UISpecialFrames, "MidnightPlanningContenuFrame")
+
+local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
+ptitle:SetText(MidnightL.S("planning_title"))
+
+local pclose = CreateFrame("Button", nil, pframe, "UIPanelCloseButton")
+pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -6, -6)
+
+-- Contenu direct (pas de ScrollFrame)
+local content = CreateFrame("Frame", nil, pframe)
+content:SetPoint("TOPLEFT", pframe, "TOPLEFT", PAD_L, -PAD_T)
+content:SetSize(100, 100)  -- sera redimensionné dans Refresh
+
+local rows = {}
+
+-- ============================================================
+-- Refresh
+-- ============================================================
+
+local function RefreshPlanningContenu()
+    for _, r in ipairs(rows) do r:Hide() end
+    rows = {}
+
+    planningBuilt = false
+    ensurePlanningBuilt()
+    local headers  = planningTable.headers or {}
+    local dataRows = planningTable.rows    or {}
+
+    if #dataRows == 0 then
+        local placeholder = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        placeholder:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
+        placeholder:SetText(MidnightL.S("no_csv_data"))
+        placeholder:SetTextColor(1, 0.7, 0)
+        table.insert(rows, placeholder)
+        pframe:SetSize(300, 80)
+        return
+    end
+
+    local nCols = #headers
+    local colSpacing = 5
+
+    -- ── Calcul des largeurs ──────────────────────────────────
+    -- ~7px par caractère, on mesure la ligne la plus longue de chaque cellule
+    local function measureTxt(txt)
+        local maxLen = 0
+        for line in ((txt or "") .. "\n"):gmatch("([^\n]*)\n") do
+            if #line > maxLen then maxLen = #line end
+        end
+        return maxLen * 7 + 12
+    end
+
+    local widths = {}
+    for ci = 1, nCols do
+        local w = math.max(ci == 1 and 80 or 70, measureTxt(headers[ci] or ""))
+        for _, r in ipairs(dataRows) do
+            local cw = measureTxt(r[ci] or "")
+            if cw > w then w = cw end
+        end
+        -- cap : col1 max 120px, autres max 200px
+        widths[ci] = math.min(w, ci == 1 and 120 or 200)
+    end
+
+    -- Largeur totale du tableau
+    local totalTableW = 0
+    for _, w in ipairs(widths) do totalTableW = totalTableW + w end
+    totalTableW = totalTableW + (nCols - 1) * colSpacing
+
+    -- ── Rendu ────────────────────────────────────────────────
+    local y = 0   -- y relatif au coin supérieur-gauche du content frame
+
+    -- Ligne d'en-tête
+    local headerH = 20
+
+    -- Fond jaune sur toute la ligne d'en-tête (comme les titres de section dans ilvl.lua)
+    local headerBg = content:CreateTexture(nil, "BACKGROUND")
+    headerBg:SetColorTexture(1, 0.78, 0, 0.18)
+    headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", 0, y)
+    headerBg:SetSize(totalTableW, headerH)
+    table.insert(rows, headerBg)
+
+    local hx = 0
+    for ci = 1, nCols do
+        local h = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        h:SetPoint("TOPLEFT", content, "TOPLEFT", hx, y)
+        h:SetWidth(widths[ci])
+        h:SetHeight(headerH)
+        h:SetJustifyH(ci == 1 and "LEFT" or "CENTER")
+        h:SetJustifyV("MIDDLE")
+        h:SetText(headers[ci] or "")
+        h:SetTextColor(1, 0.92, 0.3)
+        table.insert(rows, h)
+        hx = hx + widths[ci] + colSpacing
+    end
+    y = y - headerH   -- pas de gap : on colle directement
+
+    -- Lignes de données
+    local defaultRowH = 16
+    for ri, row in ipairs(dataRows) do
+        local rx = 0
+        local maxH = 0
+        local cellObjs = {}
+
+        for ci = 1, nCols do
+            local cell = row[ci] or ""
+            local displayText = (ci == 1) and cell or colorizePlanningCell(cell)
+
+            local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            f:SetWidth(widths[ci])
+            f:SetJustifyH(ci == 1 and "LEFT" or "CENTER")
+            f:SetWordWrap(true)
+            f:SetText(displayText)
+            if ci == 1 then
+                f:SetTextColor(1, 0.92, 0.3)
+            else
+                f:SetTextColor(1, 1, 1)
+            end
+            table.insert(rows, f)
+            table.insert(cellObjs, { obj = f, x = rx })
+
+            local fh = f:GetStringHeight() or 0
+            if fh > maxH then maxH = fh end
+            rx = rx + widths[ci] + colSpacing
+        end
+
+        local usedH = math.max(defaultRowH, math.ceil(maxH) + 6)
+
+        for _, co in ipairs(cellObjs) do
+            co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, y)
+            co.obj:SetHeight(usedH)
+            co.obj:SetJustifyV("MIDDLE")
+        end
+
+        -- Fond alterné (lignes impaires) sur toute la ligne
+        if (ri % 2) == 1 then
+            local bg = content:CreateTexture(nil, "BACKGROUND")
+            bg:SetColorTexture(0, 0, 0, 0.3)
+            bg:SetPoint("TOPLEFT", content, "TOPLEFT", 0, y)
+            bg:SetSize(totalTableW, usedH)
+            table.insert(rows, bg)
+        end
+
+        y = y - usedH
+    end
+
+    -- ── Redimensionnement exact de la fenêtre ────────────────
+    local contentH = -y                           -- hauteur réelle du contenu
+    content:SetSize(totalTableW, contentH)
+
+    local frameW = totalTableW + PAD_L + PAD_R
+    local frameH = PAD_T + contentH + PAD_B
+    pframe:SetSize(math.max(200, frameW), math.max(80, frameH))
+
+    -- Repositionner content au centre horizontal de pframe
+    content:ClearAllPoints()
+    content:SetPoint("TOP", pframe, "TOP", 0, -PAD_T)
+
+    content:Hide(); content:Show()
+end
+
+-- ============================================================
+-- Public API
+-- ============================================================
+function PlanningContenu.Show()
+    ptitle:SetText(MidnightL.S("planning_title"))
+    RefreshPlanningContenu()
+    pframe:Show()
+    C_Timer.After(0, RefreshPlanningContenu)
+end
+
+function PlanningContenu.Hide()
+    pframe:Hide()
+end

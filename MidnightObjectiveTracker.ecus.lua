@@ -87,22 +87,28 @@ local function parseCSV(s)
     return rows
 end
 
+-- Marges internes
+local PAD_L = 15
+local PAD_R = 15
+local PAD_T = 36
+local PAD_B = 14
+
 local mframe = CreateFrame("Frame", "MidnightMplusFrame", UIParent, "BackdropTemplate")
-mframe:SetSize(600, 500)
+mframe:SetSize(360, 200)   -- sera redimensionné dans Refresh
 mframe:SetPoint("CENTER")
 mframe:SetBackdrop({
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
-    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+    insets   = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-mframe:SetBackdropColor(0, 0, 0, 1)
+mframe:SetBackdropColor(0, 0, 0, 0.95)
 mframe:SetBackdropBorderColor(1, 0.82, 0, 1)
 mframe:SetMovable(true)
 mframe:EnableMouse(true)
 mframe:RegisterForDrag("LeftButton")
 mframe:SetScript("OnDragStart", mframe.StartMoving)
-mframe:SetScript("OnDragStop", mframe.StopMovingOrSizing)
+mframe:SetScript("OnDragStop",  mframe.StopMovingOrSizing)
 mframe:Hide()
 table.insert(UISpecialFrames, "MidnightMplusFrame")
 
@@ -110,94 +116,93 @@ local mtitle = mframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 mtitle:SetPoint("TOP", mframe, "TOP", 0, -15)
 mtitle:SetText(MidnightL.S("mplus_title"))
 
-local headerHeight = 36
-local headerFrame = CreateFrame("Frame", "MidnightMplusHeader", mframe, "BackdropTemplate")
-headerFrame:SetHeight(headerHeight)
-headerFrame:SetPoint("TOPLEFT", mframe, "TOPLEFT", 10, -36)
-headerFrame:SetPoint("TOPRIGHT", mframe, "TOPRIGHT", -10, -36)
-headerFrame:SetBackdrop({
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
-    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-    edgeSize = 12,
-    insets = { left = 6, right = 6, top = 6, bottom = 6 },
-})
-headerFrame:SetBackdropColor(0, 0, 0, 1)
-headerFrame:SetBackdropBorderColor(0.9, 0.7, 0.2, 1)
-headerFrame:SetFrameLevel((mframe:GetFrameLevel() or 0) + 10)
-
 local mclose = CreateFrame("Button", nil, mframe, "UIPanelCloseButton")
 mclose:SetPoint("TOPRIGHT", mframe, "TOPRIGHT", -6, -6)
 
-local scroll = CreateFrame("ScrollFrame", nil, mframe, "UIPanelScrollFrameTemplate")
-scroll:SetPoint("TOPLEFT", mframe, "TOPLEFT", 10, -(36 + headerHeight + 6))
-scroll:SetPoint("BOTTOMRIGHT", mframe, "BOTTOMRIGHT", -10, 10)
-
-local content = CreateFrame("Frame", nil, scroll)
-content:SetWidth((mframe:GetWidth() or 600) - 20)
-content:SetPoint("TOPLEFT", scroll, "TOPLEFT", 10, -4)
-scroll:SetScrollChild(content)
+-- Contenu direct (pas de ScrollFrame ni de headerFrame séparé)
+local content = CreateFrame("Frame", nil, mframe)
+content:SetPoint("TOPLEFT", mframe, "TOPLEFT", PAD_L, -PAD_T)
+content:SetSize(100, 100)  -- sera redimensionné dans Refresh
 
 local rows = {}
 
 local function RefreshMplus()
     for _, r in ipairs(rows) do if type(r.Hide) == 'function' then r:Hide() end end
     rows = {}
-    for _, v in ipairs({headerFrame:GetChildren()}) do if type(v.Hide) == 'function' then v:Hide() end end
-    local y = -6
+
     local csv_data = getCSV()
     local parsed = parseCSV(csv_data)
     if #parsed == 0 then
         local placeholder = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        placeholder:SetPoint("TOPLEFT", 10, y)
-        placeholder:SetJustifyH("LEFT")
+        placeholder:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
         placeholder:SetText(MidnightL.S("no_data"))
-        placeholder:SetTextColor(1,0.7,0)
+        placeholder:SetTextColor(1, 0.7, 0)
         table.insert(rows, placeholder)
-        content:SetHeight(-y)
+        mframe:SetSize(300, 80)
         return
     end
 
-    local headers = parsed[1] or {}
-    local nCols = #headers
-    local hx = 10
-    local colGap = 12
-    local frameW = (headerFrame:GetWidth() or mframe:GetWidth() or 600)
-    local availableW = frameW - (2 * hx) - (nCols - 1) * colGap
-    local colW = math.floor(availableW / nCols)
-    local colWidths = {}
-    for c = 1, nCols do colWidths[c] = colW end
-    local leftover = availableW - colW * nCols
-    if leftover > 0 then colWidths[nCols] = colWidths[nCols] + leftover end
+    local headers    = parsed[1] or {}
+    local nCols      = #headers
+    local colSpacing = 5
 
-    local curX = hx
-    for c = 1, nCols do
-        local hh = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        hh:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", curX, 0)
-        hh:SetWidth(colWidths[c])
-        hh:SetHeight(headerHeight)
-        hh:SetJustifyH("CENTER")
-        hh:SetWordWrap(true)
-        local htext = headers[c] or ("Col "..c)
-        htext = htext:gsub("%s*%b()", "")
-        htext = htext:gsub("^%s+", ""):gsub("%s+$", "")
-        hh:SetText(htext)
-        hh:SetTextColor(1,0.82,0)
-        table.insert(rows, hh)
-        curX = curX + colWidths[c] + colGap
+    -- Largeur disponible selon la taille actuelle de la fenêtre
+    local availW  = math.max(150, mframe:GetWidth() - PAD_L - PAD_R)
+    local widths  = { 115, math.max(60, availW - 115 - colSpacing) }
+    for ci = 3, nCols do widths[ci] = 80 end
+
+    -- Largeur totale du tableau
+    local totalTableW = 0
+    for ci = 1, nCols do totalTableW = totalTableW + (widths[ci] or 100) end
+    totalTableW = totalTableW + (nCols - 1) * colSpacing
+
+    local y = 0   -- relatif au coin supérieur-gauche du content frame
+
+    -- ── Ligne d'en-tête (fond jaune, style planningcontenu) ─────────────
+    local headerH = 20
+    -- Extension latérale pour couvrir jusqu'au bord intérieur du cadre
+    -- PAD_L=15, insets backdrop=8 → décalage = 7px de chaque côté
+    local bgExtend = 7
+    local headerBg = content:CreateTexture(nil, "BACKGROUND")
+    headerBg:SetColorTexture(1, 0.78, 0, 0.18)
+    headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
+    headerBg:SetSize(totalTableW + bgExtend * 2, headerH)
+    table.insert(rows, headerBg)
+
+    local hx = 0
+    for ci = 1, nCols do
+        local h = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        h:SetPoint("TOPLEFT", content, "TOPLEFT", hx, y)
+        h:SetWidth(widths[ci] or 100)
+        h:SetHeight(headerH)
+        h:SetJustifyH("CENTER")
+        h:SetJustifyV("MIDDLE")
+        local htext = headers[ci] or ("Col " .. ci)
+        if ci == 1 then
+            htext = (MidnightL.GetLocale() == "fr") and "Contenu" or "Content"
+        else
+            htext = htext:gsub("%s*%b()", ""):match("^%s*(.-)%s*$") or htext
+        end
+        h:SetText(htext)
+        h:SetTextColor(1, 0.92, 0.3)
+        table.insert(rows, h)
+        hx = hx + (widths[ci] or 100) + colSpacing
     end
+    y = y - headerH
 
-    local defaultRowHeight = 22
+    -- ── Lignes de données ────────────────────────────────────────────────
+    local defaultRowH = 15
     for i = 2, #parsed do
-        local row = parsed[i]
-        local cellObjects = {}
-        local maxContentH = 0
-        local cx = hx
+        local row      = parsed[i]
+        local cellObjs = {}
+        local maxH     = 0
+        local cx       = 0
 
         for c = 1, nCols do
             local cell = row[c] or ""
             local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            f:SetWidth(colWidths[c])
-            f:SetJustifyH("CENTER")
+            f:SetWidth(widths[c] or 100)
+            f:SetJustifyH(c == 1 and "LEFT" or "CENTER")
             f:SetWordWrap(true)
 
             local displayText = cell
@@ -231,48 +236,57 @@ local function RefreshMplus()
             end
 
             f:SetText(displayText)
-            f:SetTextColor(1,1,1)
+            f:SetTextColor(1, 1, 1)
             table.insert(rows, f)
-            table.insert(cellObjects, {obj = f, x = cx})
+            table.insert(cellObjs, { obj = f, x = cx })
             local fh = f:GetStringHeight() or 0
-            if fh > maxContentH then maxContentH = fh end
-            cx = cx + colWidths[c] + colGap
+            if fh > maxH then maxH = fh end
+            cx = cx + (widths[c] or 100) + colSpacing
         end
 
-        local usedHeight = math.max(defaultRowHeight, math.ceil(maxContentH) + 8)
+        local usedH = math.max(defaultRowH, math.ceil(maxH) + 4)
 
-        for _, co in ipairs(cellObjects) do
-            local fh = co.obj:GetStringHeight() or 0
-            local yOffset = y - math.floor((usedHeight - fh) / 2)
-            co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, yOffset)
+        -- Positionner chaque cellule et aligner verticalement au milieu
+        for _, co in ipairs(cellObjs) do
+            co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, y)
+            co.obj:SetHeight(usedH)
+            co.obj:SetJustifyV("MIDDLE")
         end
 
+        -- Fond alterné sur toute la ligne
         if (i % 2) == 0 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
-            bg:SetColorTexture(0, 0, 0, 0.18)
-            bg:SetPoint("TOPLEFT", content, "TOPLEFT", 10, y)
-            bg:SetPoint("TOPRIGHT", content, "TOPRIGHT", -10, y)
-            bg:SetHeight(usedHeight)
+            bg:SetColorTexture(0, 0, 0, 0.25)
+            bg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
+            bg:SetSize(totalTableW + bgExtend * 2, usedH)
             table.insert(rows, bg)
         end
 
-        y = y - usedHeight
+        y = y - usedH
     end
 
-    content:SetHeight(-y)
-    if scroll and scroll.SetHorizontalScroll then
-        scroll:SetHorizontalScroll(0)
-    end
+    -- ── Redimensionnement automatique ────────────────────────────────────
+    local contentH = -y
+    content:SetSize(totalTableW, contentH)
+    local frameW = totalTableW + PAD_L + PAD_R
+    local frameH = PAD_T + contentH + PAD_B
+    mframe:SetSize(math.max(200, frameW), math.max(80, frameH))
+    content:ClearAllPoints()
+    content:SetPoint("TOP", mframe, "TOP", 0, -PAD_T)
+    content:Hide(); content:Show()
 end
 
+-- ============================================================
+-- Public API
+-- ============================================================
 function Mplus.Show()
     mtitle:SetText(MidnightL.S("mplus_title"))
     RefreshMplus()
     mframe:Show()
+    -- Deferred refresh : GetStringHeight() est correct après le premier rendu
+    C_Timer.After(0, RefreshMplus)
 end
 
 function Mplus.Hide()
     mframe:Hide()
 end
-
-MidnightMplusData = getCSV()
