@@ -1016,6 +1016,7 @@ gearBtn:SetScript("OnClick", function()
 end)
 
 SLASH_MIDNIGHTTRACKER1 = "/som"
+SLASH_MIDNIGHTTRACKER2 = "/mot"
 SlashCmdList["MIDNIGHTTRACKER"] = function()
     if frame:IsShown() then
         frame:Hide()
