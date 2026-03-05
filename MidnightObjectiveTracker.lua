@@ -3,11 +3,6 @@ _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
 
--- ─────────────────────────────────────────────────────────────────────────────
--- Réinitialisation du cache lors d'une mise à jour de version
--- Les préférences utilisateur sont conservées, les données structurelles
--- potentiellement obsolètes sont purgées.
--- ─────────────────────────────────────────────────────────────────────────────
 do
     local function GetAddonVersion()
         if C_AddOns and C_AddOns.GetAddOnMetadata then
@@ -21,7 +16,6 @@ do
     if MidnightTrackerDB.addonVersion ~= currentVersion then
         MidnightTrackerDB = {
             addonVersion   = currentVersion,
-            -- Données utilisateur préservées
             checks         = MidnightTrackerDB.checks,
             scale          = MidnightTrackerDB.scale,
             opacity        = MidnightTrackerDB.opacity,
@@ -72,7 +66,6 @@ frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 frame:Hide()
--- UISpecialFrames géré dynamiquement via UpdateEscBehavior()
 
 local titlePanel = CreateFrame("Frame", "MidnightTitlePanel", frame, "BackdropTemplate")
 titlePanel:SetSize(200, 36)
@@ -141,9 +134,6 @@ local function getCrestInfo(currencyID)
     if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
         local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
         if info then
-            -- quantity      = total actuellement possédé
-            -- maxQuantity   = plafond de gain hebdomadaire (affiché comme "Maximum par saison" en jeu)
-            -- totalEarned   = gagné depuis le dernier reset (semaine en cours)
             return info.quantity or 0,
                    info.maxQuantity or 0,
                    info.totalEarned or 0
@@ -190,12 +180,10 @@ for i, cr in ipairs(currencyRows) do
         tex:SetTexture(cr.icon)
     end
 
-    -- ligne 1 : total possédé (blanc)
     local fsHeld = crestContent:CreateFontString(nil, "OVERLAY", "GameFontNormalTiny")
     fsHeld:SetJustifyH("CENTER")
     fsHeld:SetWordWrap(false)
 
-    -- ligne 2 : gagné semaine / cap (coloré)
     local fsWeekly = crestContent:CreateFontString(nil, "OVERLAY", "GameFontNormalTiny")
     fsWeekly:SetJustifyH("CENTER")
     fsWeekly:SetWordWrap(false)
@@ -212,7 +200,6 @@ for i, cr in ipairs(currencyRows) do
         idx      = i,
     }
 
-    -- Tooltip identique au tooltip natif du jeu
     btn:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOP")
         GameTooltip:ClearLines()
@@ -271,35 +258,31 @@ local function UpdateCrestPanel()
     local totalW = crestContent:GetWidth() or (frame:GetWidth() - 20)
     local iconSize  = 18
     local iconGap   = 2
-    local textW     = 44   -- largeur réservée pour les deux fontstrings ("200/200" = ~42px)
-    local groupW    = iconSize + iconGap + textW  -- 64px par groupe
+    local textW     = 44
+    local groupW    = iconSize + iconGap + textW
     local spacing   = math.max(2, math.floor((totalW - nItems * groupW) / (nItems + 1)))
     local startX    = spacing
 
     for i, cr in ipairs(currencyRows) do
         local entry = crestLineRows[cr.key]
         if entry then
-            -- Chargement dynamique de l'icône si non définie à l'init
             if entry.tex and not entry.icon and cr.currID and cr.currID > 0 then
                 local info = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(cr.currID)
                 if info and info.iconFileID and info.iconFileID > 0 then
                     entry.tex:SetTexture(info.iconFileID)
-                    entry.icon = true  -- marque comme chargé
+                    entry.icon = true
                 end
             end
 
             local heldStr, weeklyStr, weekColor
 
             if entry.itemID then
-                -- Ressource (item) : pas de cap hebdo dans l'API
                 local cur = GetItemCount and GetItemCount(entry.itemID, true) or 0
                 heldStr   = "|cffffffff" .. tostring(cur) .. "|r"
                 weeklyStr = ""
             else
                 local cur, weeklyMax, totalEarned = getCrestInfo(entry.currID)
-                -- ligne 1 : total possédé
                 heldStr = "|cffffffff" .. tostring(cur) .. "|r"
-                -- ligne 2 : gagné cette période / cap
                 if weeklyMax and weeklyMax > 0 then
                     if totalEarned >= weeklyMax then
                         weekColor = "ff40ff40"
@@ -310,7 +293,6 @@ local function UpdateCrestPanel()
                     end
                     weeklyStr = "|c" .. weekColor .. totalEarned .. "/" .. weeklyMax .. "|r"
                 else
-                    -- cap pas encore fourni par le serveur (ex: héroïque/mythique hors-saison)
                     weeklyStr = "|cffaaaaaa" .. totalEarned .. "/TBA|r"
                 end
             end
@@ -327,7 +309,6 @@ local function UpdateCrestPanel()
             entry.fsHeld:ClearAllPoints()
             entry.fsHeld:SetWidth(textW)
             if weeklyStr == "" then
-                -- Pas de 2ème ligne : centrer verticalement
                 entry.fsHeld:SetPoint("LEFT", crestContent, "LEFT", txtX, 0)
             else
                 entry.fsHeld:SetPoint("BOTTOMLEFT", crestContent, "LEFT", txtX, 1)
@@ -1130,7 +1111,7 @@ opSlider:SetValue(savedOpacity)
 opValueLabel:SetText(string.format("%d%%", math.floor(savedOpacity * 100 + 0.5)))
 
 opSlider:SetScript("OnValueChanged", function(self, value)
-    value = math.floor(value * 20 + 0.5) / 20  -- arrondi aux 5%
+    value = math.floor(value * 20 + 0.5) / 20
     MidnightTrackerDB.opacity = value
     opValueLabel:SetText(string.format("%d%%", math.floor(value * 100 + 0.5)))
     ApplyMidnightOpacity(value)
@@ -1308,9 +1289,6 @@ SlashCmdList["MIDNIGHTTRACKER"] = function()
     end
 end
 
--- ─────────────────────────────────────────────────────────────────────────────
--- Bouton minimap
--- ─────────────────────────────────────────────────────────────────────────────
 MidnightTrackerDB.minimapAngle = MidnightTrackerDB.minimapAngle or (math.pi * 1.5)
 
 local minimapBtn = CreateFrame("Button", "MidnightMinimapButton", MinimapCluster)
@@ -1324,7 +1302,6 @@ mmIcon:SetTexture("Interface\\AddOns\\MidnightObjectiveTracker\\logo-32-circle")
 mmIcon:SetSize(26, 26)
 mmIcon:SetPoint("CENTER", minimapBtn, "CENTER", 0, 0)
 
--- Masque circulaire natif WoW
 local mmMask = minimapBtn:CreateMaskTexture()
 mmMask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
 mmMask:SetAllPoints(mmIcon)
