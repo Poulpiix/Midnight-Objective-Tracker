@@ -3,6 +3,8 @@
 > **A week-by-week in-game progression guide for World of Warcraft: Midnight.**
 > Automatically switches between English and French based on your game client language.
 
+<img width="824" height="611" alt="Capture d&#39;écran 2026-03-05 035159" src="https://github.com/user-attachments/assets/afe53a76-cff8-4c9f-adb9-100256a5c6a5" />
+
 ---
 
 ## Features
@@ -39,14 +41,12 @@
 
 If the addon shows errors, take a screenshot and send it to me on [X (Twitter)](https://x.com/poulpi_x).
 
-<img width="824" height="611" alt="Capture d&#39;écran 2026-03-05 035159" src="https://github.com/user-attachments/assets/afe53a76-cff8-4c9f-adb9-100256a5c6a5" />
+---
+
 <img width="1404" height="373" alt="Capture d&#39;écran 2026-03-05 035203" src="https://github.com/user-attachments/assets/c863106f-749c-4dd6-b1c7-65d2d3130ebf" />
 <img width="1375" height="826" alt="Capture d&#39;écran 2026-03-05 035213" src="https://github.com/user-attachments/assets/dabdc955-3513-436a-86e8-56bea0576255" />
 <img width="510" height="623" alt="Capture d&#39;écran 2026-03-05 035218" src="https://github.com/user-attachments/assets/d573cf8a-ef82-424f-9a5a-edfb8c922bb5" />
 <img width="220" height="395" alt="Capture d&#39;écran 2026-03-05 035224" src="https://github.com/user-attachments/assets/c6b01774-5026-4b0d-abc3-ea2f183cb81e" />
 <img width="329" height="243" alt="Capture d&#39;écran 2026-03-05 035229" src="https://github.com/user-attachments/assets/c74f3249-852d-49e0-b249-39cf13ae44fe" />
-
-
----
 
 
