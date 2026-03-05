@@ -88,8 +88,10 @@ local function getLocalizedData()
     }
 
     local dungeonData = {
-        { source = locale == "fr" and "Héroïque" or "Heroic", endLoot = "230", vault = "243" },
-        { source = locale == "fr" and "M0 (Hors-Saison)" or "M0 (Off-Season)", endLoot = "240", vault = "?" },
+        { source = "Normal", endLoot = "214", vault = "n/a" },
+        { source = locale == "fr" and "Héroïque (Hors-saison)" or "Heroic (Off-Season)", endLoot = "224", vault = "n/a" },
+        { source = locale == "fr" and "Héroïque (Pré-saison)" or "Heroic (Pre-Season)", endLoot = "230", vault = "243" },
+        { source = locale == "fr" and "M0 (Hors-saison)" or "M0 (Off-Season)", endLoot = "240", vault = "n/a" },
         { source = locale == "fr" and "M0 (Pré-saison)" or "M0 (Pre-Season)", endLoot = "246", vault = "256" },
         { source = "M2", endLoot = "250", vault = "259" },
         { source = "M3", endLoot = "250", vault = "259" },
@@ -105,10 +107,17 @@ local function getLocalizedData()
     }
 
     local raidData = {
-        { difficulty = "LFR", normal = "233", mid = "237", late = "240", end_ = "243" },
-        { difficulty = locale == "fr" and "Normal" or "Normal", normal = "246", mid = "250", late = "253", end_ = "256" },
-        { difficulty = locale == "fr" and "Héroïque" or "Heroic", normal = "259", mid = "263", late = "266", end_ = "269" },
-        { difficulty = locale == "fr" and "Mythique" or "Mythic", normal = "272", mid = "276", late = "279", end_ = "282" },
+        { difficulty = "LFR",    normal = "233 - 237 - 240 - 243", mid = "237 - 240", late = "n/a" },
+        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "246 - 250 - 253 - 256", mid = "250 - 253", late = "n/a" },
+        { difficulty = locale == "fr" and "Héroïque" or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "n/a" },
+        { difficulty = locale == "fr" and "Mythique" or "Mythic",  normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "n/a" },
+    }
+
+    local raidData2 = {
+        { difficulty = "LFR",    normal = "240 - 243", mid = "240", late = "n/a" },
+        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "253 - 256", mid = "253", late = "n/a" },
+        { difficulty = locale == "fr" and "Héroïque" or "Heroic",  normal = "266 - 269", mid = "266", late = "n/a" },
+        { difficulty = locale == "fr" and "Mythique" or "Mythic",  normal = "279 - 282", mid = "279", late = "n/a" },
     }
 
     local delveData = {
@@ -130,12 +139,13 @@ local function getLocalizedData()
         crafted = craftedData,
         dungeon = dungeonData,
         raid = raidData,
+        raid2 = raidData2,
         delve = delveData,
     }
 end
 
 local iframe = CreateFrame("Frame", "MidnightIlvlFrame", UIParent, "BackdropTemplate")
-iframe:SetSize(1020, 602)
+iframe:SetSize(1080, 680)
 iframe:SetPoint("CENTER")
 iframe:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -156,8 +166,23 @@ table.insert(UISpecialFrames, "MidnightIlvlFrame")
 local ititle = iframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ititle:SetPoint("TOP", iframe, "TOP", 0, -12)
 
-local iclose = CreateFrame("Button", nil, iframe, "UIPanelCloseButton")
-iclose:SetPoint("TOPRIGHT", iframe, "TOPRIGHT", -6, -6)
+local iclose = CreateFrame("Button", nil, iframe, "UIPanelButtonTemplate")
+iclose:SetSize(20, 20)
+iclose:SetPoint("TOPRIGHT", iframe, "TOPRIGHT", -10, -10)
+iclose:SetText("X")
+iclose:SetNormalFontObject("GameFontNormalSmall")
+iclose:SetHighlightFontObject("GameFontNormalSmall")
+local icloseBtnFs = iclose:GetFontString()
+if icloseBtnFs then
+    icloseBtnFs:ClearAllPoints()
+    icloseBtnFs:SetPoint("CENTER", 0, 0)
+    icloseBtnFs:SetJustifyH("CENTER")
+    icloseBtnFs:SetJustifyV("MIDDLE")
+end
+iclose:SetScript("OnClick", function()
+    iframe:Hide()
+end)
+iclose:SetFrameLevel(iframe:GetFrameLevel() + 5)
 
 local content = CreateFrame("Frame", nil, iframe)
 content:SetPoint("TOPLEFT", iframe, "TOPLEFT", 20, -35)
@@ -294,9 +319,9 @@ local function RefreshIlvl()
     
     local data = getLocalizedData()
 
-    local col1X = 10
-    local col2X = 378
-    local col3X = 643
+    local col1X = 0
+    local col2X = 371
+    local col3X = 642
 
     local col1Y = -5
 
@@ -327,12 +352,20 @@ local function RefreshIlvl()
     
     local col3Y = -5
     
-    local raidHeaders = {MidnightL.S("ilvl_difficulty"), MidnightL.S("ilvl_normal"), MidnightL.S("ilvl_mid"), MidnightL.S("ilvl_late"), MidnightL.S("ilvl_end")}
+    local raidHeaders = {MidnightL.S("ilvl_difficulty"), MidnightL.S("ilvl_end_loot"), MidnightL.S("ilvl_raid_synth"), MidnightL.S("ilvl_great_vault")}
     local raidRows = {}
     for _, row in ipairs(data.raid) do
-        table.insert(raidRows, {row.difficulty, row.normal, row.mid, row.late, row.end_})
+        table.insert(raidRows, {row.difficulty, row.normal, row.mid, row.late})
     end
-    col3Y = renderTable(col3X, col3Y, raidHeaders, raidRows, {70, 55, 50, 50, 90}, MidnightL.S("ilvl_raid"), false, nil, nil, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true, [4]=true, [5]=true})
+    col3Y = renderTable(col3X, col3Y, raidHeaders, raidRows, {70, 130, 90, 88}, MidnightL.S("ilvl_raid"), false, nil, nil, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true, [4]=true})
+    
+    col3Y = col3Y - 12
+
+    local raidRows2 = {}
+    for _, row in ipairs(data.raid2) do
+        table.insert(raidRows2, {row.difficulty, row.normal, row.mid, row.late})
+    end
+    col3Y = renderTable(col3X, col3Y, raidHeaders, raidRows2, {70, 130, 90, 88}, MidnightL.S("ilvl_raid2"), false, nil, nil, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true, [4]=true})
     
     col3Y = col3Y - 12
 
@@ -347,6 +380,12 @@ local function RefreshIlvl()
         table.insert(craftRows, {row.quality, row.adv, row.vet, row.champ, row.hero, row.myth})
     end
     col3Y = renderTable(col3X, col3Y, craftHeaders, craftRows, {52, 70, 52, 56, 38, 40}, MidnightL.S("ilvl_crafted"), false, nil, 1, "GameFontNormalSmall", nil, {[1]=true, [2]=true, [3]=true, [4]=true, [5]=true, [6]=true})
+
+    local PAD_TOP    = 35
+    local PAD_BOTTOM = 20
+    local minColY    = math.min(col1Y, col2Y, col3Y)
+    local contentH   = math.abs(minColY) + 5
+    iframe:SetSize(iframe:GetWidth(), PAD_TOP + contentH + PAD_BOTTOM)
 
 end
 

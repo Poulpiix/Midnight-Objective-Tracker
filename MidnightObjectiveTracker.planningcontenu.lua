@@ -106,13 +106,6 @@ local function ensurePlanningBuilt()
     planningBuilt = true
 end
 
-local ICON_SPARK = "|TInterface\\Icons\\inv_12_profession_questandcrafting_sparkwhole_gold:14:14:0:0|t "
-local ICON_ADV   = "|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t "
-local ICON_VET   = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t "
-local ICON_HERO  = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t "
-local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t "
-local ICON_CHAMP = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t "
-
 local function colorizePlanningCell(text)
     if not text or text == "" then return text end
     text = text:gsub(" +\n", "\n")
@@ -124,22 +117,6 @@ local function colorizePlanningCell(text)
     local cMyth  = MidnightL.C("mythic")
     local cAdv   = MidnightL.C("adventurer")
 
-    if loc == "en" then
-        text = text:gsub("(Spark of Radiance)",             ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
-        text = text:gsub("(Champion Dawn Crest[s]?)",       ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
-        text = text:gsub("(Veteran Dawn Crest[s]?)",        ICON_VET   .. "|cff" .. cVet   .. "%1|r")
-        text = text:gsub("(Heroic Dawn Crest[s]?)",         ICON_HERO  .. "|cff" .. cHero  .. "%1|r")
-        text = text:gsub("(Mythic Dawn Crest[s]?)",         ICON_MYTH  .. "|cff" .. cMyth  .. "%1|r")
-        text = text:gsub("(Adventurer Dawn Crest[s]?)",     ICON_ADV   .. "|cff" .. cAdv   .. "%1|r")
-    else
-        text = text:gsub("(Etincelle de radiance)",                ICON_SPARK .. "|cff" .. cSpark .. "%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube de [Cc]hampion)", ICON_CHAMP .. "|cff" .. cChamp .. "%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube vétéran)",        ICON_VET   .. "|cff" .. cVet   .. "%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube héroïque)",       ICON_HERO  .. "|cff" .. cHero  .. "%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube mythique)",       ICON_MYTH  .. "|cff" .. cMyth  .. "%1|r")
-        text = text:gsub("([Ee]cu[s]? de l'aube d'aventure)",     ICON_ADV   .. "|cff" .. cAdv   .. "%1|r")
-    end
-
     text = text:gsub("(%d+)", function(numStr)
         local n = tonumber(numStr)
         if not n or n < 207 then return numStr end
@@ -150,13 +127,54 @@ local function colorizePlanningCell(text)
         else return "|cff" .. MidnightL.C("adventurer") .. numStr .. "|r"
         end
     end)
+
+    local cInst = cMyth
+    if loc == "en" then
+        text = text:gsub("(Dream Rift)",          "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Void Arrow)",           "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(March of Quel'Danas)",  "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(M%+%d*)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Expeditions?)",          "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(World Boss)",            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Hunts?)",                "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(PvP)",                   "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Delves?)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Dungeons?)",             "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Raids?)",                "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%u%l%l %d%d?)",          "|cff" .. cInst .. "%1|r")
+    else
+        text = text:gsub("(Faille du rêve)",         "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Flèche du vide)",         "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Marche de Quel'Danas)",   "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(M%+%d*)",                 "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Expéditions?)",            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Traques?)",                "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Boss monde)",              "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(JcJ)",                     "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Gouffres?)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Donjons?)",                "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Raids?)",                  "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? janvier)",           "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? f\195\169vrier)",    "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? mars)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? avril)",              "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? mai)",                "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? juin)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? juillet)",            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? ao\195\187t)",        "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? septembre)",          "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? octobre)",            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? novembre)",           "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(%d%d? d\195\169cembre)",    "|cff" .. cInst .. "%1|r")
+    end
+
     return text
 end
 
 local PAD_L  = 15
 local PAD_R  = 15
 local PAD_T  = 36
-local PAD_B  = 14
+local PAD_B  = 15
 
 local pframe = CreateFrame("Frame", "MidnightPlanningContenuFrame", UIParent, "BackdropTemplate")
 pframe:SetSize(300, 100)
@@ -181,8 +199,23 @@ local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
 ptitle:SetText(MidnightL.S("planning_title"))
 
-local pclose = CreateFrame("Button", nil, pframe, "UIPanelCloseButton")
-pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -6, -6)
+local pclose = CreateFrame("Button", nil, pframe, "UIPanelButtonTemplate")
+pclose:SetSize(20, 20)
+pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -10, -10)
+pclose:SetText("X")
+pclose:SetNormalFontObject("GameFontNormalSmall")
+pclose:SetHighlightFontObject("GameFontNormalSmall")
+local pcloseBtnFs = pclose:GetFontString()
+if pcloseBtnFs then
+    pcloseBtnFs:ClearAllPoints()
+    pcloseBtnFs:SetPoint("CENTER", 0, 0)
+    pcloseBtnFs:SetJustifyH("CENTER")
+    pcloseBtnFs:SetJustifyV("MIDDLE")
+end
+pclose:SetScript("OnClick", function()
+    pframe:Hide()
+end)
+pclose:SetFrameLevel(pframe:GetFrameLevel() + 5)
 
 local content = CreateFrame("Frame", nil, pframe)
 content:SetPoint("TOPLEFT", pframe, "TOPLEFT", PAD_L, -PAD_T)

@@ -2,9 +2,42 @@
 _G["MidnightTracker"] = Midnight
 
 MidnightTrackerDB = MidnightTrackerDB or {}
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Réinitialisation du cache lors d'une mise à jour de version
+-- Les préférences utilisateur sont conservées, les données structurelles
+-- potentiellement obsolètes sont purgées.
+-- ─────────────────────────────────────────────────────────────────────────────
+do
+    local function GetAddonVersion()
+        if C_AddOns and C_AddOns.GetAddOnMetadata then
+            return C_AddOns.GetAddOnMetadata("MidnightObjectiveTracker", "Version") or "0"
+        elseif GetAddOnMetadata then
+            return GetAddOnMetadata("MidnightObjectiveTracker", "Version") or "0"
+        end
+        return "0"
+    end
+    local currentVersion = GetAddonVersion()
+    if MidnightTrackerDB.addonVersion ~= currentVersion then
+        MidnightTrackerDB = {
+            addonVersion   = currentVersion,
+            -- Données utilisateur préservées
+            checks         = MidnightTrackerDB.checks,
+            scale          = MidnightTrackerDB.scale,
+            opacity        = MidnightTrackerDB.opacity,
+            colorblindMode = MidnightTrackerDB.colorblindMode,
+            escCloses      = MidnightTrackerDB.escCloses,
+            minimapAngle   = MidnightTrackerDB.minimapAngle,
+            welcomeShown   = MidnightTrackerDB.welcomeShown,
+        }
+    end
+end
+
 MidnightTrackerDB.checks = MidnightTrackerDB.checks or {}
 MidnightTrackerDB.scale = MidnightTrackerDB.scale or 1.0
 MidnightTrackerDB.colorblindMode = MidnightTrackerDB.colorblindMode or "none"
+MidnightTrackerDB.opacity = MidnightTrackerDB.opacity or 1.0
+MidnightTrackerDB.escCloses = (MidnightTrackerDB.escCloses == nil) and false or MidnightTrackerDB.escCloses
 
 MidnightL.Init()
 MidnightL.SetColorblindMode(MidnightTrackerDB.colorblindMode)
@@ -39,7 +72,7 @@ frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 frame:Hide()
-table.insert(UISpecialFrames, "MidnightTrackerFrame")
+-- UISpecialFrames géré dynamiquement via UpdateEscBehavior()
 
 local titlePanel = CreateFrame("Frame", "MidnightTitlePanel", frame, "BackdropTemplate")
 titlePanel:SetSize(200, 36)
@@ -108,14 +141,19 @@ local function getCrestInfo(currencyID)
     if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
         local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
         if info then
-            return info.quantity or 0, info.maxQuantity or 0
+            -- quantity      = total actuellement possédé
+            -- maxQuantity   = plafond de gain hebdomadaire (affiché comme "Maximum par saison" en jeu)
+            -- totalEarned   = gagné depuis le dernier reset (semaine en cours)
+            return info.quantity or 0,
+                   info.maxQuantity or 0,
+                   info.totalEarned or 0
         end
     end
-    return 0, 0
+    return 0, 0, 0
 end
 
 local crestPanel = CreateFrame("Frame", "MidnightCrestPanel", frame, "BackdropTemplate")
-crestPanel:SetHeight(38)
+crestPanel:SetHeight(46)
 crestPanel:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 4)
 crestPanel:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 4)
 crestPanel:SetBackdrop({
@@ -134,6 +172,7 @@ local currencyRows = {
     { key = "heroic",     color = "FFB86A", currID = 3345, icon = "Interface\\Icons\\inv_120_crest_hero" },
     { key = "mythic",     color = "FFE07A", currID = 3347, icon = "Interface\\Icons\\inv_120_crest_myth" },
     { key = "sparks",     color = "FFD100", itemID = 232875, icon = "Interface\\Icons\\inv_12_profession_questandcrafting_sparkwhole_gold" },
+    { key = "dust",       color = "AACCFF", currID = 3212 },
 }
 
 local crestLineRows = {}
@@ -141,42 +180,49 @@ local crestContent = CreateFrame("Frame", nil, crestPanel)
 crestContent:SetPoint("TOPLEFT", 10, 0)
 crestContent:SetPoint("BOTTOMRIGHT", -10, 0)
 
-local currencyNames = {
-    adventurer = { fr = "Ecu de l'aube d'aventurier", en = "Adventurer Dawn Crest" },
-    veteran    = { fr = "Ecu de l'aube vétéran", en = "Veteran Dawn Crest" },
-    champion   = { fr = "Ecu de l'aube de champion", en = "Champion Dawn Crest" },
-    heroic     = { fr = "Ecu de l'aube héroïque", en = "Heroic Dawn Crest" },
-    mythic     = { fr = "Ecu de l'aube mythique", en = "Mythic Dawn Crest" },
-    sparks     = { fr = "Etincelle de radiance", en = "Spark of Radiance" },
-}
-
-local crestIconButtons = {}
 for i, cr in ipairs(currencyRows) do
     local btn = CreateFrame("Button", nil, crestContent)
-    btn:SetSize(20, 20)
+    btn:SetSize(18, 18)
     btn:EnableMouse(true)
     local tex = btn:CreateTexture(nil, "ARTWORK")
     tex:SetAllPoints()
-    tex:SetTexture(cr.icon)
-    local valFs = crestContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    valFs:SetJustifyH("CENTER")
-    valFs:SetWordWrap(false)
-    crestLineRows[cr.key] = { fs = valFs, btn = btn, currID = cr.currID, itemID = cr.itemID, color = cr.color, icon = cr.icon, idx = i }
-    crestIconButtons[i] = { btn = btn, valFs = valFs, cr = cr }
+    if cr.icon then
+        tex:SetTexture(cr.icon)
+    end
 
+    -- ligne 1 : total possédé (blanc)
+    local fsHeld = crestContent:CreateFontString(nil, "OVERLAY", "GameFontNormalTiny")
+    fsHeld:SetJustifyH("CENTER")
+    fsHeld:SetWordWrap(false)
+
+    -- ligne 2 : gagné semaine / cap (coloré)
+    local fsWeekly = crestContent:CreateFontString(nil, "OVERLAY", "GameFontNormalTiny")
+    fsWeekly:SetJustifyH("CENTER")
+    fsWeekly:SetWordWrap(false)
+
+    crestLineRows[cr.key] = {
+        fsHeld   = fsHeld,
+        fsWeekly = fsWeekly,
+        btn      = btn,
+        tex      = tex,
+        currID   = cr.currID,
+        itemID   = cr.itemID,
+        color    = cr.color,
+        icon     = cr.icon,
+        idx      = i,
+    }
+
+    -- Tooltip identique au tooltip natif du jeu
     btn:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOP")
         GameTooltip:ClearLines()
-        local loc = MidnightL.GetLocale()
-        local name = currencyNames[cr.key] and currencyNames[cr.key][loc] or cr.key
-        local cur
-        if cr.itemID then
-            cur = GetItemCount and GetItemCount(cr.itemID, true) or 0
+        if cr.currID and cr.currID > 0 and GameTooltip.SetCurrencyByID then
+            GameTooltip:SetCurrencyByID(cr.currID)
+        elseif cr.itemID then
+            GameTooltip:SetHyperlink("item:" .. cr.itemID)
         else
-            cur = getCrestInfo(cr.currID)
+            GameTooltip:AddLine(cr.key, 1, 0.82, 0)
         end
-        GameTooltip:AddLine("|T" .. cr.icon .. ":16:16:0:0|t " .. name, 1, 0.82, 0)
-        GameTooltip:AddLine("|cffffffff" .. tostring(cur) .. "|r", 1, 1, 1)
         GameTooltip:Show()
     end)
     btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -223,36 +269,75 @@ end
 local function UpdateCrestPanel()
     local nItems = #currencyRows
     local totalW = crestContent:GetWidth() or (frame:GetWidth() - 20)
-    local iconSize = 20
-    local iconValGap = 3
-    local itemSpacing = 12
-    local valEstW = 22
-    local itemW = iconSize + iconValGap + valEstW
-    local totalItemsW = nItems * itemW + (nItems - 1) * itemSpacing
-    local startX = math.floor((totalW - totalItemsW) / 2)
-    if startX < 0 then startX = 0 end
+    local iconSize  = 18
+    local iconGap   = 2
+    local textW     = 44   -- largeur réservée pour les deux fontstrings ("200/200" = ~42px)
+    local groupW    = iconSize + iconGap + textW  -- 64px par groupe
+    local spacing   = math.max(2, math.floor((totalW - nItems * groupW) / (nItems + 1)))
+    local startX    = spacing
 
     for i, cr in ipairs(currencyRows) do
         local entry = crestLineRows[cr.key]
         if entry then
-            local cur
-            if entry.itemID then
-                cur = GetItemCount and GetItemCount(entry.itemID, true) or 0
-            else
-                cur = getCrestInfo(entry.currID)
+            -- Chargement dynamique de l'icône si non définie à l'init
+            if entry.tex and not entry.icon and cr.currID and cr.currID > 0 then
+                local info = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(cr.currID)
+                if info and info.iconFileID and info.iconFileID > 0 then
+                    entry.tex:SetTexture(info.iconFileID)
+                    entry.icon = true  -- marque comme chargé
+                end
             end
-            local valStr = tostring(cur)
-            local valColor = cur <= 0 and "ffff4040" or "ffffd34d"
 
-            local x = startX + (i - 1) * (itemW + itemSpacing)
+            local heldStr, weeklyStr, weekColor
+
+            if entry.itemID then
+                -- Ressource (item) : pas de cap hebdo dans l'API
+                local cur = GetItemCount and GetItemCount(entry.itemID, true) or 0
+                heldStr   = "|cffffffff" .. tostring(cur) .. "|r"
+                weeklyStr = ""
+            else
+                local cur, weeklyMax, totalEarned = getCrestInfo(entry.currID)
+                -- ligne 1 : total possédé
+                heldStr = "|cffffffff" .. tostring(cur) .. "|r"
+                -- ligne 2 : gagné cette période / cap
+                if weeklyMax and weeklyMax > 0 then
+                    if totalEarned >= weeklyMax then
+                        weekColor = "ff40ff40"
+                    elseif totalEarned > 0 then
+                        weekColor = "ffffd34d"
+                    else
+                        weekColor = "ffff4040"
+                    end
+                    weeklyStr = "|c" .. weekColor .. totalEarned .. "/" .. weeklyMax .. "|r"
+                else
+                    -- cap pas encore fourni par le serveur (ex: héroïque/mythique hors-saison)
+                    weeklyStr = "|cffaaaaaa" .. totalEarned .. "/TBA|r"
+                end
+            end
+
+            local x = startX + (i - 1) * (groupW + spacing)
+
             entry.btn:ClearAllPoints()
             entry.btn:SetPoint("LEFT", crestContent, "LEFT", x, 0)
             entry.btn:SetSize(iconSize, iconSize)
             entry.btn:Show()
 
-            entry.fs:ClearAllPoints()
-            entry.fs:SetPoint("LEFT", entry.btn, "RIGHT", iconValGap, 0)
-            entry.fs:SetText("|c" .. valColor .. valStr .. "|r")
+            local txtX = x + iconSize + iconGap
+
+            entry.fsHeld:ClearAllPoints()
+            entry.fsHeld:SetWidth(textW)
+            if weeklyStr == "" then
+                -- Pas de 2ème ligne : centrer verticalement
+                entry.fsHeld:SetPoint("LEFT", crestContent, "LEFT", txtX, 0)
+            else
+                entry.fsHeld:SetPoint("BOTTOMLEFT", crestContent, "LEFT", txtX, 1)
+            end
+            entry.fsHeld:SetText(heldStr)
+
+            entry.fsWeekly:ClearAllPoints()
+            entry.fsWeekly:SetWidth(textW)
+            entry.fsWeekly:SetPoint("TOPLEFT", crestContent, "LEFT", txtX, -1)
+            entry.fsWeekly:SetText(weeklyStr)
         end
     end
 end
@@ -309,23 +394,41 @@ local function UpdateMenuForScroll(cur)
     end
 end
 
-local poll = { last = -1, timer = 0 }
-local ilvlPoll = { timer = 0 }
-do
-    scrollFrame:SetScript("OnUpdate", function(self, elapsed)
-        poll.timer = poll.timer + (elapsed or 0)
-        if poll.timer < 0.08 then return end
-        poll.timer = 0
-        local cur = self:GetVerticalScroll()
-        if cur == poll.last then return end
-        poll.last = cur
-        UpdateMenuForScroll(cur)
-    end)
+local menuNavGuard = false
 
-    scrollFrame:SetScript("OnVerticalScroll", function(self, value)
+local scrollTarget = nil
+local SCROLL_SPEED  = 800
+
+local smoothFrame = CreateFrame("Frame")
+smoothFrame:SetScript("OnUpdate", function(self, elapsed)
+    if not scrollTarget then return end
+    local cur = scrollFrame:GetVerticalScroll()
+    local diff = scrollTarget - cur
+    if math.abs(diff) < 1 then
+        scrollFrame:SetVerticalScroll(scrollTarget)
+        scrollTarget = nil
+        return
+    end
+    local step = diff * math.min(1, elapsed * 12)
+    scrollFrame:SetVerticalScroll(cur + step)
+end)
+
+scrollFrame:EnableMouseWheel(true)
+scrollFrame:SetScript("OnMouseWheel", function(self, delta)
+    local cur = scrollTarget or self:GetVerticalScroll()
+    local maxScroll = math.max(0, content:GetHeight() - self:GetHeight())
+    scrollTarget = math.max(0, math.min(maxScroll, cur - delta * 40))
+end)
+
+local ilvlPoll = { timer = 0 }
+
+local templateOnVScroll = scrollFrame:GetScript("OnVerticalScroll")
+scrollFrame:SetScript("OnVerticalScroll", function(self, value)
+    if templateOnVScroll then templateOnVScroll(self, value) end
+    if not menuNavGuard then
         UpdateMenuForScroll(value)
-    end)
-end
+    end
+end)
 
 ilvlPanel:SetScript("OnUpdate", function(self, elapsed)
     ilvlPoll.timer = ilvlPoll.timer + (elapsed or 0)
@@ -344,7 +447,7 @@ local function ScrollToWeek(idx)
     end
     if target < 0 then target = 0 end
     if target > maxScroll then target = maxScroll end
-    scrollFrame:SetVerticalScroll(target)
+    scrollTarget = target
 end
 
 local function isWeekFullyChecked(weekIndex, objectives)
@@ -408,6 +511,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub("heroïque",  "|cff" .. cHero .. "%0|r")
             s = s:gsub("Héroique",  "|cff" .. cHero .. "%0|r")
             s = s:gsub("heroique",  "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a][Hh]éro%f[%A]", "|cff" .. cHero .. "%0|r")
+            s = s:gsub("%f[%a]([Hh])ero%f[%A]", function(h) return "|cff" .. cHero .. h .. "éro|r" end)
             s = s:gsub("Vétéran",   "|cff" .. cVet  .. "%0|r")
             s = s:gsub("vétéran",   "|cff" .. cVet  .. "%0|r")
             s = s:gsub("%f[%a][Mm]ythe%f[%A]",   "|cff" .. cMyth  .. "%0|r")
@@ -548,8 +653,6 @@ function Midnight:Refresh()
     weekScrolls = {}
 
     if not frame or not frame:IsShown() then
-        poll.last = -1
-        poll.timer = 0
         return
     end
     local yOffset = -10
@@ -571,16 +674,16 @@ function Midnight:Refresh()
             yOffset = yOffset - 20
         end
 
-        local contentW = math.max(100, (scrollFrame:GetWidth() or 0) - 4)
+        local contentW = math.max(100, (scrollFrame:GetWidth() or 0) + 4)
         if contentW < 10 then contentW = 430 end
         local titleBg = content:CreateTexture(nil, "BACKGROUND")
         titleBg:SetColorTexture(1, 0.78, 0, 0.18)
         titleBg:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
-        titleBg:SetSize(contentW + 2, 26)
+        titleBg:SetSize((frame:GetWidth() or 500) - 18, 26)
 
         local weekTitle = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
         weekTitle:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
-        weekTitle:SetWidth(contentW + 2)
+        weekTitle:SetWidth((frame:GetWidth() or 500) - 18)
         weekTitle:SetHeight(26)
         weekTitle:SetJustifyH("CENTER")
         weekTitle:SetJustifyV("MIDDLE")
@@ -632,6 +735,8 @@ function Midnight:Refresh()
             UpdateMenuActive()
             UpdateIlvlPanel()
             UpdateCrestPanel()
+            menuNavGuard = true
+            C_Timer.After(0.6, function() menuNavGuard = false end)
             ScrollToWeek(vIdx)
         end)
         btn:SetScript("OnEnter", function(self)
@@ -691,50 +796,8 @@ local function createLetterButton(letter, xOff, yOff, onClick, title, desc)
     return btn
 end
 
-local discordButton = createLetterButton("D", 10, -10,
-    function()
-        if ChatEdit_ChooseBoxForSend then
-            local editBox = ChatEdit_ChooseBoxForSend()
-            ChatEdit_ActivateChat(editBox)
-            editBox:Insert("https://discord.gg/D7zMBtPfGn")
-            editBox:HighlightText()
-        end
-    end,
-    "Discord",
-    MidnightL.S("discord_desc"))
-
-local twitchButton = createLetterButton("T", 54, -10,
-    function()
-        if ChatEdit_ChooseBoxForSend then
-            local editBox = ChatEdit_ChooseBoxForSend()
-            ChatEdit_ActivateChat(editBox)
-            editBox:Insert("twitch.tv/poulpi_x")
-            editBox:HighlightText()
-        end
-    end,
-    "Twitch",
-    MidnightL.S("twitch_desc"))
-
-local resourcesButton = createLetterButton("?", 76, -10,
-    function() end,
-    MidnightL.S("resources"),
-    MidnightL.S("resources_short_desc"))
-
-local xButton = createLetterButton("X", 32, -10,
-    function()
-        if ChatEdit_ChooseBoxForSend then
-            local editBox = ChatEdit_ChooseBoxForSend()
-            ChatEdit_ActivateChat(editBox)
-            editBox:Insert("https://x.com/poulpi_x")
-            editBox:HighlightText()
-        end
-    end,
-    "X",
-    MidnightL.S("x_desc"))
-
 local resetButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 resetButton:SetSize(42, 20)
-resetButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 98, -10)
 resetButton:SetText("Reset")
 resetButton:SetNormalFontObject("GameFontNormalSmall")
 resetButton:SetHighlightFontObject("GameFontNormalSmall")
@@ -767,15 +830,6 @@ ilvlRefButton:SetScript("OnClick", function()
         end
     end
 end)
-ilvlRefButton:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_NONE")
-    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("ilvl_button_title"))
-    GameTooltip:AddLine(MidnightL.S("ilvl_button_desc"), 1,1,1, true)
-    GameTooltip:Show()
-end)
-ilvlRefButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 ilvlRefButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local SCALE_MIN = 0.6
@@ -795,6 +849,12 @@ local function ApplyMidnightScale(scale)
     if MidnightIlvlFrame and MidnightIlvlFrame.SetScale then
         MidnightIlvlFrame:SetScale(scale)
     end
+    if cbSettingsFrame and cbSettingsFrame.SetScale then
+        cbSettingsFrame:SetScale(scale)
+    end
+    if MidnightCopyrightFrame and MidnightCopyrightFrame.SetScale then
+        MidnightCopyrightFrame:SetScale(scale)
+    end
     C_Timer.After(0, function()
         if MidnightMplusFrame and MidnightMplusFrame:IsShown() and MidnightMplus then
             MidnightMplus.Show()
@@ -808,12 +868,46 @@ local function ApplyMidnightScale(scale)
     end)
 end
 
+local function ApplyMidnightOpacity(opacity)
+    opacity = math.max(0.15, math.min(1, opacity))
+    MidnightTrackerDB.opacity = opacity
+    frame:SetAlpha(opacity)
+    if crestPanel then crestPanel:SetAlpha(opacity) end
+    if MidnightMplusFrame and MidnightMplusFrame.SetAlpha then
+        MidnightMplusFrame:SetAlpha(opacity)
+    end
+    if MidnightPlanningContenuFrame and MidnightPlanningContenuFrame.SetAlpha then
+        MidnightPlanningContenuFrame:SetAlpha(opacity)
+    end
+    if MidnightIlvlFrame and MidnightIlvlFrame.SetAlpha then
+        MidnightIlvlFrame:SetAlpha(opacity)
+    end
+    if cbSettingsFrame and cbSettingsFrame.SetAlpha then
+        cbSettingsFrame:SetAlpha(opacity)
+    end
+    if MidnightCopyrightFrame and MidnightCopyrightFrame.SetAlpha then
+        MidnightCopyrightFrame:SetAlpha(opacity)
+    end
+end
+
+local function UpdateEscBehavior(escCloses)
+    MidnightTrackerDB.escCloses = escCloses
+    for i = #UISpecialFrames, 1, -1 do
+        if UISpecialFrames[i] == "MidnightTrackerFrame" then
+            table.remove(UISpecialFrames, i)
+        end
+    end
+    if escCloses then
+        table.insert(UISpecialFrames, "MidnightTrackerFrame")
+    end
+end
+
 local scaleDownBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-scaleDownBtn:SetSize(20, 20)
-scaleDownBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30, 22)
+scaleDownBtn:SetSize(22, 22)
+scaleDownBtn:SetPoint("TOPRIGHT", frame, "TOP", -1, 22)
 scaleDownBtn:SetText("-")
-scaleDownBtn:SetNormalFontObject("GameFontNormalSmall")
-scaleDownBtn:SetHighlightFontObject("GameFontNormalSmall")
+scaleDownBtn:SetNormalFontObject("GameFontNormal")
+scaleDownBtn:SetHighlightFontObject("GameFontNormal")
 scaleDownBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
 scaleDownBtn:SetScript("OnClick", function(self, button)
     if button == "RightButton" then
@@ -826,11 +920,11 @@ end)
 scaleDownBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 local scaleUpBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-scaleUpBtn:SetSize(20, 20)
-scaleUpBtn:SetPoint("LEFT", scaleDownBtn, "RIGHT", 2, 0)
+scaleUpBtn:SetSize(22, 22)
+scaleUpBtn:SetPoint("TOPLEFT", frame, "TOP", 1, 22)
 scaleUpBtn:SetText("+")
-scaleUpBtn:SetNormalFontObject("GameFontNormalSmall")
-scaleUpBtn:SetHighlightFontObject("GameFontNormalSmall")
+scaleUpBtn:SetNormalFontObject("GameFontNormal")
+scaleUpBtn:SetHighlightFontObject("GameFontNormal")
 scaleUpBtn:SetFrameLevel(frame:GetFrameLevel() + 5)
 scaleUpBtn:SetScript("OnClick", function(self, button)
     if button == "RightButton" then
@@ -858,8 +952,19 @@ helpBtn:SetScript("OnEnter", function(self)
 end)
 helpBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
-closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -6)
+local closeBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+closeBtn:SetSize(20, 20)
+closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -10, -10)
+closeBtn:SetText("X")
+closeBtn:SetNormalFontObject("GameFontNormalSmall")
+closeBtn:SetHighlightFontObject("GameFontNormalSmall")
+local closeBtnFs = closeBtn:GetFontString()
+if closeBtnFs then
+    closeBtnFs:ClearAllPoints()
+    closeBtnFs:SetPoint("CENTER", 0, 0)
+    closeBtnFs:SetJustifyH("CENTER")
+    closeBtnFs:SetJustifyV("MIDDLE")
+end
 closeBtn:SetScript("OnClick", function()
     frame:Hide()
 end)
@@ -878,14 +983,6 @@ planningButton:SetScript("OnClick", function()
         end
     end
 end)
-planningButton:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_NONE")
-    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("planning_title"))
-    GameTooltip:Show()
-end)
-planningButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 planningButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 ilvlRefButton:ClearAllPoints()
@@ -907,7 +1004,7 @@ end)
 mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 local cbSettingsFrame = CreateFrame("Frame", "MidnightColorblindFrame", UIParent, "BackdropTemplate")
-cbSettingsFrame:SetSize(185, 250)
+cbSettingsFrame:SetSize(185, 350)
 cbSettingsFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", -10, 0)
 cbSettingsFrame:SetBackdrop({
     bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -1000,9 +1097,75 @@ end
 
 UpdateCBRadios()
 
+local opTopY = -36 - (#cbModes * 28) - 10
+
+local opTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+opTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, opTopY - 6)
+opTitle:SetTextColor(1, 0.82, 0)
+opTitle:SetText(MidnightL.S("opacity_label"))
+opTitle:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("opacity_label"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("opacity_tooltip"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+opTitle:SetScript("OnLeave", function() GameTooltip:Hide() end)
+opTitle:EnableMouse(true)
+
+local opSlider = CreateFrame("Slider", "MidnightOpacitySlider", cbSettingsFrame, "UISliderTemplate")
+opSlider:SetMinMaxValues(0.15, 1)
+opSlider:SetValueStep(0.05)
+opSlider:SetWidth(155)
+opSlider:SetHeight(16)
+opSlider:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, opTopY - 24)
+if opSlider.SetObeyStepOnDrag then opSlider:SetObeyStepOnDrag(true) end
+
+local opValueLabel = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+opValueLabel:SetPoint("TOP", opSlider, "BOTTOM", 0, 2)
+opValueLabel:SetTextColor(1, 1, 1)
+
+local savedOpacity = math.max(0.15, math.min(1.0, MidnightTrackerDB.opacity or 1.0))
+opSlider:SetValue(savedOpacity)
+opValueLabel:SetText(string.format("%d%%", math.floor(savedOpacity * 100 + 0.5)))
+
+opSlider:SetScript("OnValueChanged", function(self, value)
+    value = math.floor(value * 20 + 0.5) / 20  -- arrondi aux 5%
+    MidnightTrackerDB.opacity = value
+    opValueLabel:SetText(string.format("%d%%", math.floor(value * 100 + 0.5)))
+    ApplyMidnightOpacity(value)
+end)
+
+local escTopY = opTopY - 60
+
+local escCb = CreateFrame("CheckButton", nil, cbSettingsFrame)
+escCb:SetSize(18, 18)
+escCb:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, escTopY - 8)
+escCb:SetFrameLevel(cbSettingsFrame:GetFrameLevel() + 2)
+
+local escBgTex = escCb:CreateTexture(nil, "BACKGROUND")
+escBgTex:SetAllPoints()
+escBgTex:SetColorTexture(0.2, 0.2, 0.2, 0.8)
+
+local escCheckTex = escCb:CreateTexture(nil, "OVERLAY")
+escCheckTex:SetSize(12, 12)
+escCheckTex:SetPoint("CENTER")
+escCheckTex:SetColorTexture(1, 0.82, 0, 1)
+escCb:SetCheckedTexture(escCheckTex)
+
+local escLabel = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+escLabel:SetPoint("LEFT", escCb, "RIGHT", 6, 0)
+escLabel:SetText(MidnightL.S("esc_closes"))
+escLabel:SetTextColor(1, 1, 1)
+
+escCb:SetChecked(MidnightTrackerDB.escCloses)
+escCb:SetScript("OnClick", function(self)
+    UpdateEscBehavior(self:GetChecked())
+end)
+
 local gearBtn = CreateFrame("Button", nil, frame)
 gearBtn:SetSize(20, 20)
-gearBtn:SetPoint("TOPRIGHT", mplusButton, "TOPLEFT", -4, 0)
+gearBtn:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -10)
 gearBtn:SetNormalTexture("Interface\\Scenarios\\ScenarioIcon-Interact")
 gearBtn:SetHighlightTexture("Interface\\Scenarios\\ScenarioIcon-Interact")
 gearBtn:GetHighlightTexture():SetAlpha(0.4)
@@ -1015,6 +1178,126 @@ gearBtn:SetScript("OnClick", function()
     end
 end)
 
+
+resetButton:SetPoint("TOPRIGHT", mplusButton, "TOPLEFT", -4, 0)
+
+local copyrightFrame = CreateFrame("Frame", "MidnightCopyrightFrame", UIParent, "BackdropTemplate")
+copyrightFrame:SetSize(230, 180)
+copyrightFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", -10, 0)
+copyrightFrame:SetBackdrop({
+    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+    edgeSize = 16,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
+})
+copyrightFrame:SetBackdropColor(0, 0, 0, 0.95)
+copyrightFrame:SetBackdropBorderColor(1, 0.82, 0, 1)
+copyrightFrame:SetFrameStrata("DIALOG")
+copyrightFrame:EnableMouse(true)
+copyrightFrame:SetMovable(true)
+copyrightFrame:RegisterForDrag("LeftButton")
+copyrightFrame:SetScript("OnDragStart", copyrightFrame.StartMoving)
+copyrightFrame:SetScript("OnDragStop",  copyrightFrame.StopMovingOrSizing)
+copyrightFrame:Hide()
+table.insert(UISpecialFrames, "MidnightCopyrightFrame")
+
+local crTitle = copyrightFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+crTitle:SetPoint("TOP", copyrightFrame, "TOP", 0, -14)
+crTitle:SetText("Midnight Tracker")
+crTitle:SetTextColor(1, 0.82, 0)
+
+local crCloseBtn = CreateFrame("Button", nil, copyrightFrame, "UIPanelButtonTemplate")
+crCloseBtn:SetSize(20, 20)
+crCloseBtn:SetPoint("TOPRIGHT", copyrightFrame, "TOPRIGHT", -10, -10)
+crCloseBtn:SetText("X")
+crCloseBtn:SetNormalFontObject("GameFontNormalSmall")
+crCloseBtn:SetHighlightFontObject("GameFontNormalSmall")
+local crCloseBtnFs = crCloseBtn:GetFontString()
+if crCloseBtnFs then
+    crCloseBtnFs:ClearAllPoints()
+    crCloseBtnFs:SetPoint("CENTER", 0, 0)
+    crCloseBtnFs:SetJustifyH("CENTER")
+    crCloseBtnFs:SetJustifyV("MIDDLE")
+end
+crCloseBtn:SetScript("OnClick", function() copyrightFrame:Hide() end)
+crCloseBtn:SetFrameLevel(copyrightFrame:GetFrameLevel() + 5)
+
+local contactBtn = CreateFrame("Button", nil, copyrightFrame, "UIPanelButtonTemplate")
+contactBtn:SetSize(195, 24)
+contactBtn:SetPoint("TOP", copyrightFrame, "TOP", 0, -38)
+contactBtn:SetText(MidnightL.S("contact_me"))
+contactBtn:SetScript("OnClick", function()
+    if ChatEdit_ChooseBoxForSend then
+        local editBox = ChatEdit_ChooseBoxForSend()
+        ChatEdit_ActivateChat(editBox)
+        editBox:Insert("https://linktr.ee/poulpix")
+        editBox:HighlightText()
+    end
+end)
+contactBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("contact_me"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("contact_me_tooltip"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+contactBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+local supportBtn = CreateFrame("Button", nil, copyrightFrame, "UIPanelButtonTemplate")
+supportBtn:SetSize(195, 24)
+supportBtn:SetPoint("TOP", contactBtn, "BOTTOM", 0, -6)
+supportBtn:SetText(MidnightL.S("support_me"))
+supportBtn:SetScript("OnClick", function()
+    if ChatEdit_ChooseBoxForSend then
+        local editBox = ChatEdit_ChooseBoxForSend()
+        ChatEdit_ActivateChat(editBox)
+        editBox:Insert("buymeacoffee.com/poulpix")
+        editBox:HighlightText()
+    end
+end)
+supportBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("support_me"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("support_me_tooltip"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+supportBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+local crResLabel = copyrightFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+crResLabel:SetPoint("TOP", supportBtn, "BOTTOM", 0, -14)
+crResLabel:SetTextColor(1, 0.82, 0)
+crResLabel:SetText(MidnightL.S("resources"))
+
+local crResDesc = copyrightFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+crResDesc:SetPoint("TOP", crResLabel, "BOTTOM", 0, -4)
+crResDesc:SetWidth(205)
+crResDesc:SetJustifyH("CENTER")
+crResDesc:SetTextColor(0.75, 0.75, 0.75)
+crResDesc:SetWordWrap(true)
+crResDesc:SetText(MidnightL.S("resources_short_desc"))
+
+local function ResizeCopyrightFrame()
+    local fixedBottom = 38 + 24 + 6 + 24 + 14 + (crResLabel:GetStringHeight() or 14) + 4
+    local descH = crResDesc:GetStringHeight() or 0
+    local PAD_B = 14
+    copyrightFrame:SetHeight(math.ceil(fixedBottom + descH + PAD_B))
+end
+copyrightFrame:SetScript("OnShow", function()
+    C_Timer.After(0, ResizeCopyrightFrame)
+end)
+C_Timer.After(0, ResizeCopyrightFrame)
+
+local copyrightButton = createLetterButton("\194\169", 32, -10,
+    function()
+        if copyrightFrame:IsShown() then
+            copyrightFrame:Hide()
+        else
+            copyrightFrame:Show()
+        end
+    end,
+    nil, nil)
+
 SLASH_MIDNIGHTTRACKER1 = "/som"
 SlashCmdList["MIDNIGHTTRACKER"] = function()
     if frame:IsShown() then
@@ -1025,9 +1308,89 @@ SlashCmdList["MIDNIGHTTRACKER"] = function()
     end
 end
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Bouton minimap
+-- ─────────────────────────────────────────────────────────────────────────────
+MidnightTrackerDB.minimapAngle = MidnightTrackerDB.minimapAngle or (math.pi * 1.5)
+
+local minimapBtn = CreateFrame("Button", "MidnightMinimapButton", MinimapCluster)
+minimapBtn:SetSize(28, 28)
+minimapBtn:SetFrameStrata("MEDIUM")
+minimapBtn:SetFrameLevel(8)
+minimapBtn:SetClampedToScreen(false)
+
+local mmIcon = minimapBtn:CreateTexture(nil, "ARTWORK")
+mmIcon:SetTexture("Interface\\AddOns\\MidnightObjectiveTracker\\logo-32-circle")
+mmIcon:SetSize(26, 26)
+mmIcon:SetPoint("CENTER", minimapBtn, "CENTER", 0, 0)
+
+-- Masque circulaire natif WoW
+local mmMask = minimapBtn:CreateMaskTexture()
+mmMask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+mmMask:SetAllPoints(mmIcon)
+mmIcon:AddMaskTexture(mmMask)
+
+local mmHighlight = minimapBtn:CreateTexture(nil, "HIGHLIGHT")
+mmHighlight:SetTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+mmHighlight:SetBlendMode("ADD")
+mmHighlight:SetAllPoints(minimapBtn)
+
+local function MMB_UpdatePos()
+    local angle  = MidnightTrackerDB.minimapAngle or (math.pi * 1.5)
+    local radius = (Minimap:GetWidth() / 2) + (minimapBtn:GetWidth() / 2) - 2
+    minimapBtn:ClearAllPoints()
+    minimapBtn:SetPoint("CENTER", Minimap, "CENTER",
+        math.cos(angle) * radius,
+        math.sin(angle) * radius)
+end
+
+MMB_UpdatePos()
+
+local mmDragging = false
+minimapBtn:RegisterForDrag("LeftButton")
+minimapBtn:SetScript("OnDragStart", function(self)
+    mmDragging = true
+    self:LockHighlight()
+    self:SetScript("OnUpdate", function()
+        local mx, my = Minimap:GetCenter()
+        local cx, cy = GetCursorPosition()
+        local s = UIParent:GetEffectiveScale()
+        local angle = math.atan2((cy / s) - my, (cx / s) - mx)
+        MidnightTrackerDB.minimapAngle = angle
+        MMB_UpdatePos()
+    end)
+end)
+minimapBtn:SetScript("OnDragStop", function(self)
+    self:SetScript("OnUpdate", nil)
+    self:UnlockHighlight()
+    C_Timer.After(0.05, function() mmDragging = false end)
+end)
+
+minimapBtn:SetScript("OnClick", function(self, button)
+    if mmDragging then return end
+    if frame:IsShown() then
+        frame:Hide()
+    else
+        frame:Show()
+        Midnight:Refresh()
+    end
+end)
+
+minimapBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine("Midnight Objective Tracker", 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("minimap_open_close"), 1, 1, 1)
+    GameTooltip:AddLine(MidnightL.S("minimap_drag"), 0.6, 0.6, 0.6)
+    GameTooltip:Show()
+end)
+minimapBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
 C_Timer.After(0, function()
     local savedScale = MidnightTrackerDB.scale or 1.0
     ApplyMidnightScale(savedScale)
+    ApplyMidnightOpacity(MidnightTrackerDB.opacity or 1.0)
+    UpdateEscBehavior(MidnightTrackerDB.escCloses)
 end)
 
 local welcomeFrame = CreateFrame("Frame", "MidnightWelcomeFrame", UIParent, "BackdropTemplate")
@@ -1070,3 +1433,21 @@ welcomeEvent:SetScript("OnEvent", function()
     C_Timer.After(2, function() welcomeFrame:Show() end)
 end)
 
+local midnightWasShownOnZone = false
+
+local midnightZoneFrame = CreateFrame("Frame")
+midnightZoneFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
+midnightZoneFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+midnightZoneFrame:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadingUi)
+    if event == "PLAYER_LEAVING_WORLD" then
+        midnightWasShownOnZone = frame:IsShown()
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        MMB_UpdatePos()
+        if isInitialLogin or isReloadingUi then return end
+        if midnightWasShownOnZone then
+            frame:Show()
+            Midnight:Refresh()
+        end
+        midnightWasShownOnZone = false
+    end
+end)

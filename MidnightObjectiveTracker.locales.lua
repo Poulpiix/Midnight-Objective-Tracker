@@ -33,33 +33,21 @@ L.fr.title = "Suivi d'objectif Midnight"
 L.fr.planning = "Planning"
 L.fr.crests = "Écus"
 L.fr.resources = "Ressources"
-L.fr.discord_desc = "Copie l'adresse du serveur Discord de la guilde dont je suis membre (nous recherchons d'ailleurs nos derniers membres pour notre roster Mythique)"
-L.fr.twitch_desc = "Copie l'URL de ma chaîne Twitch, je live généralement du mardi au vendredi dès 18h."
-L.fr.resources_desc = "Copie l'URL des ressources ayant permis de créer ce guide, les données proviennent de différentes sources comme : Larias, WoW Head, Icy Vein, Judge Hype ou Blizz Spirit, elles ont été entrecroisées pour créer un guide de progression cohérent et optimisé."
 L.fr.resources_short_desc = "Les données proviennent de différentes sources comme : Larias, WoW Head, Icy Vein, Judge Hype ou Blizz Spirit, elles ont été entrecroisées pour créer un guide de progression cohérent et optimisé."
 L.fr.reset_info = "Les dates correspondent au reset hebdomadaire Français. Selon où vous jouez dans le monde, votre réinitialisation hebdomadaire sera décalée. A vous de vous adapter au besoin."
-L.fr.x_desc = "Copie l'URL de mon compte X (Twitter), si des questions il y a."
 L.fr.reset_checks = "Reset"
 L.fr.reset_checks_desc = "Réinitialise toutes les cases cochées du suivi d'objectifs."
 L.fr.ilvl_label = "Niveau d'objet"
 L.fr.ilvl_no_data = "N/A"
 L.fr.ilvl_button = "iLvl"
-L.fr.ilvl_button_title = "Référence des Niveaux d'Objet"
-L.fr.ilvl_button_desc = "Ouvre le guide de référence des niveaux d'objet"
-L.fr.crest_panel_title = "Écus"
 L.fr.slash_msg = "|cffFFD100[Midnight]|r Tapez /som pour ouvrir le suivi d'objectifs."
 L.fr.welcome_title = "Midnight Objective Tracker"
 L.fr.welcome_msg = "Tapez |cffFFD100/som|r dans le chat pour ouvrir le suivi d'objectifs."
 L.fr.no_data = "Aucune donnée."
 L.fr.no_csv_data = "Aucune donnée importée depuis le CSV."
-L.fr.scale_up = "Zoom +"
-L.fr.scale_up_desc = "Augmente la taille de l'interface (police et fenêtres)."
-L.fr.scale_down = "Zoom -"
-L.fr.scale_down_desc = "Réduit la taille de l'interface (police et fenêtres)."
-L.fr.scale_reset = "Zoom par défaut"
-L.fr.scale_reset_desc = "Réinitialise le zoom à sa valeur par défaut (clic droit)."
 L.fr.csv_error = "[Midnight] Erreur lors du parsing du CSV Planning : "
-
+L.fr.minimap_open_close = "Clic gauche : ouvrir / fermer"
+L.fr.minimap_drag = "Glisser : repositionner"
 L.fr.colorblind_title = "Accessibilité"
 L.fr.colorblind_none = "Vision normale"
 L.fr.colorblind_none_desc = "Palette de couleurs par défaut."
@@ -75,8 +63,19 @@ L.fr.colorblind_tritanopia = "Tritanopie"
 L.fr.colorblind_tritanopia_desc = "Absence de perception du bleu."
 L.fr.colorblind_tritanomaly = "Tritanomalie"
 L.fr.colorblind_tritanomaly_desc = "Perception altérée du bleu."
-L.fr.colorblind_setting_btn = "Accessibilité"
-L.fr.colorblind_setting_desc = "Options d'accessibilité pour les daltoniens."
+L.fr.contact_me = "Me contacter"
+L.fr.contact_me_tooltip = "Copie un lien que tu peux coller dans ton navigateur afin de me contacter."
+L.fr.support_me = "Supporte moi"
+L.fr.support_me_tooltip = "Copie un lien que tu peux coller dans ton navigateur si tu souhaites me payer un café."
+L.fr.copyright_title = "Liens & Ressources"
+L.fr.copyright_desc = "Réseaux sociaux, soutien et sources des données."
+L.fr.opacity_label = "Opacité de la fenêtre"
+L.fr.opacity_tooltip = "Ajuste la transparence de la fenêtre (15% = minimum, 100% = opaque)."
+L.fr.scale_label = "Taille des fenêtres"
+L.fr.scale_label_tooltip = "Ajuste la taille globale de l'interface (60% à 160%)."
+L.fr.esc_closes = "Échap ferme l'addon"
+
+L.fr.ilvl_raid_synth = "Bibelot"
 
 L.fr.mplus_title = "Écus"
 L.fr.planning_title = "Planning"
@@ -84,7 +83,8 @@ L.fr.ilvl_title = "Palier des niveaux d'équipements par contenu"
 L.fr.ilvl_upgrade_tracks = "Paliers d'amélioration (20 écus par palier)"
 L.fr.ilvl_crafted = "Artisanat"
 L.fr.ilvl_dungeon = "Donjons"
-L.fr.ilvl_raid = "Raids (estimations)"
+L.fr.ilvl_raid = "Raids (Faille du Rêve & Flèche du vide)"
+L.fr.ilvl_raid2 = "Raids : Marche de Quel'Danas"
 L.fr.ilvl_delve = "Gouffres abondants"
 L.fr.ilvl_quality = "Qualité"
 L.fr.ilvl_season = "Contenu"
@@ -129,7 +129,7 @@ L.fr.menuLabels = {
 
 L.fr.weeks = {
     {
-        title = "Accès Anticipé (27 fév. - 3 mars)",
+        title = "Semaine 1 : 27 fév. - 3 mars",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
             "XP : atteignez le niveau 90 avec les personnages que vous souhaitez jouer pendant Midnight.",
@@ -144,27 +144,27 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Hors-saison - Semaine 1 (4 - 10 mars)",
+        title = "Semaine 2 : 4 - 10 mars",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Renom : atteignez le rang 8 du renom « Hara'ti » pour obtenir une ceinture Champion 1/6 (246).",
             "Renom : atteignez le rang 9 du renom « Tribu des Amani » pour obtenir un collier Champion 1/6 (246).",
-            "Gouffre : débloquez le palier 3 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
+            "Gouffre : débloquez jusqu'au palier 7 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
             "Expédition : accomplissez des expéditions offrant de préférence des améliorations d'équipement.",
             "Traque : accomplissez des Traques en mode difficile (4 par semaine), offrant de l'équipement Vétéran 1/6 (233) (faites les en même temps que les expéditions).",
-            "Mythique 0 (hors-saison) : accomplissez tous les donjons en Mythique 0 (hors-saison), offrant de l'équipement Vétéran 3/6 (240) (n'améliorez pas l'équipement obtenu).",
             "Héroïque (hors-saison) : accomplissez tous les donjons en Héroïque (hors-saison), offrant de l'équipement Aventurier 2/6 (224) (n'améliorez pas l'équipement obtenu).",
+            "Mythique 0 (hors-saison) : accomplissez tous les donjons en Mythique 0 (hors-saison), offrant de l'équipement Vétéran 3/6 (240) (n'améliorez pas l'équipement obtenu).",
             "Niveau d'équipement estimé (selon RNG) : 3x 233, 8x 240, 4x 246"
 
         }
     },
     {
-        title = "Hors-saison - Semaine 2 (11 - 17 mars)",
+        title = "Semaine 3 : 11 - 17 mars",
         objectives = {
             "Ne dépensez aucun Écu sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
-            "Gouffre : débloquez le palier 3 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
+            "Gouffre : débloquez jusqu'au palier 7 (les paliers supérieurs étant bloqués jusqu'au 18 mars).",
             "Expédition : accomplissez des expéditions offrant de préférence des améliorations d'équipement.",
             "Traque : accomplissez des Traques en mode difficile (4 par semaine), offrant de l'équipement Vétéran 1/6 (233) (faites les en même temps que les expéditions).",
             "Mythique 0 (hors-saison) : accomplissez tous les donjons en Mythique 0 (hors-saison), offrant de l'équipement Vétéran 3/6 (240) (n'améliorez pas l'équipement obtenu).",
@@ -173,7 +173,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Saison 1 - Semaine 1 (18 - 24 mars)",
+        title = "Semaine 4 : 18 - 24 mars",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
@@ -191,7 +191,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 2 (25 - 31 mars)",
+        title = "Semaine 5 : 25 - 31 mars",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
@@ -209,7 +209,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 3 (1 - 7 avril)",
+        title = "Semaine 6 : 1 - 7 avril",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
@@ -226,12 +226,12 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 4 (8 - 14 avril)",
+        title = "Semaine 7 : 8 - 14 avril",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Grande Chambre Forte : ouvrez là pour obtenir un équipement Mythe 272+",
-            "Mythique + (Saison 1) : ccomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
+            "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour remplir les emplacements de votre Grande Chambre Forte et accumuler vos différents Écus.",
             "Hypothèse : nous partons du principe que vous avez obtenu un équipement Mythe (2/6, ilvl 276).",
             "Palier Héroïque : améliorez deux de vos équipements Hero 4/6 (269) -> 6/6 (276) contre 80x Écus de l'aube héroïque. Gardez 20x Écus de l'aube héroïque pour l'étape suivante.",
             "Palier Mythe : si l'équipement de votre Grande Chambre Forte est un équipement Mythe 1/6 (272), améliorez d'abord son équivalent Hero 6/6 (276) contre 20x Écus de l'aube héroïque. Améliorez ensuite votre équipement Mythe 1/6 (272) -> 6/6 (289) contre 80x Écus de l'aube mythique.",
@@ -241,7 +241,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 5 (15 - 21 avril)",
+        title = "Semaine 8 : 15 - 21 avril",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
@@ -255,7 +255,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 6 (22 - 28 avril)",
+        title = "Semaine 9 : 22 - 28 avril",
         objectives = {
             "Ne dépensez aucun Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
@@ -270,7 +270,7 @@ L.fr.weeks = {
         }
     },
     {
-        title = "Semaine 7+ (29 avril et après)",
+        title = "Semaine 10 : 29 avril et après",
         objectives = {
             "Artisanat : ne fabriquez aucun objet dans un emplacement si vous avez la possibilité d'obtenir dans votre Grande Chambre Forte des équipements supérieur à Mythe 1/6 (272).",
             "Priorité d'amélioration : améliorez vos équipements Mythe au fur et à mesure que vous les obtenez. Privilégiez une amélioration complète jusqu'a 6/6 (289) pour profiter du saut important de +4 niveaux d'objet.",
@@ -310,7 +310,7 @@ Mythique +12,20 x Ecu de l'aube mythique
 ]]
 
 L.fr.planning_csv = [[
-,27 février,4 mars,18 mars,25 mars,01 avril,8 avril
+,27 février,4 mars,18 mars,25 mars,01 avril,08 avril
 Expéditions,X,,,,,
 Traques,Normal,Difficile,Cauchemar,,,
 Boss monde,,,X,,,
@@ -343,31 +343,18 @@ L.en.title = "Midnight Objective Tracker"
 L.en.planning = "Planning"
 L.en.crests = "Crests"
 L.en.resources = "Resources"
-L.en.discord_desc = "Copies the Discord server address of the guild I'm a member of (we are also looking for our last members for our Mythic roster)"
-L.en.twitch_desc = "Copies my Twitch channel URL, I usually stream Tuesday to Friday from 6PM (CET)."
-L.en.resources_desc = "Copies the URL of resources used to create this guide, data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
 L.en.resources_short_desc = "Data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
 L.en.reset_info = "Dates correspond to the French weekly reset. Depending on where you play in the world, your weekly reset may differ. Adjust accordingly."
-L.en.x_desc = "Copies my X (Twitter) account URL, if you have any questions."
 L.en.reset_checks = "Reset"
 L.en.reset_checks_desc = "Resets all checked objectives in the tracker."
 L.en.ilvl_label = "Item Level"
 L.en.ilvl_no_data = "N/A"
 L.en.ilvl_button = "iLvl"
-L.en.ilvl_button_title = "Item Level Reference"
-L.en.ilvl_button_desc = "Open the Item Level reference guide"
-L.en.crest_panel_title = "Crests"
 L.en.slash_msg = "|cffFFD100[Midnight]|r Type /som to open the objective tracker."
 L.en.welcome_title = "Midnight Objective Tracker"
 L.en.welcome_msg = "Type |cffFFD100/som|r in the chat to open the objective tracker."
 L.en.no_data = "No data."
 L.en.no_csv_data = "No data imported from CSV."
-L.en.scale_up = "Zoom +"
-L.en.scale_up_desc = "Increase interface size (fonts and windows)."
-L.en.scale_down = "Zoom -"
-L.en.scale_down_desc = "Decrease interface size (fonts and windows)."
-L.en.scale_reset = "Default zoom"
-L.en.scale_reset_desc = "Reset zoom to default value (right-click)."
 L.en.csv_error = "[Midnight] Error parsing Planning CSV: "
 
 L.en.colorblind_title = "Accessibility"
@@ -385,8 +372,21 @@ L.en.colorblind_tritanopia = "Tritanopia"
 L.en.colorblind_tritanopia_desc = "Absence of blue perception."
 L.en.colorblind_tritanomaly = "Tritanomaly"
 L.en.colorblind_tritanomaly_desc = "Altered blue perception."
-L.en.colorblind_setting_btn = "Accessibility"
-L.en.colorblind_setting_desc = "Accessibility options for color blindness."
+L.en.contact_me = "Contact me"
+L.en.contact_me_tooltip = "Copies a link you can paste in your browser to contact me."
+L.en.support_me = "Support me"
+L.en.support_me_tooltip = "Copies a link you can paste in your browser if you'd like to buy me a coffee."
+L.en.copyright_title = "Links & Resources"
+L.en.copyright_desc = "Social links, support and data sources."
+L.en.opacity_label = "Window opacity"
+L.en.opacity_tooltip = "Adjusts the window transparency (15% = minimum, 100% = opaque)."
+L.en.scale_label = "Window scale"
+L.en.scale_label_tooltip = "Adjusts the global interface size (60% to 160%)."
+L.en.esc_closes = "Escape closes addon"
+L.en.minimap_open_close = "Left click: open / close"
+L.en.minimap_drag = "Drag: reposition"
+
+L.en.ilvl_raid_synth = "Curio"
 
 L.en.mplus_title = "Crests"
 L.en.planning_title = "Planning"
@@ -394,7 +394,8 @@ L.en.ilvl_title = "Season 1 Gear Tier by Content"
 L.en.ilvl_upgrade_tracks = "Upgrade (20 crests per step)"
 L.en.ilvl_crafted = "Crafting"
 L.en.ilvl_dungeon = "Dungeons"
-L.en.ilvl_raid = "Raids (Estimation)"
+L.en.ilvl_raid = "Raids (Dream Rift & Void Arrow)"
+L.en.ilvl_raid2 = "Raids: March of Quel'Danas"
 L.en.ilvl_delve = "Bountiful delves"
 L.en.ilvl_quality = "Quality"
 L.en.ilvl_season = "Content"
@@ -439,61 +440,60 @@ L.en.menuLabels = {
 
 L.en.weeks = {
     {
-        title = "Early Access (Feb 27 - Mar 3)",
+        title = "Week 1: Feb 27 - Mar 3",
         objectives = {
             "Do not spend any Crest unless asked.",
             "XP: reach level 90 with the characters you want to play during Midnight.",
             "Crests: reach the weekly cap for all your Crests.",
             "Event: no need to wait until Sunday for the 'Darkmoon Faire' reputation bonus; it has been nerfed and now applies a PENALTY to Midnight renowns.",
             "Renown: reach rank 7 of 'The Singularity' renown for a Champion 1/6 (246) trinket.",
-            "Renown: reach rank 9 of 'Amani Tribe' renown for a Champion 1/6 (246) necklace.",
+            "Renown: reach rank 9 of 'Silvermoon Court' renown for a Champion 1/6 (246) helmet.",
             "Expedition: complete expeditions offering Adventurer 1/6 (220) and 2/6 (224) gear.",
-            "Prey: complete Preys in Normal mode (4 per week), offering Adventurer 1/6 (220) gear (do them at the same time as expeditions).",
+            "Hunt: complete Hunts in Normal mode (4 per week), offering Adventurer 1/6 (220) gear (do them at the same time as expeditions).",
             "Fulgurion: complete the Fulgurion Assault on Voidstorm to obtain Adventurer 1/6 (220) gear and at the same time complete the renown quest for the Champion 1/6 (246) trinket.",
             "Estimated gear level (based on RNG): 12x 224, 1x 227, 2x 246"
         }
     },
     {
-        title = "Off-season - Week 1 (Mar 4 - 10)",
+        title = "Week 2: Mar 4 - 10",
         objectives = {
             "Do not spend any Crest unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
             "Renown: reach rank 8 of 'Hara'ti' renown for a Champion 1/6 (246) belt.",
-            "Renown: reach rank 9 of 'Silvermoon Court' renown for a Champion 1/6 (246) helmet.",
             "Renown: reach rank 9 of 'Amani Tribe' renown for a Champion 1/6 (246) necklace.",
-            "Delve: unlock tier 3 (higher tiers are locked until March 18).",
+            "Delve: unlock tier 7 (higher tiers are locked until March 18).",
             "Expedition: complete expeditions that preferably offer gear upgrades.",
-            "Prey: complete Preys in Hard mode (4 per week), offering Vétéran 1/6 (233) gear (do them at the same time as expeditions).",
-            "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Vétéran 3/6 (240) gear (do not upgrade obtained gear).",
+            "Hunt: complete Hunts in Hard mode (4 per week), offering Veteran 1/6 (233) gear (do them at the same time as expeditions).",
             "Heroic (off-season): complete all Heroic (off-season) dungeons, offering Adventurer 2/6 (224) gear (do not upgrade obtained gear).",
+            "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Veteran 3/6 (240) gear (do not upgrade obtained gear).",
             "Estimated gear level (based on RNG): 3x 233, 8x 240, 4x 246"
         }
     },
     {
-        title = "Off-season - Week 2 (Mar 11 - 17)",
+        title = "Week 3: Mar 11 - 17",
         objectives = {
             "Do not spend any Crest unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
-            "Delve: unlock tier 3 (higher tiers are locked until March 18).",
+            "Delve: unlock tier 7 (higher tiers are locked until March 18).",
             "Expedition: complete expeditions that preferably offer gear upgrades.",
-            "Prey: complete Preys in Hard mode (4 per week), offering Vétéran 1/6 (233) gear (do them at the same time as expeditions).",
-            "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Vétéran 3/6 (240) gear (do not upgrade obtained gear).",
+            "Hunt: complete Hunts in Hard mode (4 per week), offering Veteran 1/6 (233) gear (do them at the same time as expeditions).",
+            "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Veteran 3/6 (240) gear (do not upgrade obtained gear).",
             "Crafting: prepare crafting materials if you plan to raid on March 18.",
             "Estimated gear level (based on RNG): 10x 240, 4x 246"
         }
     },
     {
-        title = "Season 1 - Week 1 (Mar 18 - 24)",
+        title = "Week 4: Mar 18 - 24",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
             "Class Set: use the Raids tool (LFR) to obtain set pieces.",
             "Mythic 0 (Pre-season): complete a World Tour of Mythic 0 (Pre-season) dungeons, now offering Champion 2/6 (250) gear.",
             "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
-            "Prey: complete Preys in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
+            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
             "PvP: complete the PvP quest to get a guaranteed Hero necklace or ring (if available, as it recently disappeared from the beta).",
             "Delve: complete Bountiful Delves (tier 11) with keys and map for Champion 2/6 (250) gear.",
-            "Crafting: craft 2 Vétéran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots).",
+            "Crafting: craft 2 Veteran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots).",
             "Raid: complete Normal and Heroic mode.",
             "Optimization: spend all Veteran Dawn Crests and Champion Dawn Crests before entering the raid.",
             "Crests spent: 0/100 Heroic Dawn Crests and 0/100 Mythic Dawn Crests.",
@@ -501,14 +501,14 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 2 (Mar 25 - 31)",
+        title = "Week 5: Mar 25 - 31",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
             "Crafting: if your class Discord recommends it, use 1 spark to craft a Myth 1/5 (272) with embellishment (this will be rather rare, so adapt for the rest of the guide).",
             "Class Set: use the Raids tool (LFR) to obtain set pieces.",
             "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
-            "Prey: complete Preys in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
+            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
             "Delve: complete Bountiful Delves (tier 11) with keys and map for Champion 2/6 (250) gear.",
             "Mythic+ (Season 1): complete +10 dungeons (minimum) for Hero 3/6 (266) gear, if too difficult, do +8 for Hero 2/6 (263) gear.",
             "Raid: complete Normal and Heroic mode before starting Mythic progression.",
@@ -519,7 +519,7 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 3 (Apr 1 - 7)",
+        title = "Week 6: Apr 1 - 7",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
@@ -536,7 +536,7 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 4 (Apr 8 - 14)",
+        title = "Week 7: Apr 8 - 14",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
@@ -551,7 +551,7 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 5 (Apr 15 - 21)",
+        title = "Week 8: Apr 15 - 21",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
@@ -565,7 +565,7 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 6 (Apr 22 - 28)",
+        title = "Week 9: Apr 22 - 28",
         objectives = {
             "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
@@ -580,7 +580,7 @@ L.en.weeks = {
         }
     },
     {
-        title = "Week 7+ (Apr 29 and after)",
+        title = "Week 10: Apr 29 and after",
         objectives = {
             "Crafting: do not craft any item in a slot if you can get gear higher than Myth 1/6 (272) from your Great Vault.",
             "Upgrade priority: upgrade your Myth gear as you obtain it. Prioritize a full upgrade to 6/6 (289) to benefit from the significant +4 item level jump.",
@@ -591,11 +591,11 @@ L.en.weeks = {
 
 L.en.mplus_csv = [[
 Source,Quantities
-M0,TBA
 LFR Raid,TBA
 Normal Raid,TBA
 Heroic Raid,TBA
 Mythic Raid,TBA
+M0,TBA
 Mythic +2,10 x Heroic Dawn Crest
 Delve Tier 2,TBA
 Mythic +3,12 x Heroic Dawn Crest
@@ -622,7 +622,7 @@ Mythic +12,20 x Mythic Dawn Crest
 L.en.planning_csv = [[
 Week,Feb 27,Mar 4,Mar 18,Mar 25,Apr 1,Apr 8
 Expedition,X,,,,,
-Prey,Normal,Hard,Nightmare,,,
+Hunt,Normal,Hard,Nightmare,,,
 World Boss,,,X,,,
 "Arena & BG",,,"Honor (276)
 War Mode (276)
@@ -640,9 +640,7 @@ Void Arrow
 (LFR Wing 1 - Normal - Heroic)","Dream Rift
 (Mythic)
 Void Arrow
-(Story, LFR Wing 2 - Mythic)","Dream Rift
-(Mythic)
-Void Arrow
+(Story, LFR Wing 2 - Mythic)","Void Arrow
 (LFR Wing 3)
 March of Quel'Danas
 (Normal, Heroic, Mythic)","March of Quel'Danas
