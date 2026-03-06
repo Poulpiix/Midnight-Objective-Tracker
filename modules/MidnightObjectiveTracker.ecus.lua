@@ -1,4 +1,4 @@
-﻿local Mplus = {}
+local Mplus = {}
 _G["MidnightMplus"] = Mplus
 
 local function getCSV()
@@ -87,6 +87,13 @@ local function parseCSV(s)
     return rows
 end
 
+local function getAccent()
+    if MidnightTracker and MidnightTracker.GetAccentColor then
+        return MidnightTracker.GetAccentColor()
+    end
+    return 1, 0.82, 0
+end
+
 local PAD_L = 15
 local PAD_R = 15
 local PAD_T = 36
@@ -94,15 +101,16 @@ local PAD_B = 14
 
 local mframe = CreateFrame("Frame", "MidnightMplusFrame", UIParent, "BackdropTemplate")
 mframe:SetSize(360, 200)
-mframe:SetPoint("CENTER")
+mframe:SetPoint("TOPRIGHT", MidnightTrackerFrame, "TOPLEFT", 6, 0)
 mframe:SetBackdrop({
-    bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
+    bgFile = "Interface/Buttons/WHITE8X8",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
     insets   = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-mframe:SetBackdropColor(0, 0, 0, 0.95)
+mframe:SetBackdropColor(0, 0, 0, 1)
 mframe:SetBackdropBorderColor(1, 0.82, 0, 1)
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(mframe) end
 mframe:SetMovable(true)
 mframe:EnableMouse(true)
 mframe:RegisterForDrag("LeftButton")
@@ -113,6 +121,7 @@ table.insert(UISpecialFrames, "MidnightMplusFrame")
 
 local mtitle = mframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 mtitle:SetPoint("TOP", mframe, "TOP", 0, -15)
+do local ar, ag, ab = getAccent(); mtitle:SetTextColor(ar, ag, ab) end
 mtitle:SetText(MidnightL.S("mplus_title"))
 
 local mclose = CreateFrame("Button", nil, mframe, "UIPanelButtonTemplate")
@@ -121,17 +130,12 @@ mclose:SetPoint("TOPRIGHT", mframe, "TOPRIGHT", -10, -10)
 mclose:SetText("X")
 mclose:SetNormalFontObject("GameFontNormalSmall")
 mclose:SetHighlightFontObject("GameFontNormalSmall")
-local mcloseBtnFs = mclose:GetFontString()
-if mcloseBtnFs then
-    mcloseBtnFs:ClearAllPoints()
-    mcloseBtnFs:SetPoint("CENTER", 0, 0)
-    mcloseBtnFs:SetJustifyH("CENTER")
-    mcloseBtnFs:SetJustifyV("MIDDLE")
-end
 mclose:SetScript("OnClick", function()
     mframe:Hide()
 end)
 mclose:SetFrameLevel(mframe:GetFrameLevel() + 5)
+if MidnightTracker and MidnightTracker.RegisterButtonText then MidnightTracker.RegisterButtonText(mclose) end
+if MidnightTracker and MidnightTracker.RegisterPanelButton then MidnightTracker.RegisterPanelButton(mclose) end
 
 local content = CreateFrame("Frame", nil, mframe)
 content:SetPoint("TOPLEFT", mframe, "TOPLEFT", PAD_L, -PAD_T)
@@ -172,7 +176,7 @@ local function RefreshMplus()
     local headerH = 20
     local bgExtend = 7
     local headerBg = content:CreateTexture(nil, "BACKGROUND")
-    headerBg:SetColorTexture(1, 0.78, 0, 0.18)
+    do local ar, ag, ab = getAccent(); headerBg:SetColorTexture(ar, ag * 0.95, ab, 0.18) end
     headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
     headerBg:SetSize(totalTableW + bgExtend * 2, headerH)
     table.insert(rows, headerBg)
@@ -187,12 +191,12 @@ local function RefreshMplus()
         h:SetJustifyV("MIDDLE")
         local htext = headers[ci] or ("Col " .. ci)
         if ci == 1 then
-            htext = (MidnightL.GetLocale() == "fr") and "Contenu" or "Content"
+            htext = MidnightL.S("ilvl_season")
         else
             htext = htext:gsub("%s*%b()", ""):match("^%s*(.-)%s*$") or htext
         end
         h:SetText(htext)
-        h:SetTextColor(1, 0.92, 0.3)
+        do local ar, ag, ab = getAccent(); h:SetTextColor(ar, ag, ab) end
         table.insert(rows, h)
         hx = hx + (widths[ci] or 100) + colSpacing
     end
@@ -227,9 +231,11 @@ local function RefreshMplus()
                     restCore = restCore or rest
                     local norm = restCore:gsub("\226\128\153", "'"):lower()
                     local coloredCore = "|cffffffff" .. restCore .. "|r"
-                    if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true) then
+                    if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true)
+                    or norm:find("mythisch", 1, true) or norm:find("amanecer m", 1, true) then
                         coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff" .. MidnightL.C("mythic") .. restCore .. "|r"
-                    elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true) then
+                    elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true)
+                    or norm:find("heroisch", 1, true) or norm:find("amanecer hero", 1, true) then
                         coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff" .. MidnightL.C("heroic") .. restCore .. "|r"
                     elseif norm:find("aventure", 1, true) or norm:find("adventurer", 1, true) then
                         coloredCore = "|cff" .. MidnightL.C("adventurer") .. restCore .. "|r"
@@ -282,6 +288,7 @@ end
 
 function Mplus.Show()
     mtitle:SetText(MidnightL.S("mplus_title"))
+    do local ar, ag, ab = getAccent(); mtitle:SetTextColor(ar, ag, ab) end
     RefreshMplus()
     mframe:Show()
     C_Timer.After(0, RefreshMplus)
@@ -289,4 +296,13 @@ end
 
 function Mplus.Hide()
     mframe:Hide()
+end
+
+if MidnightTracker and MidnightTracker.RegisterAccentColorCallback then
+    MidnightTracker.RegisterAccentColorCallback(function(r, g, b)
+        mtitle:SetTextColor(r, g, b)
+        if mframe:IsShown() then
+            RefreshMplus()
+        end
+    end)
 end

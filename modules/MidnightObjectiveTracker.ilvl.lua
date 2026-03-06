@@ -1,5 +1,12 @@
-﻿local Ilvl = {}
+local Ilvl = {}
 _G["MidnightIlvl"] = Ilvl
+
+local function getAccent()
+    if MidnightTracker and MidnightTracker.GetAccentColor then
+        return MidnightTracker.GetAccentColor()
+    end
+    return 1, 0.82, 0
+end
 
 local function colorizeTrack(text)
     local advColor   = MidnightL.C("adventurer")
@@ -42,11 +49,11 @@ local ICON_MYTH  = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t"
 
 local function getLocalizedData()
     local locale = MidnightL.GetLocale()
-    local adv   = locale == "fr" and "Aventurier" or "Adventurer"
-    local vet   = locale == "fr" and "Vétéran"    or "Veteran"
-    local champ = locale == "fr" and "Champion"   or "Champion"
-    local hero  = locale == "fr" and "Héro"       or "Hero"
-    local myth  = locale == "fr" and "Mythe"      or "Myth"
+    local adv   = MidnightL.S("ilvl_adventurer")
+    local vet   = MidnightL.S("ilvl_veteran")
+    local champ = MidnightL.S("ilvl_champion")
+    local hero  = MidnightL.S("ilvl_hero")
+    local myth  = MidnightL.S("ilvl_myth")
 
     local crestAdv   = ICON_ADV   .. " |cff" .. MidnightL.C("adventurer") .. MidnightL.S("ilvl_crest_adv")   .. "|r"
     local crestVet   = ICON_VET   .. " |cff" .. MidnightL.C("veteran")    .. MidnightL.S("ilvl_crest_vet")   .. "|r"
@@ -148,13 +155,14 @@ local iframe = CreateFrame("Frame", "MidnightIlvlFrame", UIParent, "BackdropTemp
 iframe:SetSize(1080, 680)
 iframe:SetPoint("CENTER")
 iframe:SetBackdrop({
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+    bgFile = "Interface/Buttons/WHITE8X8",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
     insets = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-iframe:SetBackdropColor(0, 0, 0, 0.95)
+iframe:SetBackdropColor(0, 0, 0, 1)
 iframe:SetBackdropBorderColor(1, 0.82, 0, 1)
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(iframe) end
 iframe:SetMovable(true)
 iframe:EnableMouse(true)
 iframe:RegisterForDrag("LeftButton")
@@ -165,6 +173,7 @@ table.insert(UISpecialFrames, "MidnightIlvlFrame")
 
 local ititle = iframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ititle:SetPoint("TOP", iframe, "TOP", 0, -12)
+do local ar, ag, ab = getAccent(); ititle:SetTextColor(ar, ag, ab) end
 
 local iclose = CreateFrame("Button", nil, iframe, "UIPanelButtonTemplate")
 iclose:SetSize(20, 20)
@@ -172,17 +181,12 @@ iclose:SetPoint("TOPRIGHT", iframe, "TOPRIGHT", -10, -10)
 iclose:SetText("X")
 iclose:SetNormalFontObject("GameFontNormalSmall")
 iclose:SetHighlightFontObject("GameFontNormalSmall")
-local icloseBtnFs = iclose:GetFontString()
-if icloseBtnFs then
-    icloseBtnFs:ClearAllPoints()
-    icloseBtnFs:SetPoint("CENTER", 0, 0)
-    icloseBtnFs:SetJustifyH("CENTER")
-    icloseBtnFs:SetJustifyV("MIDDLE")
-end
 iclose:SetScript("OnClick", function()
     iframe:Hide()
 end)
 iclose:SetFrameLevel(iframe:GetFrameLevel() + 5)
+if MidnightTracker and MidnightTracker.RegisterButtonText  then MidnightTracker.RegisterButtonText(iclose) end
+if MidnightTracker and MidnightTracker.RegisterPanelButton then MidnightTracker.RegisterPanelButton(iclose) end
 
 local content = CreateFrame("Frame", nil, iframe)
 content:SetPoint("TOPLEFT", iframe, "TOPLEFT", 20, -35)
@@ -192,7 +196,7 @@ local rows = {}
 
 local function colorizeIlvl(text, applyToAll)
     if not text or text == "" or text == "?" or text == "-" then return text end
-    
+
     if applyToAll then
         return text:gsub("(%d+)", function(numStr)
             local n = tonumber(numStr)
@@ -226,7 +230,7 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
 
     if title then
         local titleBg = content:CreateTexture(nil, "BACKGROUND")
-        titleBg:SetColorTexture(1, 0.78, 0, 0.18)
+        do local ar, ag, ab = getAccent(); titleBg:SetColorTexture(ar, ag * 0.95, ab, 0.18) end
         titleBg:SetPoint("TOPLEFT", content, "TOPLEFT", x - 3, y + 2)
         titleBg:SetWidth(tableWidth + 6)
         titleBg:SetHeight(18)
@@ -239,7 +243,7 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
         sectionTitle:SetJustifyH("CENTER")
         sectionTitle:SetJustifyV("MIDDLE")
         sectionTitle:SetText(title)
-        sectionTitle:SetTextColor(1, 0.92, 0.3)
+        do local ar, ag, ab = getAccent(); sectionTitle:SetTextColor(ar, ag, ab) end
         table.insert(rows, sectionTitle)
         y = y - 20
     end
@@ -260,12 +264,12 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
         h:SetJustifyH("CENTER")
         h:SetJustifyV("MIDDLE")
         h:SetText(htext)
-        h:SetTextColor(1, 0.82, 0)
+        do local ar, ag, ab = getAccent(); h:SetTextColor(ar, ag, ab) end
         table.insert(rows, h)
         headerX = headerX + colWidths[i] + 5
     end
     y = y - 18
-    
+
     for ri, row in ipairs(dataRows) do
         local rowX = x
         for ci, cellText in ipairs(row) do
@@ -281,7 +285,7 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             else
                 displayText = colorizeIlvl(cellText, true)
             end
-            
+
             local f = content:CreateFontString(nil, "OVERLAY", fontSize)
             f:SetPoint("TOPLEFT", content, "TOPLEFT", rowX, y - 2)
             f:SetWidth(colWidths[ci])
@@ -293,7 +297,7 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             table.insert(rows, f)
             rowX = rowX + colWidths[ci] + 5
         end
-        
+
         if (ri % 2) == 1 then
             local bg = content:CreateTexture(nil, "BACKGROUND")
             bg:SetColorTexture(0, 0, 0, 0.3)
@@ -302,10 +306,10 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             bg:SetHeight(18)
             table.insert(rows, bg)
         end
-        
+
         y = y - 18
     end
-    
+
     return y
 end
 
@@ -314,9 +318,9 @@ local function RefreshIlvl()
         if type(r.Hide) == 'function' then r:Hide() end
     end
     rows = {}
-    
+
     ititle:SetText(MidnightL.S("ilvl_title"))
-    
+
     local data = getLocalizedData()
 
     local col1X = 0
@@ -333,32 +337,32 @@ local function RefreshIlvl()
     col1Y = renderTable(col1X, col1Y, upgradeHeaders, upgradeRows, {38, 120, 185}, MidnightL.S("ilvl_upgrade_tracks"), true, 2, 3, "GameFontNormalSmall", nil, {[1]=true, [2]=true, [3]=true})
 
     local col2Y = -5
-    
+
     local dungeonHeaders = {MidnightL.S("ilvl_season"), MidnightL.S("ilvl_end_loot"), MidnightL.S("ilvl_great_vault")}
     local dungeonRows = {}
     for _, row in ipairs(data.dungeon) do
         table.insert(dungeonRows, {row.source, row.endLoot, row.vault})
     end
     col2Y = renderTable(col2X, col2Y, dungeonHeaders, dungeonRows, {110, 50, 80}, MidnightL.S("ilvl_dungeon"), false, nil, 1, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true})
-    
+
     col2Y = col2Y - 10
-    
+
     local delveHeaders = {MidnightL.S("ilvl_tier"), MidnightL.S("ilvl_end_loot"), MidnightL.S("ilvl_map_drop"), MidnightL.S("ilvl_great_vault")}
     local delveRows = {}
     for _, row in ipairs(data.delve) do
         table.insert(delveRows, {row.tier, row.endLoot, row.mapDrop, row.vault})
     end
     col2Y = renderTable(col2X, col2Y, delveHeaders, delveRows, {32, 52, 58, 78}, MidnightL.S("ilvl_delve"), false, nil, 1, "GameFontNormalSmall", nil, {[1]=true, [2]=true, [3]=true, [4]=true})
-    
+
     local col3Y = -5
-    
+
     local raidHeaders = {MidnightL.S("ilvl_difficulty"), MidnightL.S("ilvl_end_loot"), MidnightL.S("ilvl_raid_synth"), MidnightL.S("ilvl_great_vault")}
     local raidRows = {}
     for _, row in ipairs(data.raid) do
         table.insert(raidRows, {row.difficulty, row.normal, row.mid, row.late})
     end
     col3Y = renderTable(col3X, col3Y, raidHeaders, raidRows, {70, 130, 90, 88}, MidnightL.S("ilvl_raid"), false, nil, nil, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true, [4]=true})
-    
+
     col3Y = col3Y - 12
 
     local raidRows2 = {}
@@ -366,7 +370,7 @@ local function RefreshIlvl()
         table.insert(raidRows2, {row.difficulty, row.normal, row.mid, row.late})
     end
     col3Y = renderTable(col3X, col3Y, raidHeaders, raidRows2, {70, 130, 90, 88}, MidnightL.S("ilvl_raid2"), false, nil, nil, "GameFontNormalSmall", true, {[1]=true, [2]=true, [3]=true, [4]=true})
-    
+
     col3Y = col3Y - 12
 
     local locale = MidnightL.GetLocale()
@@ -390,6 +394,8 @@ local function RefreshIlvl()
 end
 
 function Ilvl.Show()
+    ititle:SetText(MidnightL.S("ilvl_title"))
+    do local ar, ag, ab = getAccent(); ititle:SetTextColor(ar, ag, ab) end
     RefreshIlvl()
     iframe:Show()
     C_Timer.After(0, RefreshIlvl)
@@ -397,4 +403,13 @@ end
 
 function Ilvl.Hide()
     iframe:Hide()
+end
+
+if MidnightTracker and MidnightTracker.RegisterAccentColorCallback then
+    MidnightTracker.RegisterAccentColorCallback(function(r, g, b)
+        ititle:SetTextColor(r, g, b)
+        if iframe:IsShown() then
+            RefreshIlvl()
+        end
+    end)
 end

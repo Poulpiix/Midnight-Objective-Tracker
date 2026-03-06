@@ -1,5 +1,12 @@
-﻿local PlanningContenu = {}
+local PlanningContenu = {}
 _G["MidnightPlanningContenu"] = PlanningContenu
+
+local function getAccent()
+    if MidnightTracker and MidnightTracker.GetAccentColor then
+        return MidnightTracker.GetAccentColor()
+    end
+    return 1, 0.82, 0
+end
 
 local function getPlanningCSV()
     return MidnightL[MidnightL.GetLocale()].planning_csv
@@ -142,6 +149,30 @@ local function colorizePlanningCell(text)
         text = text:gsub("(Dungeons?)",             "|cff" .. cInst .. "%1|r")
         text = text:gsub("(Raids?)",                "|cff" .. cInst .. "%1|r")
         text = text:gsub("(%u%l%l %d%d?)",          "|cff" .. cInst .. "%1|r")
+    elseif loc == "de" then
+        text = text:gsub("(Traumriss)",                            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Leerepfeil)",                           "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Marsch von Quel\226\128\153Danas)",     "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(M%+%d*)",                               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Expeditions?)",                         "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Jagds?)",                               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Weltboss)",                             "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(PvP)",                                  "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Gew\195\182lbe?)",                      "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Dungeons?)",                            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Schlachtz\195\188ge?)",                 "|cff" .. cInst .. "%1|r")
+    elseif loc == "es" then
+        text = text:gsub("(Grieta del Sue\195\177o)",              "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Flecha del Vac\195\173o)",              "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Marcha de Quel\226\128\153Danas)",      "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(M%+%d*)",                               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Expedici\195\179n[es]*)",               "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Cacer\195\173as?)",                     "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Jefe del mundo)",                       "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(JcJ)",                                  "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Escarpes?)",                            "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Mazmorras?)",                           "|cff" .. cInst .. "%1|r")
+        text = text:gsub("(Incursiones?)",                         "|cff" .. cInst .. "%1|r")
     else
         text = text:gsub("(Faille du rêve)",         "|cff" .. cInst .. "%1|r")
         text = text:gsub("(Flèche du vide)",         "|cff" .. cInst .. "%1|r")
@@ -178,15 +209,16 @@ local PAD_B  = 15
 
 local pframe = CreateFrame("Frame", "MidnightPlanningContenuFrame", UIParent, "BackdropTemplate")
 pframe:SetSize(300, 100)
-pframe:SetPoint("CENTER")
+pframe:SetPoint("TOPRIGHT", MidnightTrackerFrame, "TOPLEFT", 6, 0)
 pframe:SetBackdrop({
-    bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
+    bgFile = "Interface/Buttons/WHITE8X8",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     edgeSize = 16,
     insets   = { left = 8, right = 8, top = 8, bottom = 8 },
 })
-pframe:SetBackdropColor(0, 0, 0, 0.95)
+pframe:SetBackdropColor(0, 0, 0, 1)
 pframe:SetBackdropBorderColor(1, 0.82, 0, 1)
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(pframe) end
 pframe:SetMovable(true)
 pframe:EnableMouse(true)
 pframe:RegisterForDrag("LeftButton")
@@ -197,6 +229,7 @@ table.insert(UISpecialFrames, "MidnightPlanningContenuFrame")
 
 local ptitle = pframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ptitle:SetPoint("TOP", pframe, "TOP", 0, -15)
+do local ar, ag, ab = getAccent(); ptitle:SetTextColor(ar, ag, ab) end
 ptitle:SetText(MidnightL.S("planning_title"))
 
 local pclose = CreateFrame("Button", nil, pframe, "UIPanelButtonTemplate")
@@ -205,17 +238,12 @@ pclose:SetPoint("TOPRIGHT", pframe, "TOPRIGHT", -10, -10)
 pclose:SetText("X")
 pclose:SetNormalFontObject("GameFontNormalSmall")
 pclose:SetHighlightFontObject("GameFontNormalSmall")
-local pcloseBtnFs = pclose:GetFontString()
-if pcloseBtnFs then
-    pcloseBtnFs:ClearAllPoints()
-    pcloseBtnFs:SetPoint("CENTER", 0, 0)
-    pcloseBtnFs:SetJustifyH("CENTER")
-    pcloseBtnFs:SetJustifyV("MIDDLE")
-end
 pclose:SetScript("OnClick", function()
     pframe:Hide()
 end)
 pclose:SetFrameLevel(pframe:GetFrameLevel() + 5)
+if MidnightTracker and MidnightTracker.RegisterButtonText then MidnightTracker.RegisterButtonText(pclose) end
+if MidnightTracker and MidnightTracker.RegisterPanelButton then MidnightTracker.RegisterPanelButton(pclose) end
 
 local content = CreateFrame("Frame", nil, pframe)
 content:SetPoint("TOPLEFT", pframe, "TOPLEFT", PAD_L, -PAD_T)
@@ -272,7 +300,7 @@ local function RefreshPlanningContenu()
     local headerH = 20
 
     local headerBg = content:CreateTexture(nil, "BACKGROUND")
-    headerBg:SetColorTexture(1, 0.78, 0, 0.18)
+    do local ar, ag, ab = getAccent(); headerBg:SetColorTexture(ar, ag * 0.95, ab, 0.18) end
     headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", 0, y)
     headerBg:SetSize(totalTableW, headerH)
     table.insert(rows, headerBg)
@@ -286,7 +314,7 @@ local function RefreshPlanningContenu()
         h:SetJustifyH(ci == 1 and "LEFT" or "CENTER")
         h:SetJustifyV("MIDDLE")
         h:SetText(headers[ci] or "")
-        h:SetTextColor(1, 0.92, 0.3)
+        do local ar, ag, ab = getAccent(); h:SetTextColor(ar, ag, ab) end
         table.insert(rows, h)
         hx = hx + widths[ci] + colSpacing
     end
@@ -308,7 +336,7 @@ local function RefreshPlanningContenu()
             f:SetWordWrap(true)
             f:SetText(displayText)
             if ci == 1 then
-                f:SetTextColor(1, 0.92, 0.3)
+                do local ar, ag, ab = getAccent(); f:SetTextColor(ar, ag, ab) end
             else
                 f:SetTextColor(1, 1, 1)
             end
@@ -354,6 +382,7 @@ end
 
 function PlanningContenu.Show()
     ptitle:SetText(MidnightL.S("planning_title"))
+    do local ar, ag, ab = getAccent(); ptitle:SetTextColor(ar, ag, ab) end
     RefreshPlanningContenu()
     pframe:Show()
     C_Timer.After(0, RefreshPlanningContenu)
@@ -361,4 +390,13 @@ end
 
 function PlanningContenu.Hide()
     pframe:Hide()
+end
+
+if MidnightTracker and MidnightTracker.RegisterAccentColorCallback then
+    MidnightTracker.RegisterAccentColorCallback(function(r, g, b)
+        ptitle:SetTextColor(r, g, b)
+        if pframe:IsShown() then
+            RefreshPlanningContenu()
+        end
+    end)
 end

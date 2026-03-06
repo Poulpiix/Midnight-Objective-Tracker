@@ -1,15 +1,24 @@
 ## Interface: 120000, 120001
 ## Title: MidnightObjectiveTracker
 ## Author: Poulpix (twitch.tv/poulpi_x)
-## Version: 5.4
+## Version: 5.5
 ## License: All Rights Reserved
-## Notes: Suivi d'objectifs pour le lancement de Midnight
+## Notes: Week-by-week objective tracker for World of Warcraft: Midnight
+## Notes-frFR: Suivi d'objectifs pour le lancement de Midnight
+## Notes-frCA: Suivi d'objectifs pour le lancement de Midnight
+## Notes-deDE: Wöchentlicher Ziele-Verfolger für World of Warcraft: Midnight
+## Notes-esES: Seguimiento semanal de objetivos para World of Warcraft: Midnight
+## Notes-esMX: Seguimiento semanal de objetivos para World of Warcraft: Midnight
 ## X-Curse-Project-ID: 1469813
-## SavedVariables: MidnightTrackerDB
+## SavedVariables: MidnightObjectiveTrackerDB
 ## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
 
-MidnightObjectiveTracker.locales.lua
+locales\MidnightObjectiveTracker.locales.lua
+locales\MidnightObjectiveTracker.locales.fr.lua
+locales\MidnightObjectiveTracker.locales.en.lua
+locales\MidnightObjectiveTracker.locales.de.lua
+locales\MidnightObjectiveTracker.locales.es.lua
 MidnightObjectiveTracker.lua
-MidnightObjectiveTracker.planningcontenu.lua
-MidnightObjectiveTracker.ecus.lua
-MidnightObjectiveTracker.ilvl.lua
+modules\MidnightObjectiveTracker.planningcontenu.lua
+modules\MidnightObjectiveTracker.ecus.lua
+modules\MidnightObjectiveTracker.ilvl.lua
