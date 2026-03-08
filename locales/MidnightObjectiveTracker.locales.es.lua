@@ -7,7 +7,7 @@ L.es.planning = "Planificación"
 L.es.crests = "Blasones"
 L.es.resources = "Recursos"
 L.es.resources_short_desc = "Los datos provienen de diversas fuentes como: Larias, WoW Head, Icy Veins, Judge Hype o Blizz Spirit, contrastados para crear una guía de progresión coherente y optimizada."
-L.es.reset_info = "Las fechas corresponden al reinicio semanal francés. Dependiendo de dónde juguéis en el mundo, vuestro reinicio semanal puede diferir. Adaptaos según sea necesario."
+L.es.reset_info = "Las fechas se basan en el reinicio semanal europeo (miércoles 07:00 CET/CEST) y se adaptan automáticamente a tu zona horaria local."
 L.es.reset_checks = "Reiniciar"
 L.es.reset_checks_desc = "Reinicia todas las casillas marcadas del seguidor de objetivos."
 L.es.reset_confirm_title = "Confirmar reinicio"
@@ -76,6 +76,7 @@ L.es.btn_color_desc  = "Haz clic para elegir el color de fondo de los botones."
 L.es.ilvl_raid_synth = "Curiosidad"
 
 L.es.mplus_title = "Blasones"
+L.es.mplus_subtitle = "A partir del 18 de marzo"
 L.es.planning_title = "Planificación"
 L.es.ilvl_title = "Temporada 1 – Nivel de equipo por contenido"
 L.es.ilvl_upgrade_tracks = "Mejoras (20 blasones por paso)"
@@ -105,7 +106,7 @@ L.es.ilvl_hero = "Héroe"
 L.es.ilvl_myth = "Mítico"
 L.es.ilvl_crest_adv = "Blasones del amanecer aventureros"
 L.es.ilvl_crest_vet = "Blasones del amanecer veteranos"
-L.es.ilvl_crest_champ = "Blasones del amanecer campeón"
+L.es.ilvl_crest_champ = "Blasones del amanecer de campeón"
 L.es.ilvl_crest_hero = "Blasones del amanecer heroicos"
 L.es.ilvl_crest_myth = "Blasones del amanecer míticos"
 
@@ -127,6 +128,34 @@ L.es.menuLabels = {
     "29/04 y +",
 }
 
+L.es.monthAbbr = {
+    "ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+    "jul.", "ago.", "sep.", "oct.", "nov.", "dic.",
+}
+
+L.es.formatMenuLabel = function(d1, m1, d2, m2)
+    return string.format("%02d/%02d – %02d/%02d", d1, m1, d2, m2)
+end
+
+L.es.formatLastMenuLabel = function(d1, m1)
+    return string.format("%02d/%02d y +", d1, m1)
+end
+
+L.es.formatSubtitle = function(d, m)
+    return "A partir del " .. d .. " de " .. L.es.monthAbbr[m]
+end
+
+L.es.formatWeekTitle = function(weekNum, d1, m1, d2, m2)
+    local months = L.es.monthAbbr
+    if not d2 then
+        return "Semana " .. weekNum .. ": " .. d1 .. " " .. months[m1] .. " y después"
+    elseif m1 == m2 then
+        return "Semana " .. weekNum .. ": " .. d1 .. " – " .. d2 .. " " .. months[m2]
+    else
+        return "Semana " .. weekNum .. ": " .. d1 .. " " .. months[m1] .. " – " .. d2 .. " " .. months[m2]
+    end
+end
+
 L.es.weeks = {
     {
         title = "Semana 1: 27 feb. – 3 mar.",
@@ -139,8 +168,7 @@ L.es.weeks = {
             "Renombre: Alcanzad rango 9 del renombre 'Corte de Luna de Plata' para obtener un casco Campeón 1/6 (246).",
             "Expedición: Completad expediciones que ofrezcan equipo Aventurero 1/6 (220) y 2/6 (224).",
             "Cacería: Completad Cacerías en modo Normal (4 por semana), ofreciendo equipo Aventurero 1/6 (220) (hacedlas al mismo tiempo que las expediciones).",
-            "Fulgurion: Completad el Asalto de Fulgurion en la Tormenta del Vacío para obtener equipo Aventurero 1/6 (220) y al mismo tiempo completar la misión de renombre para el amuleto Campeón 1/6 (246).",
-            "Nivel de objeto estimado (según aleatoriedad): 12x 224, 1x 227, 2x 246"
+            "Fulgurion: Completad el Asalto de Fulgurion en la Tormenta del Vacío para obtener equipo Aventurero 1/6 (220) y al mismo tiempo completar la misión de renombre para el amuleto Campeón 1/6 (246).",            "Optimización: gastad todos los Blasones del amanecer aventureros si lo deseáis.",            "Nivel de objeto estimado (según aleatoriedad): 12x 224, 1x 227, 2x 246"
         }
     },
     {
@@ -150,11 +178,14 @@ L.es.weeks = {
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
             "Renombre: Alcanzad rango 8 del renombre 'Hara'ti' para obtener un cinturón Campeón 1/6 (246).",
             "Renombre: Alcanzad rango 9 del renombre 'Tribu Amani' para obtener un collar Campeón 1/6 (246).",
+            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
             "Escarpe: Desbloqueá hasta el nivel 7 (los niveles superiores están bloqueados hasta el 18 de marzo).",
-            "Expedición: Completad expediciones que preferiblemente ofrezcan mejoras de equipo.",
+            "Destello: completad la misión semanal para obtener vuestro Destello.",
             "Cacería: Completad Cacerías en modo Difícil (4 por semana), ofreciendo equipo Veterano 1/6 (233) (hacedlas al mismo tiempo que las expediciones).",
-            "Heroico (fuera de temporada): Completad todas las mazmorras Heroico (fuera de temporada), ofreciendo equipo Aventurero 2/6 (224) (no mejoréis el equipo obtenido).",
+            "Cacería aleatoria: completad Cacerías aleatorias dadas por Astalor Ligessang para obtener Blasones del amanecer veteranos.",
+            "Heroico (fuera de temporada): Completad todas las mazmorras Heroico (fuera de temporada), ofreciendo equipo Aventurero 2/6 (224) (podéis mejorarlo).",
             "Mítico 0 (fuera de temporada): Completad todas las mazmorras Mítico 0 (fuera de temporada), ofreciendo equipo Veterano 3/6 (240) (no mejoréis el equipo obtenido).",
+            "Optimización: gastad todos los Blasones del amanecer aventureros si lo deseáis.",
             "Nivel de objeto estimado (según aleatoriedad): 3x 233, 8x 240, 4x 246"
         }
     },
@@ -163,47 +194,60 @@ L.es.weeks = {
         objectives = {
             "No gastéis ningún blasón a menos que se indique.",
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
+            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
             "Escarpe: Desbloqueá hasta el nivel 7 (los niveles superiores están bloqueados hasta el 18 de marzo).",
             "Expedición: Completad expediciones que preferiblemente ofrezcan mejoras de equipo.",
+            "Destello: completad la misión semanal para obtener vuestro Destello.",
+            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
             "Cacería: Completad Cacerías en modo Difícil (4 por semana), ofreciendo equipo Veterano 1/6 (233) (hacedlas al mismo tiempo que las expediciones).",
+            "Cacería aleatoria: completad Cacerías aleatorias dadas por Astalor Ligessang para obtener Blasones del amanecer veteranos.",
             "Mítico 0 (fuera de temporada): Completad todas las mazmorras Mítico 0 (fuera de temporada), ofreciendo equipo Veterano 3/6 (240) (no mejoréis el equipo obtenido).",
             "Artesanía: Preparad los materiales de artesanía si planeáis hacer incursión el 18 de marzo.",
+            "Optimización: gastad todos los Blasones del amanecer aventureros si lo deseáis.",
             "Nivel de objeto estimado (según aleatoriedad): 10x 240, 4x 246"
         }
     },
     {
         title = "Semana 4: 18 – 24 mar.",
         objectives = {
-            "No gastéis ningún Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
+            "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
+            "Catalizador: en espera de información de Blizzard.",
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
             "Conjunto de clase: Usad la herramienta Incursiones (Buscador) para obtener piezas del conjunto.",
             "Mítico 0 (Pretemporada): Realizad un Tour Mundial de mazmorras Mítico 0 (Pretemporada), ofreciendo ahora equipo Campeón 2/6 (250).",
             "Jefe del mundo: Matad al Jefe del mundo para obtener equipo Campeón 2/6 (250).",
+            "Destello: completad la misión semanal para obtener vuestro Destello.",
+            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
+            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
             "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246).",
+            "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
             "JcJ: Completad la misión de JcJ para obtener un collar o anillo Héroe garantizado (si está disponible, ya que desapareció recientemente de la beta).",
-            "Escarpe: Completad Escarpes abundantes (nivel 11) con llaves y carta para obtener equipo Campeón 2/6 (250).",
-            "Artesanía: Fabricad 2 equipos Veterano 5/5 (246) usando 80x Blasones del amanecer veteranos cada uno con 2 ennoblecimientos (Priorizad Muñequeras, Cinturón y Botas).",
+            "Escarpe: Completad Escarpes abundantes (nivel 8 mínimo) con llaves y carta para obtener equipo Campéon 2/6 (250).",
+            "Artesanía: Fabricad 2 equipos Veterano 5/5 (246) usando 80x Blasones del amanecer veteranos cada uno con 2 ennoblecimientos (Priorizad Muñequeras, Cinturón y Botas) (esto no consume una chispa).",
             "Incursión: Completad el modo Normal y Heroico.",
             "Optimización: Gastad todos los Blasones del amanecer veteranos y del amanecer campeón antes de entrar en la incursión.",
-            "Blasones gastados: 0/100 Blasones del amanecer heroicos y 0/100 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 2x 246, 3x 240, 10x 250"
         }
     },
     {
         title = "Semana 5: 25 – 31 mar.",
         objectives = {
-            "No gastéis ningún Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
+            "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
+            "Catalizador: en espera de información de Blizzard.",
             "Artesanía: Si vuestro Discord de clase lo recomienda, usad 1 chispa para fabricar un Mítico 1/5 (272) con ennoblecimiento (esto será bastante raro, así que adaptaos para el resto de la guía).",
-            "Conjunto de clase: Usad la herramienta Incursiones (Buscador) para obtener piezas del conjunto.",
-            "Jefe del mundo: Matad al Jefe del mundo para obtener equipo Campeón 2/6 (250).",
+            "Conjunto de clase: Si aún no tenéis el bonus de 4 piezas (4p), usad la herramienta Incursiones (Buscador) para obtener las piezas que faltan.",
+            "Destello: completad la misión semanal para obtener vuestro Destello.",
+            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
+            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
+            "Alojamiento: completad la misión del Alojamiento para obtener Blasones del amanecer heroicos.",
             "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246).",
-            "Escarpe: Completad Escarpes abundantes (nivel 11) con llaves y carta para obtener equipo Campeón 2/6 (250).",
+            "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
+            "Escarpe: completad al menos un Escarpe abundante (nivel 11) para obtener la misión de la Piedra angular agrietada.",
             "Mítico+ (Temporada 1): Completad mazmorras +10 (mínimo) para equipo Héroe 3/6 (266); si es demasiado difícil, haced +8 para equipo Héroe 2/6 (263).",
             "Incursión: Completad el modo Normal y Heroico antes de iniciar la progresión Mítica.",
             "Incursión Mítica: Mejorad 11 equipos Héroe 3/6 (266) -> 4/6 (269) por 220x Blasones del amanecer heroicos (priorizad anillos / amuletos o piezas del conjunto que planeéis conservar a largo plazo).",
             "Consejo: Si tenéis la suerte de obtener equipo Mítico en incursión, podéis mejorarlo 2 veces (ajustad los consejos hasta que se equilibre de nuevo).",
-            "Blasones gastados: 220/220 Blasones del amanecer heroicos y 0/100 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 4x 266, 11x 269"
         }
     },
@@ -215,12 +259,14 @@ L.es.weeks = {
             "Gran Bóveda: Abridla para obtener equipo Mítico 272+. Las armas de 2M son excelentes opciones si tenéis suerte. Solo mejorad tras leer la instrucción a continuación.",
             "Artesanía: A menos que hayáis obtenido un arma 2M Mítico en incursión o en la Gran Bóveda, fabricad un arma 2M Mítico 5/5 (285) por 60x Blasones del amanecer míticos, salvo que vuestro Discord de clase lo desaconseje.",
             "Conjunto de clase: Si aún no tenéis el bonus de 4 piezas (4p), usad la herramienta Incursiones (Buscador) para obtener las piezas que faltan.",
+            "Destello: completad la misión semanal para obtener vuestro Destello.",
+            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
+            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
             "Mítico+ (Temporada 1): Completad mazmorras +10 (mínimo) para llenar vuestros espacios de la Gran Bóveda y acumular blasones.",
             "Incursión: Completad el modo Normal, Heroico y Mítico.",
             "Nivel Heroico: Mejorad dos de vuestros equipos Héroe 4/6 (269) -> 6/6 (276) por 80x Blasones del amanecer heroicos. Guardad 20x Blasones del amanecer heroicos para el siguiente paso.",
             "Nivel Mítico: Si el equipo de vuestra Gran Bóveda es Mítico 1/6 (272), mejorad primero su equivalente Héroe 6/6 (276) por 20x Blasones del amanecer heroicos. Luego mejorad vuestro Mítico 1/6 (272) -> 6/6 (289) por 80x Blasones del amanecer míticos.",
             "Segundo Mítico: Si poseéis un segundo equipo Mítico, esperad los consejos de mejora de la semana siguiente.",
-            "Blasones gastados: 320/320 Blasones del amanecer heroicos y 160/320 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 3x 266, 8x 269, 2x 276, 1x 285, 1x 289"
         }
     },
@@ -235,7 +281,6 @@ L.es.weeks = {
             "Nivel Heroico: Mejorad dos de vuestros equipos Héroe 4/6 (269) -> 6/6 (276) por 80x Blasones del amanecer heroicos. Guardad 20x Blasones del amanecer heroicos para el siguiente paso.",
             "Nivel Mítico: Si el equipo de vuestra Gran Bóveda es Mítico 1/6 (272), mejorad primero su equivalente Héroe 6/6 (276) por 20x Blasones del amanecer heroicos. Luego mejorad vuestro Mítico 1/6 (272) -> 6/6 (289) por 80x Blasones del amanecer míticos.",
             "Nivel Mítico (Incursión): Mejorad el equipo obtenido en incursión del rango 2/6 (276) al 6/6 (289) por 80x Blasones del amanecer míticos.",
-            "Blasones gastados: 420/420 Blasones del amanecer heroicos y 320/420 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 2x 266, 5x 269, 4x 276, 1x 285, 3x 289"
         }
     },
@@ -249,7 +294,6 @@ L.es.weeks = {
             "Artesanía: Fabricad vuestro segundo equipo Mítico 5/5 (285) por 80x Blasones del amanecer míticos. Si es posible, priorizad un espacio donde ya tengáis equipo Héroe.",
             "Nivel Heroico: Mejorad dos de vuestros equipos Héroe 4/6 (269) -> 6/6 (276) por 80x Blasones del amanecer heroicos. Guardad 20x Blasones del amanecer heroicos para el siguiente paso.",
             "Nivel Mítico: Si el equipo de vuestra Gran Bóveda es Mítico 1/6 (272), mejorad primero su equivalente Héroe 6/6 (276) por 20x Blasones del amanecer heroicos. Luego mejorad vuestro Mítico 1/6 (272) -> 6/6 (289) por 80x Blasones del amanecer míticos.",
-            "Blasones gastados: 520/520 Blasones del amanecer heroicos y 480/480 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 1x 266, 2x 269, 6x 276, 2x 285, 4x 289"
         }
     },
@@ -264,7 +308,6 @@ L.es.weeks = {
             "Nivel Heroico: Mejorad uno de vuestros equipos Héroe 4/6 (269) -> 6/6 (276) por 40x Blasones del amanecer heroicos.",
             "Nivel Mítico: Si el equipo de vuestra Gran Bóveda es Mítico 1/6 (272), mejorad primero su equivalente Héroe 6/6 (276) por 20x Blasones del amanecer heroicos. Luego mejorad vuestro Mítico 1/6 (272) -> 6/6 (289) por 80x Blasones del amanecer míticos.",
             "Nivel Mítico (Incursión): Mejorad el equipo Mítico 2/6 (276) -> 5/6 (285) por 60x Blasones del amanecer míticos.",
-            "Blasones gastados: 560/620 Blasones del amanecer heroicos y 620/620 Blasones del amanecer míticos.",
             "Nivel de objeto estimado (según aleatoriedad): 7x 276, 2x 285, 1x 285, 5x 289."
         }
     },
@@ -272,40 +315,63 @@ L.es.weeks = {
         title = "Semana 10: 29 abr. y después",
         objectives = {
             "Artesanía: No fabricuéis ningún objeto en un espacio si podéis obtener equipo superior a Mítico 1/6 (272) de vuestra Gran Bóveda.",
-            "Prioridad de mejora: Mejorad vuestro equipo Mítico a medida que lo obtenéis. Priorizad una mejora completa hasta 6/6 (289) para aprovechar el importante salto de +4 niveles de objeto.",
-            "Optimización de arma: Empezad a considerar fabricar una mano secundaria (MS) en algún momento si queréis llevar un arma principal (AP) 6/6 conservando al mismo tiempo un ennoblecimiento en vuestra arma."
+            "Prioridad de mejora: Mejorad vuestro equipo Mítico a medida que lo obtenéis. Priorizad una mejora completa hasta 6/6 (289) para aprovechar el importante salto de +4 niveles de objeto."
         }
     }
 }
 
-L.es.mplus_csv = [[
+L.es.mplus_section_raids  = "Incursiones"
+L.es.mplus_section_mplus  = "Mítico+"
+L.es.mplus_section_delves = "Escarpes"
+L.es.mplus_section_traque = "Cacería"
+
+L.es.mplus_csv_raids = [[
 Fuente,Cantidades
-Buscador de banda,TBA
-Incursión Normal,TBA
-Incursión Heroica,TBA
-Incursión Mítica,TBA
-M0,TBA
-Mítico +2,10 x Blasón del amanecer heroico
-Escarpe Nivel 2,TBA
-Mítico +3,12 x Blasón del amanecer heroico
-Escarpe Nivel 3,TBA
-Mítico +4,14 x Blasón del amanecer heroico
-Escarpe Nivel 4,TBA
-Mítico +5,16 x Blasón del amanecer heroico
-Escarpe Nivel 5,TBA
-Mítico +6,18 x Blasón del amanecer heroico
-Escarpe Nivel 6,TBA
-Mítico +7,10 x Blasón del amanecer mítico
-Escarpe Nivel 7,TBA
-Mítico +8,12 x Blasón del amanecer mítico
-Escarpe Nivel 8,TBA
-Mítico +9,14 x Blasón del amanecer mítico
-Escarpe Nivel 9,TBA
-Mítico +10,16 x Blasón del amanecer mítico
-Escarpe Nivel 10,TBA
-Mítico +11,18 x Blasón del amanecer mítico
-Escarpe Nivel 11,TBA
-Mítico +12,20 x Blasón del amanecer mítico
+Buscador,?? x Blasón del amanecer veterano
+Normal,?? x Blasón del amanecer campeón
+Heroico,?? x Blasón del amanecer heroico
+Mítico,?? x Blasón del amanecer mítico
+]]
+
+L.es.mplus_csv_mplus = [[
+Fuente,Cantidades
+Mítico +2,?? x Blasón del amanecer campeón
+Mítico +3,?? x Blasón del amanecer campeón
+Mítico +4,?? x Blasón del amanecer heroico
+Mítico +5,?? x Blasón del amanecer heroico
+Mítico +6,?? x Blasón del amanecer heroico
+Mítico +7,?? x Blasón del amanecer heroico
+Mítico +8,?? x Blasón del amanecer heroico
+Mítico +9,?? x Blasón del amanecer mítico
+Mítico +10,?? x Blasón del amanecer mítico
+Mítico +11,?? x Blasón del amanecer mítico
+Mítico +12,?? x Blasón del amanecer mítico
+]]
+
+L.es.mplus_csv_traque = [[
+Fuente,Cantidades
+Normal,?? x Blasón del amanecer veterano
+Difícil,?? x Blasón del amanecer campeón
+Pesadilla,?? x Blasón del amanecer heroico
+]]
+
+L.es.mplus_csv_delves = [[
+Fuente,Cantidades
+Nivel 2,?? x Blasón del amanecer aventurero
+Nivel 3,?? x Blasón del amanecer aventurero
+Nivel 4,?? x Blasón del amanecer aventurero
+Nivel 5,?? x Blasón del amanecer veterano
+Nivel 6,?? x Blasón del amanecer veterano
+Nivel 6 + Bono,?? x Blasón del amanecer campeón
+Nivel 7,?? x Blasón del amanecer campeón
+Nivel 7 + Bono,?? x Blasón del amanecer campeón
+Nivel 8,?? x Blasón del amanecer campeón
+Nivel 8 + Bono,?? x Blasón del amanecer heroico
+Nivel 9,?? x Blasón del amanecer campeón
+Nivel 9 + Bono,?? x Blasón del amanecer heroico
+Nivel 10,?? x Blasón del amanecer campeón
+Nivel 10 + Bono,?? x Blasón del amanecer heroico
+Nivel 11,?? x Blasón del amanecer heroico
 ]]
 
 L.es.planning_csv = [[

@@ -7,7 +7,7 @@ L.de.planning = "Zeitplan"
 L.de.crests = "Wappen"
 L.de.resources = "Ressourcen"
 L.de.resources_short_desc = "Daten stammen aus verschiedenen Quellen wie: Larias, WoW Head, Icy Veins, Judge Hype oder Blizz Spirit und wurden überprüft, um einen kohärenten und optimierten Fortschrittsleitfaden zu erstellen."
-L.de.reset_info = "Die Daten entsprechen dem französischen wöchentlichen Reset. Je nachdem, wo du auf der Welt spielst, kann dein wöchentlicher Reset abweichen. Passe dich entsprechend an."
+L.de.reset_info = "Die Daten basieren auf dem EU-Reset (Mittwoch 07:00 Uhr CET/CEST) und passen sich automatisch an deine lokale Zeitzone an."
 L.de.reset_checks = "Zurücksetzen"
 L.de.reset_checks_desc = "Setzt alle markierten Ziele des Verfolgers zurück."
 L.de.reset_confirm_title = "Reset bestätigen"
@@ -76,6 +76,7 @@ L.de.btn_color_desc  = "Klicken, um die Hintergrundfarbe der Schaltflächen zu w
 L.de.ilvl_raid_synth = "Kuriosität"
 
 L.de.mplus_title = "Wappen"
+L.de.mplus_subtitle = "Ab dem 18. März"
 L.de.planning_title = "Zeitplan"
 L.de.ilvl_title = "Saison 1 – Ausrüstungsstufen nach Inhalt"
 L.de.ilvl_upgrade_tracks = "Aufwertungsstufen (20 Wappen pro Stufe)"
@@ -127,6 +128,34 @@ L.de.menuLabels = {
     "29.04 und +",
 }
 
+L.de.monthAbbr = {
+    "Jan.", "Feb.", "März", "April", "Mai", "Juni",
+    "Juli", "Aug.", "Sep.", "Okt.", "Nov.", "Dez.",
+}
+
+L.de.formatMenuLabel = function(d1, m1, d2, m2)
+    return string.format("%02d.%02d – %02d.%02d", d1, m1, d2, m2)
+end
+
+L.de.formatLastMenuLabel = function(d1, m1)
+    return string.format("%02d.%02d und +", d1, m1)
+end
+
+L.de.formatSubtitle = function(d, m)
+    return "Ab dem " .. d .. ". " .. L.de.monthAbbr[m]
+end
+
+L.de.formatWeekTitle = function(weekNum, d1, m1, d2, m2)
+    local months = L.de.monthAbbr
+    if not d2 then
+        return "Woche " .. weekNum .. ": " .. d1 .. ". " .. months[m1] .. " und danach"
+    elseif m1 == m2 then
+        return "Woche " .. weekNum .. ": " .. d1 .. ". – " .. d2 .. ". " .. months[m2]
+    else
+        return "Woche " .. weekNum .. ": " .. d1 .. ". " .. months[m1] .. " – " .. d2 .. ". " .. months[m2]
+    end
+end
+
 L.de.weeks = {
     {
         title = "Woche 1: 27. Feb. – 3. März",
@@ -140,6 +169,7 @@ L.de.weeks = {
             "Expedition: Schließt Expeditionen ab, die Abenteurer 1/6 (220) und 2/6 (224) Ausrüstung gewähren.",
             "Jagd: Schließt Jagden im Normalmodus ab (4 pro Woche), die Abenteurer 1/6 (220) Ausrüstung gewähren (erledigt sie zusammen mit Expeditionen).",
             "Fulgurion: Schließt den Fulgurion-Ansturm auf den Leere-Sturm ab, um Abenteurer 1/6 (220) Ausrüstung zu erhalten und gleichzeitig die Ansehen-Quest für das Champion 1/6 (246) Schmuckstück zu erfüllen.",
+            "Optimierung: Gebt alle Abenteurer-Morgenwappen aus, wenn ihr möchtet.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 12x 224, 1x 227, 2x 246"
         }
     },
@@ -150,11 +180,14 @@ L.de.weeks = {
             "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
             "Ansehen: Erreicht Rang 8 des Ansehens 'Hara'ti' für einen Champion 1/6 (246) Gürtel.",
             "Ansehen: Erreicht Rang 9 des Ansehens 'Amani-Stamm' für ein Champion 1/6 (246) Halsband.",
+            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
             "Gewölbe: Schaltet bis Stufe 7 frei (höhere Stufen sind bis zum 18. März gesperrt).",
-            "Expedition: Schließt Expeditionen ab, die vorzugsweise Ausrüstungsverbesserungen bieten.",
+            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
             "Jagd: Schließt Jagden im Schweren Modus ab (4 pro Woche), die Veteran 1/6 (233) Ausrüstung gewähren (erledigt sie zusammen mit Expeditionen).",
-            "Heroisch (außerh. der Saison): Schließt alle Heroisch (außerh. der Saison) Dungeons ab, die Abenteurer 2/6 (224) Ausrüstung gewähren (verbessert die erhaltene Ausrüstung nicht).",
+            "Zufällige Jagd: Schließt zufällige Jagden von Astalor Ligessang ab, um Veteran-Morgenwappen zu erhalten.",
+            "Heroisch (außerh. der Saison): Schließt alle Heroisch (außerh. der Saison) Dungeons ab, die Abenteurer 2/6 (224) Ausrüstung gewähren (ihr könnt sie verbessern).",
             "Mythisch 0 (außerh. der Saison): Schließt alle Mythisch 0 (außerh. der Saison) Dungeons ab, die Veteran 3/6 (240) Ausrüstung gewähren (verbessert die erhaltene Ausrüstung nicht).",
+            "Optimierung: Gebt alle Abenteurer-Morgenwappen aus, wenn ihr möchtet.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 3x 233, 8x 240, 4x 246"
         }
     },
@@ -163,47 +196,60 @@ L.de.weeks = {
         objectives = {
             "Gebt keine Wappen aus, es sei denn, es wird verlangt.",
             "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
+            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
             "Gewölbe: Schaltet bis Stufe 7 frei (höhere Stufen sind bis zum 18. März gesperrt).",
             "Expedition: Schließt Expeditionen ab, die vorzugsweise Ausrüstungsverbesserungen bieten.",
+            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
+            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
             "Jagd: Schließt Jagden im Schweren Modus ab (4 pro Woche), die Veteran 1/6 (233) Ausrüstung gewähren (erledigt sie zusammen mit Expeditionen).",
+            "Zufällige Jagd: Schließt zufällige Jagden von Astalor Ligessang ab, um Veteran-Morgenwappen zu erhalten.",
             "Mythisch 0 (außerh. der Saison): Schließt alle Mythisch 0 (außerh. der Saison) Dungeons ab, die Veteran 3/6 (240) Ausrüstung gewähren (verbessert die erhaltene Ausrüstung nicht).",
             "Handwerk: Bereitet Handwerksmaterialien vor, wenn ihr am 18. März raiden möchtet.",
+            "Optimierung: Gebt alle Abenteurer-Morgenwappen aus, wenn ihr möchtet.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 10x 240, 4x 246"
         }
     },
     {
         title = "Woche 4: 18. – 24. März",
         objectives = {
-            "Gebt keine Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
+            "Gebt keine Champion-Morgenwappen, Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
+            "Katalysator: Warten auf Informationen von Blizzard.",
             "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
             "Klassen-Set: Nutzt das Schlachtzugs-Tool (SR) um Set-Teile zu erhalten.",
             "Mythisch 0 (Vorsaison): Absolviert eine Weltreise der Mythisch 0 (Vorsaison) Dungeons, die jetzt Champion 2/6 (250) Ausrüstung gewähren.",
             "Weltboss: Tötet den Weltboss für Champion 2/6 (250) Ausrüstung.",
+            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
+            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
+            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
             "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren.",
+            "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
             "PvP: Schließt die PvP-Quest ab, um ein garantiertes Held Halsband oder Ring zu erhalten (falls verfügbar, da kürzlich aus der Beta verschwunden).",
-            "Gewölbe: Schließt Reiche Gewölbe (Stufe 11) mit Schlüsseln und Karte ab für Champion 2/6 (250) Ausrüstung.",
-            "Handwerk: Stellt 2 Veteran 5/5 (246) Ausrüstungen her, je mit 80x Veteran-Morgenwappen und 2 Veredelungen (Priorisiert Handgelenke, Gürtel und Stiefel).",
+            "Gewölbe: Schließt Reiche Gewölbe (Stufe 8 mindestens) mit Schlüsseln und Karte ab für Champion 2/6 (250) Ausrüstung.",
+            "Handwerk: Stellt 2 Veteran 5/5 (246) Ausrüstungen her, je mit 80x Veteran-Morgenwappen und 2 Veredelungen (Priorisiert Handgelenke, Gürtel und Stiefel) (dies verbraucht keinen Funken).",
             "Schlachtzug: Schließt den Normal- und Heroisch-Modus ab.",
             "Optimierung: Gebt alle Veteran-Morgenwappen und Champion-Morgenwappen aus, bevor ihr den Schlachtzug betretet.",
-            "Verwendete Wappen: 0/100 Heroische Morgenwappen und 0/100 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 2x 246, 3x 240, 10x 250"
         }
     },
     {
         title = "Woche 5: 25. – 31. März",
         objectives = {
-            "Gebt keine Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
+            "Gebt keine Champion-Morgenwappen, Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
             "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
+            "Katalysator: Warten auf Informationen von Blizzard.",
             "Handwerk: Falls euer Klassen-Discord es empfiehlt, verwendet 1 Funken um ein Mythisch 1/5 (272) mit Veredelung herzustellen (dies wird eher selten der Fall sein, passt euch für den Rest des Leitfadens an).",
-            "Klassen-Set: Nutzt das Schlachtzugs-Tool (SR) um Set-Teile zu erhalten.",
-            "Weltboss: Tötet den Weltboss für Champion 2/6 (250) Ausrüstung.",
+            "Klassen-Set: Falls ihr noch keinen 4-Teile-Bonus (4p) habt, nutzt das Schlachtzugs-Tool (SR) um die fehlenden Teile zu erhalten.",
+            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
+            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
+            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
+            "Unterkunft: Schließt die Unterkunfts-Quest ab, um Heroische Morgenwappen zu erhalten.",
             "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren.",
-            "Gewölbe: Schließt Reiche Gewölbe (Stufe 11) mit Schlüsseln und Karte ab für Champion 2/6 (250) Ausrüstung.",
+            "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
+            "Gewölbe: Schließt mindestens ein Reiches Gewölbe (Stufe 11) ab, um die Quest des gerissenen Schlusssteins zu erhalten.",
             "Mythisch+ (Saison 1): Schließt +10 Dungeons ab (Minimum) für Held 3/6 (266) Ausrüstung; falls zu schwierig, macht +8 für Held 2/6 (263) Ausrüstung.",
             "Schlachtzug: Schließt den Normal- und Heroisch-Modus ab, bevor ihr mit der Mythisch-Progression beginnt.",
             "Mythischer Schlachtzug: Verbessert 11 Held 3/6 (266) -> 4/6 (269) Ausrüstungen gegen 220x Heroische Morgenwappen (priorisiert Ringe / Schmuckstücke oder Set-Teile, die ihr lange behalten wollt).",
             "Tipp: Falls ihr das Glück habt, Mythisch-Ausrüstung im Schlachtzug zu erhalten, könnt ihr diese 2 Mal verbessern (passt einfach die Tipps an, bis es sich wieder ausgleicht).",
-            "Verwendete Wappen: 220/220 Heroische Morgenwappen und 0/100 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 4x 266, 11x 269"
         }
     },
@@ -215,12 +261,14 @@ L.de.weeks = {
             "Große Schatzkammer: Öffnet sie für Mythisch 272+ Ausrüstung. 2H-Waffen sind ausgezeichnete Optionen, falls ihr Glück habt. Verbessert erst nach dem Lesen der nachfolgenden Anweisung.",
             "Handwerk: Falls ihr keine Mythisch 2H-Waffe im Schlachtzug oder aus der Großen Schatzkammer erhalten habt, stellt eine Mythisch 5/5 (285) 2H-Waffe für 60x Mythische Morgenwappen her, es sei denn, euer Klassen-Discord rät stark davon ab.",
             "Klassen-Set: Falls ihr noch keinen 4-Teile-Bonus (4p) habt, nutzt das Schlachtzugs-Tool (SR) um die fehlenden Teile zu erhalten.",
+            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
+            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
+            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
             "Mythisch+ (Saison 1): Schließt +10 Dungeons ab (Minimum) um eure Schatzkammer-Plätze zu füllen und Wappen zu sammeln.",
             "Schlachtzug: Schließt den Normal-, Heroisch- und Mythisch-Modus ab.",
             "Heroische Stufe: Verbessert zwei eurer Held 4/6 (269) -> 6/6 (276) Ausrüstungen gegen 80x Heroische Morgenwappen. Behaltet 20x Heroische Morgenwappen für den nächsten Schritt.",
             "Mythische Stufe: Falls die Ausrüstung aus eurer Großen Schatzkammer Mythisch 1/6 (272) ist, verbessert zuerst das Held 6/6 (276) Äquivalent gegen 20x Heroische Morgenwappen. Verbessert dann eure Mythisch 1/6 (272) -> 6/6 (289) gegen 80x Mythische Morgenwappen.",
             "Zweites Mythisch: Falls ihr ein zweites Mythisch-Teil besitzt, wartet auf die Empfehlungen der nächsten Woche.",
-            "Verwendete Wappen: 320/320 Heroische Morgenwappen und 160/320 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 3x 266, 8x 269, 2x 276, 1x 285, 1x 289"
         }
     },
@@ -235,7 +283,6 @@ L.de.weeks = {
             "Heroische Stufe: Verbessert zwei eurer Held 4/6 (269) -> 6/6 (276) Ausrüstungen gegen 80x Heroische Morgenwappen. Behaltet 20x Heroische Morgenwappen für den nächsten Schritt.",
             "Mythische Stufe: Falls die Ausrüstung aus eurer Großen Schatzkammer Mythisch 1/6 (272) ist, verbessert zuerst das Held 6/6 (276) Äquivalent gegen 20x Heroische Morgenwappen. Verbessert dann eure Mythisch 1/6 (272) -> 6/6 (289) gegen 80x Mythische Morgenwappen.",
             "Mythische Stufe (Schlachtzug): Verbessert das im Schlachtzug erhaltene Teil von Rang 2/6 (276) auf 6/6 (289) gegen 80x Mythische Morgenwappen.",
-            "Verwendete Wappen: 420/420 Heroische Morgenwappen und 320/420 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 2x 266, 5x 269, 4x 276, 1x 285, 3x 289"
         }
     },
@@ -249,7 +296,6 @@ L.de.weeks = {
             "Handwerk: Stellt eure zweite Mythisch 5/5 (285) Ausrüstung für 80x Mythische Morgenwappen her. Priorisiert wenn möglich einen Platz mit vorhandener Held-Ausrüstung.",
             "Heroische Stufe: Verbessert zwei eurer Held 4/6 (269) -> 6/6 (276) Ausrüstungen gegen 80x Heroische Morgenwappen. Behaltet 20x Heroische Morgenwappen für den nächsten Schritt.",
             "Mythische Stufe: Falls die Ausrüstung aus eurer Großen Schatzkammer Mythisch 1/6 (272) ist, verbessert zuerst das Held 6/6 (276) Äquivalent gegen 20x Heroische Morgenwappen. Verbessert dann eure Mythisch 1/6 (272) -> 6/6 (289) gegen 80x Mythische Morgenwappen.",
-            "Verwendete Wappen: 520/520 Heroische Morgenwappen und 480/480 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 1x 266, 2x 269, 6x 276, 2x 285, 4x 289"
         }
     },
@@ -264,7 +310,6 @@ L.de.weeks = {
             "Heroische Stufe: Verbessert eine eurer Held 4/6 (269) -> 6/6 (276) Ausrüstungen gegen 40x Heroische Morgenwappen.",
             "Mythische Stufe: Falls die Ausrüstung aus eurer Großen Schatzkammer Mythisch 1/6 (272) ist, verbessert zuerst das Held 6/6 (276) Äquivalent gegen 20x Heroische Morgenwappen. Verbessert dann euer Mythisch 1/6 (272) -> 6/6 (289) gegen 80x Mythische Morgenwappen.",
             "Mythische Stufe (Schlachtzug): Verbessert Mythisch 2/6 (276) -> 5/6 (285) Ausrüstung gegen 60x Mythische Morgenwappen.",
-            "Verwendete Wappen: 560/620 Heroische Morgenwappen und 620/620 Mythische Morgenwappen.",
             "Gegenstandsstufe (geschätzt, nach Zufall): 7x 276, 2x 285, 1x 285, 5x 289."
         }
     },
@@ -272,40 +317,63 @@ L.de.weeks = {
         title = "Woche 10: 29. April und danach",
         objectives = {
             "Handwerk: Stellt keine Gegenstände in Plätzen her, wenn ihr aus eurer Großen Schatzkammer Ausrüstung über Mythisch 1/6 (272) erhalten könnt.",
-            "Verbesserungspriorität: Verbessert eure Mythisch-Ausrüstung sobald ihr sie erhaltet. Priorisiert eine vollständige Verbesserung auf 6/6 (289), um den bedeutenden Sprung von +4 Gegenstandsstufen zu nutzen.",
-            "Waffenoptimierung: Erwägt zu einem bestimmten Zeitpunkt die Herstellung einer Nebenhand (NH), wenn ihr eine Haupthand (MH) 6/6 tragen und dabei eine Veredelung auf eurer Waffe behalten möchtet."
+            "Verbesserungspriorität: Verbessert eure Mythisch-Ausrüstung sobald ihr sie erhaltet. Priorisiert eine vollständige Verbesserung auf 6/6 (289), um den bedeutenden Sprung von +4 Gegenstandsstufen zu nutzen."
         }
     }
 }
 
-L.de.mplus_csv = [[
+L.de.mplus_section_raids  = "Schlachtzüge"
+L.de.mplus_section_mplus  = "Mythisch+"
+L.de.mplus_section_delves = "Gewölbe"
+L.de.mplus_section_traque = "Jagd"
+
+L.de.mplus_csv_raids = [[
 Quelle,Mengen
-SR (Suche nach Schlachtzug),TBA
-Normaler Schlachtzug,TBA
-Heroischer Schlachtzug,TBA
-Mythischer Schlachtzug,TBA
-M0,TBA
-Mythisch +2,10 x Heroisches Morgenwappen
-Gewölbe Stufe 2,TBA
-Mythisch +3,12 x Heroisches Morgenwappen
-Gewölbe Stufe 3,TBA
-Mythisch +4,14 x Heroisches Morgenwappen
-Gewölbe Stufe 4,TBA
-Mythisch +5,16 x Heroisches Morgenwappen
-Gewölbe Stufe 5,TBA
-Mythisch +6,18 x Heroisches Morgenwappen
-Gewölbe Stufe 6,TBA
-Mythisch +7,10 x Mythisches Morgenwappen
-Gewölbe Stufe 7,TBA
-Mythisch +8,12 x Mythisches Morgenwappen
-Gewölbe Stufe 8,TBA
-Mythisch +9,14 x Mythisches Morgenwappen
-Gewölbe Stufe 9,TBA
-Mythisch +10,16 x Mythisches Morgenwappen
-Gewölbe Stufe 10,TBA
-Mythisch +11,18 x Mythisches Morgenwappen
-Gewölbe Stufe 11,TBA
-Mythisch +12,20 x Mythisches Morgenwappen
+SR (Suche),?? x Veteran-Morgenwappen
+Normal,?? x Champion-Morgenwappen
+Heroisch,?? x Heroisches Morgenwappen
+Mythisch,?? x Mythisches Morgenwappen
+]]
+
+L.de.mplus_csv_mplus = [[
+Quelle,Mengen
+Mythisch +2,?? x Champion-Morgenwappen
+Mythisch +3,?? x Champion-Morgenwappen
+Mythisch +4,?? x Heroisches Morgenwappen
+Mythisch +5,?? x Heroisches Morgenwappen
+Mythisch +6,?? x Heroisches Morgenwappen
+Mythisch +7,?? x Heroisches Morgenwappen
+Mythisch +8,?? x Heroisches Morgenwappen
+Mythisch +9,?? x Mythisches Morgenwappen
+Mythisch +10,?? x Mythisches Morgenwappen
+Mythisch +11,?? x Mythisches Morgenwappen
+Mythisch +12,?? x Mythisches Morgenwappen
+]]
+
+L.de.mplus_csv_traque = [[
+Quelle,Mengen
+Normal,?? x Veteran-Morgenwappen
+Schwer,?? x Champion-Morgenwappen
+Alptraum,?? x Heroisches Morgenwappen
+]]
+
+L.de.mplus_csv_delves = [[
+Quelle,Mengen
+Stufe 2,?? x Abenteurer-Morgenwappen
+Stufe 3,?? x Abenteurer-Morgenwappen
+Stufe 4,?? x Abenteurer-Morgenwappen
+Stufe 5,?? x Veteran-Morgenwappen
+Stufe 6,?? x Veteran-Morgenwappen
+Stufe 6 + Bonus,?? x Champion-Morgenwappen
+Stufe 7,?? x Champion-Morgenwappen
+Stufe 7 + Bonus,?? x Champion-Morgenwappen
+Stufe 8,?? x Champion-Morgenwappen
+Stufe 8 + Bonus,?? x Heroisches Morgenwappen
+Stufe 9,?? x Champion-Morgenwappen
+Stufe 9 + Bonus,?? x Heroisches Morgenwappen
+Stufe 10,?? x Champion-Morgenwappen
+Stufe 10 + Bonus,?? x Heroisches Morgenwappen
+Stufe 11,?? x Heroisches Morgenwappen
 ]]
 
 L.de.planning_csv = [[

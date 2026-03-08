@@ -545,9 +545,7 @@ end)
 
 local ilvlPoll = { timer = 0 }
 
-local templateOnVScroll = scrollFrame:GetScript("OnVerticalScroll")
 scrollFrame:SetScript("OnVerticalScroll", function(self, value)
-    if templateOnVScroll then templateOnVScroll(self, value) end
     if not menuNavGuard then
         UpdateMenuForScroll(value)
     end
@@ -610,6 +608,7 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
         local cMyth = MidnightL.C("mythic")
         local ph = {}
         if loc == "en" then
+            s = s:gsub('[Aa]dventurer [Dd]awn [Cc]rests?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff'..cAdv..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Cc]hampion [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Vv]eteran [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Hh]eroic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r'; return '@@PH'..#ph..'@@' end)
@@ -646,6 +645,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('[Hh]éroes?[^ %.,%(]*', "|cff" .. cHero .. "%0|r")
             s = s:gsub('[Mm]íticos?[^ %.,%(]*', "|cff" .. cMyth .. "%0|r")
         else
+            s = s:gsub('[Ee]cus? de l.aube d.aventure',   function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff'..cAdv..m..'|r';  return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Écus? de l.aube d.aventure',        function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff'..cAdv..m..'|r';  return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Ee]cus? de l.aube de [Cc]hampion', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Écus? de l.aube de [Cc]hampion',   function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Ee]cus? de l.aube [Vv]étéran',    function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r';   return '@@PH'..#ph..'@@' end)
@@ -788,8 +789,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
 
 
     local rowBtn = CreateFrame("Button", nil, parent)
-    rowBtn:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, yOffset)
-    rowBtn:SetWidth(computeAvailableW(0))
+    rowBtn:SetPoint("TOPLEFT", parent, "TOPLEFT", 24, yOffset)
+    rowBtn:SetWidth(computeAvailableW(24))
     rowBtn:SetHeight(rowHeight)
     rowBtn:SetFrameLevel(parent:GetFrameLevel() + 1)
     rowBtn:EnableMouse(true)
@@ -864,13 +865,13 @@ function Midnight:Refresh()
         titleBg:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
         titleBg:SetSize((frame:GetWidth() or 500) - 18, 26)
 
-        local weekTitle = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+        local weekTitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
         weekTitle:SetPoint("TOPLEFT", content, "TOPLEFT", -2, yOffset)
         weekTitle:SetWidth((frame:GetWidth() or 500) - 18)
         weekTitle:SetHeight(26)
         weekTitle:SetJustifyH("CENTER")
         weekTitle:SetJustifyV("MIDDLE")
-        weekTitle:SetText(week.title)
+        weekTitle:SetText(MidnightL.FormatWeekTitle(wIndex) or week.title)
         weekTitle:SetTextColor(ar, ag, ab)
 
         weekScrolls[vIdx] = -yOffset - 4
@@ -908,7 +909,7 @@ function Midnight:Refresh()
         local txt = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         txt:SetPoint("LEFT", 14, 0)
         txt:SetJustifyH("LEFT")
-        txt:SetText(menuLabels[wIndex] or week.title or ("Week " .. wIndex))
+        txt:SetText(MidnightL.FormatMenuLabel(wIndex) or menuLabels[wIndex] or week.title or ("Week " .. wIndex))
         txt:SetTextColor(1,1,1)
 
         menuButtons[vIdx] = { btn = btn, txt = txt, bullet = bullet }

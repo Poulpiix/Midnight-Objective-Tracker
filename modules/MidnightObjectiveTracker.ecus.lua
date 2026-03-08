@@ -1,8 +1,16 @@
 local Mplus = {}
 _G["MidnightMplus"] = Mplus
 
-local function getCSV()
-    return MidnightL[MidnightL.GetLocale()].mplus_csv
+local SECTION_GAP = 8
+
+local function getCSVSections()
+    local loc = MidnightL[MidnightL.GetLocale()]
+    return {
+        { title = loc.mplus_section_raids,  csv = loc.mplus_csv_raids  },
+        { title = loc.mplus_section_mplus,  csv = loc.mplus_csv_mplus  },
+        { title = loc.mplus_section_delves, csv = loc.mplus_csv_delves },
+        { title = loc.mplus_section_traque, csv = loc.mplus_csv_traque },
+    }
 end
 
 local function parseCSV(s)
@@ -96,7 +104,7 @@ end
 
 local PAD_L = 15
 local PAD_R = 15
-local PAD_T = 36
+local PAD_T = 48
 local PAD_B = 14
 
 local mframe = CreateFrame("Frame", "MidnightMplusFrame", UIParent, "BackdropTemplate")
@@ -124,6 +132,10 @@ mtitle:SetPoint("TOP", mframe, "TOP", 0, -15)
 do local ar, ag, ab = getAccent(); mtitle:SetTextColor(ar, ag, ab) end
 mtitle:SetText(MidnightL.S("mplus_title"))
 
+local msubtitle = mframe:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+msubtitle:SetPoint("TOP", mtitle, "BOTTOM", 0, -2)
+msubtitle:SetText(MidnightL.FormatMplusSubtitle() or MidnightL.S("mplus_subtitle"))
+
 local mclose = CreateFrame("Button", nil, mframe, "UIPanelButtonTemplate")
 mclose:SetSize(20, 20)
 mclose:SetPoint("TOPRIGHT", mframe, "TOPRIGHT", -10, -10)
@@ -147,133 +159,144 @@ local function RefreshMplus()
     for _, r in ipairs(rows) do if type(r.Hide) == 'function' then r:Hide() end end
     rows = {}
 
-    local csv_data = getCSV()
-    local parsed = parseCSV(csv_data)
-    if #parsed == 0 then
-        local placeholder = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        placeholder:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
-        placeholder:SetText(MidnightL.S("no_data"))
-        placeholder:SetTextColor(1, 0.7, 0)
-        table.insert(rows, placeholder)
-        mframe:SetSize(300, 80)
-        return
-    end
+    local sections    = getCSVSections()
+    local colSpacing  = 5
+    local bgExtend    = 7
+    local headerH     = 20
+    local defaultRowH = 15
+    local sectionTitleH = 18
 
-    local headers    = parsed[1] or {}
-    local nCols      = #headers
-    local colSpacing = 5
-
-    local availW  = math.max(150, mframe:GetWidth() - PAD_L - PAD_R)
-    local widths  = { 115, math.max(60, availW - 115 - colSpacing) }
-    for ci = 3, nCols do widths[ci] = 80 end
-
-    local totalTableW = 0
-    for ci = 1, nCols do totalTableW = totalTableW + (widths[ci] or 100) end
-    totalTableW = totalTableW + (nCols - 1) * colSpacing
+    local availW = math.max(150, mframe:GetWidth() - PAD_L - PAD_R)
+    local widths = { 115, math.max(60, availW - 115 - colSpacing) }
+    local totalTableW = widths[1] + widths[2] + colSpacing
 
     local y = 0
 
-    local headerH = 20
-    local bgExtend = 7
-    local headerBg = content:CreateTexture(nil, "BACKGROUND")
-    do local ar, ag, ab = getAccent(); headerBg:SetColorTexture(ar, ag * 0.95, ab, 0.18) end
-    headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
-    headerBg:SetSize(totalTableW + bgExtend * 2, headerH)
-    table.insert(rows, headerBg)
-
-    local hx = 0
-    for ci = 1, nCols do
-        local h = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        h:SetPoint("TOPLEFT", content, "TOPLEFT", hx, y)
-        h:SetWidth(widths[ci] or 100)
-        h:SetHeight(headerH)
-        h:SetJustifyH("CENTER")
-        h:SetJustifyV("MIDDLE")
-        local htext = headers[ci] or ("Col " .. ci)
-        if ci == 1 then
-            htext = MidnightL.S("ilvl_season")
-        else
-            htext = htext:gsub("%s*%b()", ""):match("^%s*(.-)%s*$") or htext
-        end
-        h:SetText(htext)
-        do local ar, ag, ab = getAccent(); h:SetTextColor(ar, ag, ab) end
-        table.insert(rows, h)
-        hx = hx + (widths[ci] or 100) + colSpacing
-    end
-    y = y - headerH
-
-    local defaultRowH = 15
-    for i = 2, #parsed do
-        local row      = parsed[i]
-        local cellObjs = {}
-        local maxH     = 0
-        local cx       = 0
-
-        for c = 1, nCols do
-            local cell = row[c] or ""
-            local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            f:SetWidth(widths[c] or 100)
-            f:SetJustifyH(c == 1 and "LEFT" or "CENTER")
-            f:SetWordWrap(true)
-
-            local displayText = cell
-            if cell == "TBA" then
-                displayText = "|cff888888TBA|r"
-            else
-                local num, rest = cell:match("^%s*([%dX]+)%s*(.*)$")
-                if num and rest and rest ~= "" then
-                    local whiteNum = "|cffffffff" .. num .. "|r"
-                    local leadX, restCore = rest:match("^%s*(x)%s*(.*)$")
-                    local lead = ""
-                    if leadX and leadX ~= "" then
-                        lead = "|cffffffff" .. leadX .. "|r"
-                    end
-                    restCore = restCore or rest
-                    local norm = restCore:gsub("\226\128\153", "'"):lower()
-                    local coloredCore = "|cffffffff" .. restCore .. "|r"
-                    if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true)
-                    or norm:find("mythisch", 1, true) or norm:find("amanecer m", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff" .. MidnightL.C("mythic") .. restCore .. "|r"
-                    elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true)
-                    or norm:find("heroisch", 1, true) or norm:find("amanecer hero", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff" .. MidnightL.C("heroic") .. restCore .. "|r"
-                    elseif norm:find("aventure", 1, true) or norm:find("adventurer", 1, true) then
-                        coloredCore = "|cff" .. MidnightL.C("adventurer") .. restCore .. "|r"
-                    elseif (norm:find("ran", 1, true) and norm:find("aube", 1, true)) or norm:find("veteran dawn", 1, true) then
-                        coloredCore = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff" .. MidnightL.C("veteran") .. restCore .. "|r"
-                    end
-                    displayText = lead ~= "" and (whiteNum .. lead .. " " .. coloredCore) or (whiteNum .. " " .. coloredCore)
-                elseif cell ~= "" then
-                    displayText = "|cffffffff" .. cell .. "|r"
+    for si, section in ipairs(sections) do
+        local parsed = parseCSV(section.csv or "")
+        if #parsed >= 2 then
+            local stitleBg = content:CreateTexture(nil, "BACKGROUND")
+            do local ar, ag, ab = getAccent(); stitleBg:SetColorTexture(ar, ag * 0.95, ab, 0.18) end
+            stitleBg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
+            stitleBg:SetSize(totalTableW + bgExtend * 2, sectionTitleH)
+            table.insert(rows, stitleBg)
+            local stitle = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+            stitle:SetPoint("TOPLEFT", content, "TOPLEFT", 0, y)
+            stitle:SetWidth(totalTableW)
+            stitle:SetHeight(sectionTitleH)
+            stitle:SetJustifyH("CENTER")
+            stitle:SetJustifyV("MIDDLE")
+            do local ar, ag, ab = getAccent(); stitle:SetTextColor(ar, ag, ab) end
+            stitle:SetText(section.title or "")
+            table.insert(rows, stitle)
+            y = y - sectionTitleH
+            local headerBg = content:CreateTexture(nil, "BACKGROUND")
+            headerBg:SetColorTexture(0.08, 0.08, 0.14, 0.85)
+            headerBg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
+            headerBg:SetSize(totalTableW + bgExtend * 2, headerH)
+            table.insert(rows, headerBg)
+            local headers = parsed[1] or {}
+            local hx = 0
+            for ci = 1, 2 do
+                local h = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                h:SetPoint("TOPLEFT", content, "TOPLEFT", hx, y)
+                h:SetWidth(widths[ci] or 100)
+                h:SetHeight(headerH)
+                h:SetJustifyH("CENTER")
+                h:SetJustifyV("MIDDLE")
+                local htext = headers[ci] or ("Col " .. ci)
+                if ci == 1 then
+                    htext = MidnightL.S("ilvl_season")
+                else
+                    htext = htext:gsub("%s*%b()", ""):match("^%s*(.-)%s*$") or htext
                 end
+                h:SetText(htext)
+                do local ar, ag, ab = getAccent(); h:SetTextColor(ar, ag, ab) end
+                table.insert(rows, h)
+                hx = hx + (widths[ci] or 100) + colSpacing
             end
+            y = y - headerH
 
-            f:SetText(displayText)
-            f:SetTextColor(1, 1, 1)
-            table.insert(rows, f)
-            table.insert(cellObjs, { obj = f, x = cx })
-            local fh = f:GetStringHeight() or 0
-            if fh > maxH then maxH = fh end
-            cx = cx + (widths[c] or 100) + colSpacing
+            for i = 2, #parsed do
+                local row      = parsed[i]
+                local cellObjs = {}
+                local maxH     = 0
+                local cx       = 0
+
+                for c = 1, 2 do
+                    local cell = row[c] or ""
+                    local f = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                    f:SetWidth(widths[c] or 100)
+                    f:SetJustifyH(c == 1 and "LEFT" or "CENTER")
+                    f:SetWordWrap(true)
+
+                    local displayText = cell
+                    if cell == "TBA" then
+                        displayText = "|cff888888TBA|r"
+                    else
+                        local num, rest = cell:match("^%s*([%dX?]+)%s*(.*)$")
+                        if num and rest and rest ~= "" then
+                            local whiteNum = "|cffffffff" .. num .. "|r"
+                            local leadX, restCore = rest:match("^%s*(x)%s*(.*)$")
+                            local lead = ""
+                            if leadX and leadX ~= "" then
+                                lead = "|cffffffff" .. leadX .. "|r"
+                            end
+                            restCore = restCore or rest
+                            restCore = restCore:gsub("^x%s+", "")
+                            local norm = restCore:gsub("\226\128\153", "'"):lower()
+                            local coloredCore = "|cffffffff" .. restCore .. "|r"
+                            if norm:find("mythique", 1, true) or norm:find("mythic dawn", 1, true)
+                            or norm:find("mythisch", 1, true) or norm:find("amanecer m", 1, true) then
+                                coloredCore = "|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff" .. MidnightL.C("mythic") .. restCore .. "|r"
+                            elseif norm:find("aube h", 1, true) or norm:find("heroic dawn", 1, true)
+                            or norm:find("heroisch", 1, true) or norm:find("amanecer hero", 1, true) then
+                                coloredCore = "|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff" .. MidnightL.C("heroic") .. restCore .. "|r"
+                            elseif norm:find("aventure", 1, true) or norm:find("adventurer", 1, true) or norm:find("abenteurer", 1, true) then
+                                coloredCore = "|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff" .. MidnightL.C("adventurer") .. restCore .. "|r"
+                            elseif (norm:find("ran", 1, true) and norm:find("aube", 1, true)) or norm:find("veteran", 1, true) then
+                                coloredCore = "|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff" .. MidnightL.C("veteran") .. restCore .. "|r"
+                            elseif norm:find("champion", 1, true) or norm:find("campe", 1, true) then
+                                coloredCore = "|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff" .. MidnightL.C("champion") .. restCore .. "|r"
+                            end
+                            displayText = lead ~= "" and (whiteNum .. lead .. " " .. coloredCore) or (whiteNum .. " " .. coloredCore)
+                        elseif cell ~= "" then
+                            displayText = "|cffffffff" .. cell .. "|r"
+                        end
+                    end
+
+                    f:SetText(displayText)
+                    f:SetTextColor(1, 1, 1)
+                    table.insert(rows, f)
+                    table.insert(cellObjs, { obj = f, x = cx })
+                    local fh = f:GetStringHeight() or 0
+                    if fh > maxH then maxH = fh end
+                    cx = cx + (widths[c] or 100) + colSpacing
+                end
+
+                local usedH = math.max(defaultRowH, math.ceil(maxH) + 4)
+
+                for _, co in ipairs(cellObjs) do
+                    co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, y)
+                    co.obj:SetHeight(usedH)
+                    co.obj:SetJustifyV("MIDDLE")
+                end
+
+                if (i % 2) == 0 then
+                    local bg = content:CreateTexture(nil, "BACKGROUND")
+                    bg:SetColorTexture(0, 0, 0, 0.25)
+                    bg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
+                    bg:SetSize(totalTableW + bgExtend * 2, usedH)
+                    table.insert(rows, bg)
+                end
+
+                y = y - usedH
+            end
         end
 
-        local usedH = math.max(defaultRowH, math.ceil(maxH) + 4)
-
-        for _, co in ipairs(cellObjs) do
-            co.obj:SetPoint("TOPLEFT", content, "TOPLEFT", co.x, y)
-            co.obj:SetHeight(usedH)
-            co.obj:SetJustifyV("MIDDLE")
+        if si < #sections then
+            y = y - SECTION_GAP
         end
-
-        if (i % 2) == 0 then
-            local bg = content:CreateTexture(nil, "BACKGROUND")
-            bg:SetColorTexture(0, 0, 0, 0.25)
-            bg:SetPoint("TOPLEFT", content, "TOPLEFT", -bgExtend, y)
-            bg:SetSize(totalTableW + bgExtend * 2, usedH)
-            table.insert(rows, bg)
-        end
-
-        y = y - usedH
     end
 
     local contentH = -y
@@ -289,6 +312,7 @@ end
 function Mplus.Show()
     mtitle:SetText(MidnightL.S("mplus_title"))
     do local ar, ag, ab = getAccent(); mtitle:SetTextColor(ar, ag, ab) end
+    msubtitle:SetText(MidnightL.FormatMplusSubtitle() or MidnightL.S("mplus_subtitle"))
     RefreshMplus()
     mframe:Show()
     C_Timer.After(0, RefreshMplus)

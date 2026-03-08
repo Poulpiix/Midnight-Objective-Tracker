@@ -7,7 +7,7 @@ L.en.planning = "Planning"
 L.en.crests = "Crests"
 L.en.resources = "Resources"
 L.en.resources_short_desc = "Data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
-L.en.reset_info = "Dates correspond to the French weekly reset. Depending on where you play in the world, your weekly reset may differ. Adjust accordingly."
+L.en.reset_info = "Dates are based on the EU weekly reset (Wednesday 07:00 CET/CEST) and automatically adapt to your local timezone."
 L.en.reset_checks = "Reset"
 L.en.reset_checks_desc = "Resets all checked objectives in the tracker."
 L.en.reset_confirm_title = "Confirm reset"
@@ -77,6 +77,7 @@ L.en.minimap_drag = "Drag: reposition"
 L.en.ilvl_raid_synth = "Curio"
 
 L.en.mplus_title = "Crests"
+L.en.mplus_subtitle = "As of March 18"
 L.en.planning_title = "Planning"
 L.en.ilvl_title = "Season 1 Gear Tier by Content"
 L.en.ilvl_upgrade_tracks = "Upgrade (20 crests per step)"
@@ -128,6 +129,39 @@ L.en.menuLabels = {
     "Apr 29+",
 }
 
+L.en.monthAbbr = {
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+}
+
+L.en.formatMenuLabel = function(d1, m1, d2, m2)
+    local months = L.en.monthAbbr
+    if m1 == m2 then
+        return months[m1] .. " " .. d1 .. " - " .. d2
+    else
+        return months[m1] .. " " .. d1 .. " - " .. months[m2] .. " " .. d2
+    end
+end
+
+L.en.formatLastMenuLabel = function(d1, m1)
+    return L.en.monthAbbr[m1] .. " " .. d1 .. "+"
+end
+
+L.en.formatSubtitle = function(d, m)
+    return "As of " .. L.en.monthAbbr[m] .. " " .. d
+end
+
+L.en.formatWeekTitle = function(weekNum, d1, m1, d2, m2)
+    local months = L.en.monthAbbr
+    if not d2 then
+        return "Week " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " and after"
+    elseif m1 == m2 then
+        return "Week " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " - " .. d2
+    else
+        return "Week " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " - " .. months[m2] .. " " .. d2
+    end
+end
+
 L.en.weeks = {
     {
         title = "Week 1: Feb 27 - Mar 3",
@@ -141,6 +175,7 @@ L.en.weeks = {
             "Expedition: complete expeditions offering Adventurer 1/6 (220) and 2/6 (224) gear.",
             "Hunt: complete Hunts in Normal mode (4 per week), offering Adventurer 1/6 (220) gear (do them at the same time as expeditions).",
             "Fulgurion: complete the Fulgurion Assault on Voidstorm to obtain Adventurer 1/6 (220) gear and at the same time complete the renown quest for the Champion 1/6 (246) trinket.",
+            "Optimization: spend all Adventurer Dawn Crests if you wish.",
             "Estimated gear level (based on RNG): 12x 224, 1x 227, 2x 246"
         }
     },
@@ -151,11 +186,14 @@ L.en.weeks = {
             "Crests: reach the weekly cap for all your Crests.",
             "Renown: reach rank 8 of 'Hara'ti' renown for a Champion 1/6 (246) belt.",
             "Renown: reach rank 9 of 'Amani Tribe' renown for a Champion 1/6 (246) necklace.",
+            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
             "Delve: unlock tier 7 (higher tiers are locked until March 18).",
-            "Expedition: complete expeditions that preferably offer gear upgrades.",
+            "Spark: complete the weekly quest to obtain your Spark.",
             "Hunt: complete Hunts in Hard mode (4 per week), offering Veteran 1/6 (233) gear (do them at the same time as expeditions).",
-            "Heroic (off-season): complete all Heroic (off-season) dungeons, offering Adventurer 2/6 (224) gear (do not upgrade obtained gear).",
+            "Random Hunt: complete random Hunts given by Astalor Ligessang to obtain Veteran Dawn Crests.",
+            "Heroic (off-season): complete all Heroic (off-season) dungeons, offering Adventurer 2/6 (224) gear (you can upgrade it).",
             "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Veteran 3/6 (240) gear (do not upgrade obtained gear).",
+            "Optimization: spend all Adventurer Dawn Crests if you wish.",
             "Estimated gear level (based on RNG): 3x 233, 8x 240, 4x 246"
         }
     },
@@ -164,47 +202,60 @@ L.en.weeks = {
         objectives = {
             "Do not spend any Crest unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
+            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
             "Delve: unlock tier 7 (higher tiers are locked until March 18).",
             "Expedition: complete expeditions that preferably offer gear upgrades.",
+            "Spark: complete the weekly quest to obtain your Spark.",
+            "Cache: complete the weekly quest to obtain your weekly cache.",
             "Hunt: complete Hunts in Hard mode (4 per week), offering Veteran 1/6 (233) gear (do them at the same time as expeditions).",
+            "Random Hunt: complete random Hunts given by Astalor Ligessang to obtain Veteran Dawn Crests.",
             "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Veteran 3/6 (240) gear (do not upgrade obtained gear).",
             "Crafting: prepare crafting materials if you plan to raid on March 18.",
+            "Optimization: spend all Adventurer Dawn Crests if you wish.",
             "Estimated gear level (based on RNG): 10x 240, 4x 246"
         }
     },
     {
         title = "Week 4: Mar 18 - 24",
         objectives = {
-            "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
+            "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
+            "Catalyst: awaiting information from Blizzard.",
             "Crests: reach the weekly cap for all your Crests.",
             "Class Set: use the Raids tool (LFR) to obtain set pieces.",
             "Mythic 0 (Pre-season): complete a World Tour of Mythic 0 (Pre-season) dungeons, now offering Champion 2/6 (250) gear.",
             "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
+            "Spark: complete the weekly quest to obtain your Spark.",
+            "Cache: complete the weekly quest to obtain your weekly cache.",
+            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
             "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
+            "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
             "PvP: complete the PvP quest to get a guaranteed Hero necklace or ring (if available, as it recently disappeared from the beta).",
-            "Delve: complete Bountiful Delves (tier 11) with keys and map for Champion 2/6 (250) gear.",
-            "Crafting: craft 2 Veteran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots).",
+            "Delve: complete Bountiful Delves (tier 8 minimum) with keys and map for Champion 2/6 (250) gear.",
+            "Crafting: craft 2 Veteran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots) (this doesn't consume a spark).",
             "Raid: complete Normal and Heroic mode.",
             "Optimization: spend all Veteran Dawn Crests and Champion Dawn Crests before entering the raid.",
-            "Crests spent: 0/100 Heroic Dawn Crests and 0/100 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 2x 246, 3x 240, 10x 250"
         }
     },
     {
         title = "Week 5: Mar 25 - 31",
         objectives = {
-            "Do not spend any Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
+            "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
+            "Catalyst: awaiting information from Blizzard.",
             "Crafting: if your class Discord recommends it, use 1 spark to craft a Myth 1/5 (272) with embellishment (this will be rather rare, so adapt for the rest of the guide).",
-            "Class Set: use the Raids tool (LFR) to obtain set pieces.",
-            "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
+            "Class Set: if you don't have your 4-piece bonus (4p) yet, use the Raids tool (LFR) to get the missing pieces.",
+            "Spark: complete the weekly quest to obtain your Spark.",
+            "Cache: complete the weekly quest to obtain your weekly cache.",
+            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
+            "Lodgement: complete the Lodgement quest to obtain Heroic Dawn Crests.",
             "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
-            "Delve: complete Bountiful Delves (tier 11) with keys and map for Champion 2/6 (250) gear.",
+            "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
+            "Delve: complete at minimum one Bountiful Delve (tier 11) to obtain the Cracked Keystone quest.",
             "Mythic+ (Season 1): complete +10 dungeons (minimum) for Hero 3/6 (266) gear, if too difficult, do +8 for Hero 2/6 (263) gear.",
             "Raid: complete Normal and Heroic mode before starting Mythic progression.",
             "Mythic Raid: upgrade 11 Hero 3/6 (266) -> 4/6 (269) gear for 220x Heroic Dawn Crests (prioritize rings / trinkets or set pieces you plan to keep long-term).",
             "Tip: if you're lucky enough to get Myth gear in raid, you can upgrade it 2 times (simply adjust the tips until it balances out again).",
-            "Crests spent: 220/220 Heroic Dawn Crests and 0/100 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 4x 266, 11x 269"
         }
     },
@@ -216,12 +267,14 @@ L.en.weeks = {
             "Great Vault: open it to get Myth 272+ gear. 2H weapons are excellent choices if you're lucky. Only upgrade it after reading the instruction below.",
             "Crafting: unless you got a 2H Myth weapon in raid or from the Great Vault, craft a 2H Myth 5/5 (285) weapon for 60x Mythic Dawn Crests, unless your class Discord strongly advises against it.",
             "Class Set: if you don't have your 4-piece bonus (4p) yet, use the Raids tool (LFR) to get the missing pieces.",
+            "Spark: complete the weekly quest to obtain your Spark.",
+            "Cache: complete the weekly quest to obtain your weekly cache.",
+            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
             "Mythic+ (Season 1): complete +10 dungeons (minimum) to fill your Great Vault slots and accumulate your various Crests.",
             "Raid: complete Normal, Heroic and Mythic mode.",
             "Heroic Tier: upgrade two of your Hero 4/6 (269) -> 6/6 (276) gear for 80x Heroic Dawn Crests. Keep 20x Heroic Dawn Crests for the next step.",
             "Myth Tier: if your Great Vault gear is Myth 1/6 (272), first upgrade its Hero equivalent to 6/6 (276) for 20x Heroic Dawn Crests. Then upgrade your Myth 1/6 (272) -> 6/6 (289) for 80x Mythic Dawn Crests.",
             "Second Myth: if you have a second Myth gear piece, wait for upgrade advice next week.",
-            "Crests spent: 320/320 Heroic Dawn Crests and 160/320 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 3x 266, 8x 269, 2x 276, 1x 285, 1x 289"
         }
     },
@@ -236,7 +289,6 @@ L.en.weeks = {
             "Heroic Tier: upgrade two of your Hero 4/6 (269) -> 6/6 (276) gear for 80x Heroic Dawn Crests. Keep 20x Heroic Dawn Crests for the next step.",
             "Myth Tier: if your Great Vault gear is Myth 1/6 (272), first upgrade its Hero equivalent to 6/6 (276) for 20x Heroic Dawn Crests. Then upgrade your Myth 1/6 (272) -> 6/6 (289) for 80x Mythic Dawn Crests.",
             "Myth Tier (Raid): upgrade the raid piece from rank 2/6 (276) to 6/6 (289) for 80x Mythic Dawn Crests.",
-            "Crests spent: 420/420 Heroic Dawn Crests and 320/420 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 2x 266, 5x 269, 4x 276, 1x 285, 3x 289"
         }
     },
@@ -250,7 +302,6 @@ L.en.weeks = {
             "Crafting: craft your second Myth 5/5 (285) gear for 80x Mythic Dawn Crests. If possible, prioritize a slot where you already have Hero gear.",
             "Heroic Tier: upgrade two of your Hero 4/6 (269) -> 6/6 (276) gear for 80x Heroic Dawn Crests. Keep 20x Heroic Dawn Crests for the next step.",
             "Myth Tier: if your Great Vault gear is Myth 1/6 (272), first upgrade its Hero equivalent to 6/6 (276) for 20x Heroic Dawn Crests. Then upgrade your Myth 1/6 (272) -> 6/6 (289) for 80x Mythic Dawn Crests.",
-            "Crests spent: 520/520 Heroic Dawn Crests and 480/480 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 1x 266, 2x 269, 6x 276, 2x 285, 4x 289"
         }
     },
@@ -265,7 +316,6 @@ L.en.weeks = {
             "Heroic Tier: upgrade one of your Hero 4/6 (269) -> 6/6 (276) gear for 40x Heroic Dawn Crests.",
             "Myth Tier: if your Great Vault gear is Myth 1/6 (272), first upgrade its Hero equivalent to 6/6 (276) for 20x Heroic Dawn Crests. Then upgrade your Myth 1/6 (272) -> 6/6 (289) for 80x Mythic Dawn Crests.",
             "Myth Tier (Raid): upgrade Myth 2/6 (276) -> 5/6 (285) gear for 60x Mythic Dawn Crests.",
-            "Crests spent: 560/620 Heroic Dawn Crests and 620/620 Mythic Dawn Crests.",
             "Estimated gear level (based on RNG): 7x 276, 2x 285, 1x 285, 5x 289."
         }
     },
@@ -273,40 +323,63 @@ L.en.weeks = {
         title = "Week 10: Apr 29 and after",
         objectives = {
             "Crafting: do not craft any item in a slot if you can get gear higher than Myth 1/6 (272) from your Great Vault.",
-            "Upgrade priority: upgrade your Myth gear as you obtain it. Prioritize a full upgrade to 6/6 (289) to benefit from the significant +4 item level jump.",
-            "Weapon optimization: start considering crafting an off-hand (OH) at some point if you want to carry a main-hand (MH) 6/6 while keeping an embellishment on your weapon."
+            "Upgrade priority: upgrade your Myth gear as you obtain it. Prioritize a full upgrade to 6/6 (289) to benefit from the significant +4 item level jump."
         }
     }
 }
 
-L.en.mplus_csv = [[
+L.en.mplus_section_raids  = "Raids"
+L.en.mplus_section_mplus  = "Mythic+"
+L.en.mplus_section_delves = "Delves"
+L.en.mplus_section_traque = "Prey"
+
+L.en.mplus_csv_raids = [[
 Source,Quantities
-LFR Raid,TBA
-Normal Raid,TBA
-Heroic Raid,TBA
-Mythic Raid,TBA
-M0,TBA
-Mythic +2,10 x Heroic Dawn Crest
-Delve Tier 2,TBA
-Mythic +3,12 x Heroic Dawn Crest
-Delve Tier 3,TBA
-Mythic +4,14 x Heroic Dawn Crest
-Delve Tier 4,TBA
-Mythic +5,16 x Heroic Dawn Crest
-Delve Tier 5,TBA
-Mythic +6,18 x Heroic Dawn Crest
-Delve Tier 6,TBA
-Mythic +7,10 x Mythic Dawn Crest
-Delve Tier 7,TBA
-Mythic +8,12 x Mythic Dawn Crest
-Delve Tier 8,TBA
-Mythic +9,14 x Mythic Dawn Crest
-Delve Tier 9,TBA
-Mythic +10,16 x Mythic Dawn Crest
-Delve Tier 10,TBA
-Mythic +11,18 x Mythic Dawn Crest
-Delve Tier 11,TBA
-Mythic +12,20 x Mythic Dawn Crest
+LFR,?? x Veteran Dawn Crest
+Normal,?? x Champion Dawn Crest
+Heroic,?? x Heroic Dawn Crest
+Mythic,?? x Mythic Dawn Crest
+]]
+
+L.en.mplus_csv_mplus = [[
+Source,Quantities
+Mythic +2,?? x Champion Dawn Crest
+Mythic +3,?? x Champion Dawn Crest
+Mythic +4,?? x Heroic Dawn Crest
+Mythic +5,?? x Heroic Dawn Crest
+Mythic +6,?? x Heroic Dawn Crest
+Mythic +7,?? x Heroic Dawn Crest
+Mythic +8,?? x Heroic Dawn Crest
+Mythic +9,?? x Mythic Dawn Crest
+Mythic +10,?? x Mythic Dawn Crest
+Mythic +11,?? x Mythic Dawn Crest
+Mythic +12,?? x Mythic Dawn Crest
+]]
+
+L.en.mplus_csv_traque = [[
+Source,Quantities
+Normal,?? x Veteran Dawn Crest
+Hard,?? x Champion Dawn Crest
+Nightmare,?? x Heroic Dawn Crest
+]]
+
+L.en.mplus_csv_delves = [[
+Source,Quantities
+Tier 2,?? x Adventurer Dawn Crest
+Tier 3,?? x Adventurer Dawn Crest
+Tier 4,?? x Adventurer Dawn Crest
+Tier 5,?? x Veteran Dawn Crest
+Tier 6,?? x Veteran Dawn Crest
+Tier 6 + Bonus,?? x Champion Dawn Crest
+Tier 7,?? x Champion Dawn Crest
+Tier 7 + Bonus,?? x Champion Dawn Crest
+Tier 8,?? x Champion Dawn Crest
+Tier 8 + Bonus,?? x Heroic Dawn Crest
+Tier 9,?? x Champion Dawn Crest
+Tier 9 + Bonus,?? x Heroic Dawn Crest
+Tier 10,?? x Champion Dawn Crest
+Tier 10 + Bonus,?? x Heroic Dawn Crest
+Tier 11,?? x Heroic Dawn Crest
 ]]
 
 L.en.planning_csv = [[

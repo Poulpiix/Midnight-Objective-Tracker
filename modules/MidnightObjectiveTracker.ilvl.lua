@@ -172,7 +172,7 @@ iframe:Hide()
 table.insert(UISpecialFrames, "MidnightIlvlFrame")
 
 local ititle = iframe:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-ititle:SetPoint("TOP", iframe, "TOP", 0, -12)
+ititle:SetPoint("TOP", iframe, "TOP", 0, -15)
 do local ar, ag, ab = getAccent(); ititle:SetTextColor(ar, ag, ab) end
 
 local iclose = CreateFrame("Button", nil, iframe, "UIPanelButtonTemplate")

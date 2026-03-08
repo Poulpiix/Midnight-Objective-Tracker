@@ -2,24 +2,59 @@
 
 ---
 
-## [5.5] – 2026-03-06
+## [5.6] – 2026-03-08
 
-### 🇫🇷 Français
+**Timezone-aware date display**
+- Week titles (e.g. "Week 3: Mar 11 - 17") and side-menu labels (e.g. "Mar 11 - 17") are now computed dynamically from UTC timestamps using `date("*t", timestamp)`, which applies the player's local OS timezone. US players will see dates shifted one day earlier; Asian players may see them one day later.
+- The Crests panel subtitle ("As of March 18" / "À compter du 18 mars" / etc.) follows the same rule, derived from the Week 4 timestamp.
+- Each locale (FR, EN, DE, ES) exposes three new formatter functions — `formatMenuLabel`, `formatWeekTitle`, `formatSubtitle` — called via `MidnightL.FormatMenuLabel(weekIndex)`, `MidnightL.FormatWeekTitle(weekIndex)` and `MidnightL.FormatMplusSubtitle()`.
+- Existing static strings (`menuLabels`, `weeks[].title`, `mplus_subtitle`) are kept as fallbacks.
+- `reset_info` updated in all four locales to reflect the new behavior.
 
-- **Nouvelles langues** — Ajout du support complet pour l'allemand (`deDE`) et l'espagnol (`esES`/`esMX`) : objectifs hebdomadaires, étiquettes de menu, infobulles et chaînes de l'interface traduits dans les deux langues.
-- **Infobulles dans la langue du client** — Les infobulles de l'addon (boutons de la barre d'outils, icône minimap, panel de crêtes) s'affichent désormais dans la langue du client WoW détectée automatiquement (FR, EN, DE, ES).
-- **Correction d'erreur Lua** — Résolution d'une erreur Lua survenant lors du rechargement de l'interface dans certaines conditions (accès à une clé inexistante dans `MidnightTrackerDB`).
-- **Check-list interactive sur toute la ligne** — Auparavant, seul le clic sur la case à cocher validait un objectif. Désormais, cliquer n'importe où sur la ligne de l'objectif (texte inclus) bascule également son état. Au survol de la ligne, un léger fond doré apparaît pour indiquer la zone cliquable.
-- **Confirmation avant reset** — Le bouton « Reset » affiche désormais une fenêtre de confirmation avant de réinitialisé toutes les cases cochées, afin d'éviter les réinitialisations accidentelles. La popup est traduite dans les quatre langues supportées (FR, EN, DE, ES).
-- **Correction d'alignement — panneau des écus** — La distance entre le panneau des écus (résumé en bas de la fenêtre principale) et la fenêtre de base n'était pas cohérente avec celle des autres panneaux latéraux. L'espacement est désormais uniformisé à 4 px sur tous les côtés (haut, droite, bas).
-- **Alignment fix — crest panel** — The gap between the crest summary panel (bottom of the main window) and the main frame was inconsistent with the other side panels. Spacing is now uniform at 4 px on all sides (top, right, bottom).
-- **Contour doré désactivable** — Nouvelle case à cocher dans le panel *Accessibilité* (icône engrenage) permettant d'activer ou de désactiver le contour doré sur toutes les fenêtres de l'addon.
-- **Couleur d'accentuation personnalisable** — Un sélecteur de couleur (compatible avec le Color Picker natif WoW) permet de modifier la couleur utilisée pour les titres de semaines, les bullets du menu, les numéros d'objectifs et l'étiquette du niveau d'objet. Un bouton *Reset* permet de revenir à l'or par défaut. La couleur est sauvegardée dans la base de données.
-- **Synchronisation avec ElvUI** — Un nouveau bouton *Sync avec ElvUI* dans le panel *Accessibilité* détecte si ElvUI est actif et synchronise automatiquement la couleur d'accentuation (via `valuecolor` ou `bordercolor` du profil ElvUI), ainsi que la couleur de fond des fenêtres. Si la couleur de bordure d'ElvUI est trop sombre, la `valuecolor` est utilisée en priorité.
+**Locale synchronization (EN / DE / ES)**
+- All four CSV sections (Raids, Mythic+, Prey, Delves) in EN, DE and ES have been fully rewritten to match the FR source of truth: correct tier mapping (`??` quantities throughout, M0 row removed), aligned difficulty labels, and proper localized crest names per language.
+- Delves tables now contain 15 rows each, including `+ Bonus` tier variants (e.g. Tier 6 + Bonus → Champion, Tier 8/9/10 + Bonus → Heroic, Tier 11 → Heroic), mirroring the FR layout exactly.
+- `mplus_subtitle` added to EN ("As of March 18") and DE ("Ab dem 18. März"). The ES entry ("A partir del 18 de marzo") was already present.
+
+**Crest detection — extended language coverage (`ecus.lua`)**
+- Veteran tier detection broadened from the literal `"veteran dawn"` to the plain substring `"veteran"`, now correctly covering DE (`Veteran-Morgenwappen`) and ES (`veterano`) in addition to EN.
+- Champion tier detection extended with the `"campe"` pattern to cover ES `campeón`, which was previously unrecognized and fell through to an uncoloured white fallback.
 
 ---
 
-### 🇬🇧 English
+## [5.5.1] – 2026-03-08
+
+**Crest panel — redesign**
+- **Full rework (CSV-based multi-section layout)** — The Crests window has been completely rewritten. Data is now driven by per-locale CSV strings, split into independent sections (Raids, Mythic+, Delves, Prey). Each section renders its own titled block with a column-header row and data rows, all dynamically laid out. The window auto-resizes its height to fit all content.
+- **Inline crest icons and tier color-coding** — Quantity cells auto-detect the crest tier from the cell text and display the matching icon (`inv_120_crest_*`) followed by the full text colored in the tier accent color (Adventurer, Veteran, Champion, Heroic, Mythic). Unrecognized values are rendered in white; `TBA` entries are shown in grey.
+- **Alternating row backgrounds** — Even data rows receive a subtle dark overlay (`0, 0, 0, 0.25`) spanning the full table width for improved readability.
+- **Live accent-color update** — The panel is registered with `RegisterAccentColorCallback`; all section titles, column headers and the panel title update instantly when the accent color is changed in the options.
+- **Section titles centered** — The section titles ("Raids", "Mythic+", "Delves", "Prey") are now center-aligned instead of left-aligned.
+- **Background colors reworked** — Section titles now display the accent-colored background previously applied to column headers. Column headers now use the same dark-blue background (`0.08, 0.08, 0.14, 0.85`) as the upgrade-track table in the iLvl panel.
+- **New "Prey" section** — A fourth section for Hunt rewards (Normal, Hard, Nightmare) has been added. Translated in all four languages (FR: Traque, EN: Prey, DE: Jagd, ES: Cacería).
+- **Subtitle "À compter du 18 mars"** — A small subtitle is now displayed below the window title to indicate that data applies from 18 March. Translated per locale (FR: "À compter du 18 mars", ES: "A partir del 18 de marzo"). `PAD_T` increased from 36 to 48 to accommodate the extra line.
+
+**Bug fixes**
+- **Adventurer and Veteran Dawn Crests — missing icon and color** — The `??` placeholder quantity was not matched by the detection pattern (`[%dX]+`), preventing icon and tier color from being applied. Extended to `[%dX?]+`. Entries with a double `x x` notation (e.g. `?? x x Écu de l'aube de vétéran`) also left a stray `x ` before the colored text; this is now stripped automatically.
+- **Champion Dawn Crest — missing icon and color** — The Champion tier was not included in the crest-detection chain in `ecus.lua`. Added the missing `elseif` branch with `inv_120_crest_champion` icon and `MidnightL.C("champion")` color.
+- **Scroll resets checked objectives** — Fixed a rare issue where scrolling could reset the checked state of objectives. The `UIPanelScrollFrameTemplate` internal `OnVerticalScroll` handler was being chained unnecessarily and could interfere with ElvUI; the `rowBtn` overlay also overlapped the checkbox area, causing double-toggles under certain addon configurations. The row button now starts after the checkbox zone, and the redundant scroll handler has been removed.
+
+**Objective updates — Weeks 2 to 6 (all languages)**
+- **Bonus renown** (Halduron Brightwing) — weekly dungeon quest added to Weeks 2, 3, 4, 5 and 6.
+- **Spark** — weekly Spark quest added to Weeks 2, 3, 4, 5 and 6.
+- **Cache** — weekly Cache quest added to Weeks 3, 4, 5 and 6.
+- **Random delve** (Astalor Bloodsworn) — random delve objective (Veteran/Champion depending on the week) added to Weeks 2, 3, 4 and 5.
+- **Lodging** — Lodging quest for Heroic crests added to Week 5.
+- **Pit objective (Week 5)** — now points to the Fractured Keystone quest instead of Champion loot 2/6 (250).
+
+**Visual polish**
+- **Adventurer Dawn Crest icon** — The `inv_120_crest_adventurer` icon is now displayed inline wherever Adventurer crests appear: in the Crests table and in the weekly objectives of the main tracker (Weeks 1, 2 and 3), in all four languages.
+- **Font consistency — week title** — The weekly title font (`GameFontHighlightLarge`) has been replaced with `GameFontNormalLarge` to match the Crests, iLvl and Planning windows.
+- **iLvl window — title vertical alignment** — The iLvl title offset was `-12` px while all other windows use `-15` px. Corrected for visual consistency.
+
+---
+
+## [5.5] – 2026-03-06
 
 - **New languages** — Added full support for German (`deDE`) and Spanish (`esES`/`esMX`): weekly objectives, menu labels, tooltips and UI strings are translated in both languages.
 - **Client-language tooltips** — Addon tooltips (toolbar buttons, minimap icon, crest panel) are now displayed in the detected WoW client language (FR, EN, DE, ES).

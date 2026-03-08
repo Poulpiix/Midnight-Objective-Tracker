@@ -142,3 +142,91 @@ function L.C(key)
     local palette = L.ColorPalettes[mode] or L.ColorPalettes.none
     return palette[key] or L.ColorPalettes.none[key] or "FFFFFF"
 end
+
+-- ============================================================
+-- Formatage des dates de semaine adapté au fuseau local
+-- ============================================================
+-- Timestamps UTC des resets hebdomadaires EU.
+-- date("*t", ts) utilise le fuseau horaire local du PC du joueur,
+-- donc les dates s'affichent automatiquement dans son heure locale.
+--
+-- Reset EU = mercredi 07h00 CET (06:00 UTC) / 07h00 CEST (05:00 UTC, après le 29 mars)
+-- Heure d'été (France) : changement le dernier dimanche de mars → 29 mars 2026
+L.weekTimestamps = {
+    1772150400,  -- Semaine 1  : 27 fév. 2026 00:00 UTC (lancement patch)
+    1772604000,  -- Semaine 2  : 04 mars 2026 06:00 UTC
+    1773208800,  -- Semaine 3  : 11 mars 2026 06:00 UTC
+    1773813600,  -- Semaine 4  : 18 mars 2026 06:00 UTC
+    1774418400,  -- Semaine 5  : 25 mars 2026 06:00 UTC
+    1775019600,  -- Semaine 6  : 01 avr.  2026 05:00 UTC (CEST → UTC+2)
+    1775624400,  -- Semaine 7  : 08 avr.  2026 05:00 UTC
+    1776229200,  -- Semaine 8  : 15 avr.  2026 05:00 UTC
+    1776834000,  -- Semaine 9  : 22 avr.  2026 05:00 UTC
+    1777438800,  -- Semaine 10 : 29 avr.  2026 05:00 UTC
+}
+
+local function _getDateParts(ts)
+    local t = date("*t", ts)
+    return t.day, t.month
+end
+
+-- Retourne le label du menu latéral pour la semaine donnée (ex: "11/03 - 17/03")
+-- en respectant le fuseau horaire local du joueur.
+function L.FormatMenuLabel(weekIndex)
+    local ts = L.weekTimestamps
+    if not ts or not ts[weekIndex] then return nil end
+    local loc = L.GetLocale()
+    local locTable = L[loc]
+    if not locTable then return nil end
+
+    local startTs = ts[weekIndex]
+    local nextTs  = ts[weekIndex + 1]
+    local sd, sm  = _getDateParts(startTs)
+
+    if not nextTs then
+        if locTable.formatLastMenuLabel then
+            return locTable.formatLastMenuLabel(sd, sm)
+        end
+        return nil
+    end
+
+    -- Fin de semaine = 1 jour avant le prochain reset
+    local ed, em = _getDateParts(nextTs - 86400)
+    if locTable.formatMenuLabel then
+        return locTable.formatMenuLabel(sd, sm, ed, em)
+    end
+    return nil
+end
+
+-- Retourne le titre complet de la semaine (ex: "Semaine 3 : 11 - 17 mars")
+-- en respectant le fuseau horaire local du joueur.
+function L.FormatWeekTitle(weekIndex)
+    local ts = L.weekTimestamps
+    if not ts or not ts[weekIndex] then return nil end
+    local loc = L.GetLocale()
+    local locTable = L[loc]
+    if not locTable or not locTable.formatWeekTitle then return nil end
+
+    local startTs = ts[weekIndex]
+    local nextTs  = ts[weekIndex + 1]
+    local sd, sm  = _getDateParts(startTs)
+
+    if not nextTs then
+        return locTable.formatWeekTitle(weekIndex, sd, sm, nil, nil)
+    end
+
+    local ed, em = _getDateParts(nextTs - 86400)
+    return locTable.formatWeekTitle(weekIndex, sd, sm, ed, em)
+end
+
+-- Retourne le sous-titre du panneau Écus/Crests (ex : "À compter du 18 mars")
+-- basé sur le timestamp de la semaine 4, adapté au fuseau local du joueur.
+function L.FormatMplusSubtitle()
+    local ts = L.weekTimestamps
+    if not ts or not ts[4] then return nil end
+    local loc = L.GetLocale()
+    local locTable = L[loc]
+    if not locTable or not locTable.formatSubtitle then return nil end
+    local d, m = _getDateParts(ts[4])
+    return locTable.formatSubtitle(d, m)
+end
