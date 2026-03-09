@@ -1,4 +1,4 @@
-local Ilvl = {}
+﻿local Ilvl = {}
 _G["MidnightIlvl"] = Ilvl
 
 local function getAccent()

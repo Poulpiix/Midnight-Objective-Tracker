@@ -1,7 +1,7 @@
 ## Interface: 120000, 120001
 ## Title: MidnightObjectiveTracker
-## Author: Poulpix (twitch.tv/poulpi_x)
-## Version: 5.6
+## Author: Poulpix (https://x.com/poulpi_x)
+## Version: 5.6.1
 ## License: All Rights Reserved
 ## Notes: Week-by-week objective tracker for World of Warcraft: Midnight
 ## Notes-frFR: Suivi d'objectifs pour le lancement de Midnight
@@ -13,6 +13,10 @@
 ## SavedVariables: MidnightObjectiveTrackerDB
 ## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
 
+lib\LibStub\LibStub.lua
+lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
+lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
 locales\MidnightObjectiveTracker.locales.lua
 locales\MidnightObjectiveTracker.locales.fr.lua
 locales\MidnightObjectiveTracker.locales.en.lua
@@ -22,3 +26,5 @@ MidnightObjectiveTracker.lua
 modules\MidnightObjectiveTracker.planningcontenu.lua
 modules\MidnightObjectiveTracker.ecus.lua
 modules\MidnightObjectiveTracker.ilvl.lua
+modules\MidnightObjectiveTracker.crestpanel.lua
+modules\MidnightObjectiveTracker.vault.lua

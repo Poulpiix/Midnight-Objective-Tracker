@@ -1,4 +1,4 @@
-local Mplus = {}
+﻿local Mplus = {}
 _G["MidnightMplus"] = Mplus
 
 local SECTION_GAP = 8

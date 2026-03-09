@@ -1,4 +1,4 @@
-local L = MidnightL
+﻿local L = MidnightL
 
 L.en = {}
 
@@ -6,8 +6,8 @@ L.en.title = "Midnight Objective Tracker"
 L.en.planning = "Planning"
 L.en.crests = "Crests"
 L.en.resources = "Resources"
-L.en.resources_short_desc = "Data comes from various sources such as: Larias, WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
-L.en.reset_info = "Dates are based on the EU weekly reset (Wednesday 07:00 CET/CEST) and automatically adapt to your local timezone."
+L.en.resources_short_desc = "Data comes from various sources such as: WoW Head, Icy Veins, Judge Hype or Blizz Spirit, cross-referenced to create a coherent and optimized progression guide."
+L.en.reset_info = "Dates are based on your local timezone."
 L.en.reset_checks = "Reset"
 L.en.reset_checks_desc = "Resets all checked objectives in the tracker."
 L.en.reset_confirm_title = "Confirm reset"
@@ -61,7 +61,7 @@ L.en.esc_closes = "Escape closes addon"
 L.en.golden_border = "Show window border"
 L.en.golden_border_desc = "Show or completely hide the border on all windows."
 L.en.custom_colors_title = "Custom Colors"
-L.en.title_color_label = "Title & accent color"
+L.en.title_color_label = "Main text color"
 L.en.title_color_desc = "Color used for week titles, menu labels, and accents."
 L.en.elvui_sync_title = "ElvUI Style Sync"
 L.en.elvui_sync_btn = "Sync with ElvUI"
@@ -71,7 +71,11 @@ L.en.elvui_sync_ok = "Style synchronized with ElvUI!"
 
 L.en.btn_color_label = "Button color"
 L.en.btn_color_desc  = "Click to choose the background color of buttons."
-L.en.minimap_open_close = "Left click: open / close"
+L.en.window_bg_color_label = "Window background color"
+L.en.window_bg_color_desc  = "Click to choose the background color of all windows."
+L.en.minimap_open_close  = "Left click: open / close"
+L.en.minimap_right_click  = "Right click: options"
+L.en.minimap_middle_click = "Middle click: ilvl references"
 L.en.minimap_drag = "Drag: reposition"
 
 L.en.ilvl_raid_synth = "Curio"
@@ -110,6 +114,19 @@ L.en.ilvl_crest_vet = "Veteran Dawn Crests"
 L.en.ilvl_crest_champ = "Champion Dawn Crests"
 L.en.ilvl_crest_hero = "Heroic Dawn Crests"
 L.en.ilvl_crest_myth = "Mythic Dawn Crests"
+
+L.en.vault_title     = "Great Vault"
+L.en.vault_raid      = "Raid"
+L.en.vault_dungeon   = "Dungeon"
+L.en.vault_world     = "World"
+L.en.vault_slot      = "Slot"
+L.en.vault_na        = "N/A"
+L.en.vault_threshold = "Threshold"
+L.en.vault_unlocked  = "Unlocked!"
+L.en.vault_progress  = "Progress"
+
+L.en.show_crest_panel = "Show Crests summary"
+L.en.show_vault_panel = "Show Great Vault"
 
 L.en.summaryPatterns = {
     "^Crests spent%s*:",

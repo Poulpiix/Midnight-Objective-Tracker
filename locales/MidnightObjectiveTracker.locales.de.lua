@@ -1,4 +1,4 @@
-local L = MidnightL
+﻿local L = MidnightL
 
 L.de = {}
 
@@ -7,7 +7,7 @@ L.de.planning = "Zeitplan"
 L.de.crests = "Wappen"
 L.de.resources = "Ressourcen"
 L.de.resources_short_desc = "Daten stammen aus verschiedenen Quellen wie: Larias, WoW Head, Icy Veins, Judge Hype oder Blizz Spirit und wurden überprüft, um einen kohärenten und optimierten Fortschrittsleitfaden zu erstellen."
-L.de.reset_info = "Die Daten basieren auf dem EU-Reset (Mittwoch 07:00 Uhr CET/CEST) und passen sich automatisch an deine lokale Zeitzone an."
+L.de.reset_info = "Die Daten basieren auf deiner lokalen Zeitzone."
 L.de.reset_checks = "Zurücksetzen"
 L.de.reset_checks_desc = "Setzt alle markierten Ziele des Verfolgers zurück."
 L.de.reset_confirm_title = "Reset bestätigen"
@@ -23,7 +23,9 @@ L.de.welcome_msg = "Gib |cffFFD100/som|r im Chat ein, um den Ziele-Verfolger zu 
 L.de.no_data = "Keine Daten."
 L.de.no_csv_data = "Keine Daten aus CSV importiert."
 L.de.csv_error = "[Midnight] Fehler beim Parsen des Planungs-CSV: "
-L.de.minimap_open_close = "Linksklick: öffnen / schließen"
+L.de.minimap_open_close  = "Linksklick: öffnen / schließen"
+L.de.minimap_right_click  = "Rechtsklick: Optionen"
+L.de.minimap_middle_click = "Mittelklick: Ilvl-Referenzen"
 L.de.minimap_drag = "Ziehen: neu positionieren"
 L.de.colorblind_title = "Options"
 L.de.colorblind_none = "Normale Vision"
@@ -62,7 +64,7 @@ L.de.esc_closes = "Escape schließt das Addon"
 L.de.golden_border = "Fensterrahmen anzeigen"
 L.de.golden_border_desc = "Den Rahmen aller Fenster anzeigen oder vollständig ausblenden."
 L.de.custom_colors_title = "Benutzerdefinierte Farben"
-L.de.title_color_label = "Titel- & Akzentfarbe"
+L.de.title_color_label = "Haupttextfarbe"
 L.de.title_color_desc = "Farbe für Wochentitel, Menüeinträge und Akzente."
 L.de.elvui_sync_title = "ElvUI-Stil synchronisieren"
 L.de.elvui_sync_btn = "Mit ElvUI sync."
@@ -72,6 +74,8 @@ L.de.elvui_sync_ok = "Stil mit ElvUI synchronisiert!"
 
 L.de.btn_color_label = "Schaltflächenfarbe"
 L.de.btn_color_desc  = "Klicken, um die Hintergrundfarbe der Schaltflächen zu wählen."
+L.de.window_bg_color_label = "Fensterhintergrundfarbe"
+L.de.window_bg_color_desc  = "Klicken, um die Hintergrundfarbe aller Fenster zu wählen."
 
 L.de.ilvl_raid_synth = "Kuriosität"
 

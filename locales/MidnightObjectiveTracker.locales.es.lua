@@ -1,4 +1,4 @@
-local L = MidnightL
+﻿local L = MidnightL
 
 L.es = {}
 
@@ -6,8 +6,8 @@ L.es.title = "Seguidor de Objetivos Midnight"
 L.es.planning = "Planificación"
 L.es.crests = "Blasones"
 L.es.resources = "Recursos"
-L.es.resources_short_desc = "Los datos provienen de diversas fuentes como: Larias, WoW Head, Icy Veins, Judge Hype o Blizz Spirit, contrastados para crear una guía de progresión coherente y optimizada."
-L.es.reset_info = "Las fechas se basan en el reinicio semanal europeo (miércoles 07:00 CET/CEST) y se adaptan automáticamente a tu zona horaria local."
+L.es.resources_short_desc = "Los datos provienen de diversas fuentes como: WoW Head, Icy Veins, Judge Hype o Blizz Spirit, contrastados para crear una guía de progresión coherente y optimizada."
+L.es.reset_info = "Las fechas se basan en tu zona horaria local."
 L.es.reset_checks = "Reiniciar"
 L.es.reset_checks_desc = "Reinicia todas las casillas marcadas del seguidor de objetivos."
 L.es.reset_confirm_title = "Confirmar reinicio"
@@ -23,7 +23,9 @@ L.es.welcome_msg = "Escribe |cffFFD100/som|r en el chat para abrir el seguidor d
 L.es.no_data = "Sin datos."
 L.es.no_csv_data = "No se importaron datos del CSV."
 L.es.csv_error = "[Midnight] Error al analizar el CSV de planificación: "
-L.es.minimap_open_close = "Clic izquierdo: abrir / cerrar"
+L.es.minimap_open_close  = "Clic izquierdo: abrir / cerrar"
+L.es.minimap_right_click  = "Clic derecho: opciones"
+L.es.minimap_middle_click = "Clic rueda: referencias ilvl"
 L.es.minimap_drag = "Arrastrar: reposicionar"
 L.es.colorblind_title = "Opciones"
 L.es.colorblind_none = "Visión normal"
@@ -62,7 +64,7 @@ L.es.esc_closes = "Escape cierra el addon"
 L.es.golden_border = "Mostrar borde de ventana"
 L.es.golden_border_desc = "Mostrar u ocultar completamente el borde en todas las ventanas."
 L.es.custom_colors_title = "Colores personalizados"
-L.es.title_color_label = "Color de títulos y acentos"
+L.es.title_color_label = "Color principal del texto"
 L.es.title_color_desc = "Color usado para los títulos de semana, etiquetas del menú y acentos."
 L.es.elvui_sync_title = "Sincronización con ElvUI"
 L.es.elvui_sync_btn = "Sync con ElvUI"
@@ -72,6 +74,8 @@ L.es.elvui_sync_ok = "¡Estilo sincronizado con ElvUI!"
 
 L.es.btn_color_label = "Color de botones"
 L.es.btn_color_desc  = "Haz clic para elegir el color de fondo de los botones."
+L.es.window_bg_color_label = "Color de fondo de ventana"
+L.es.window_bg_color_desc  = "Haz clic para elegir el color de fondo de todas las ventanas."
 
 L.es.ilvl_raid_synth = "Curiosidad"
 

@@ -1,5 +1,49 @@
 # Changelog — MidnightObjectiveTracker
 
+--
+
+## [5.6.1] – 2026-03-09
+
+**Minimap icon — LibDBIcon**
+- The minimap button is now powered by **LibDBIcon-1.0** (bundled in `lib/`), replacing the previous hand-crafted implementation.
+- The icon now displays the **circular border ring** standard to all LibDBIcon-based addons.
+- The button can be **dragged** around the minimap; its position is persisted across sessions in `MidnightObjectiveTrackerDB.minimap`.
+- **Click bindings updated:**
+  - **Left-click** — open / close the main window.
+  - **Right-click** — open / close the Options panel.
+  - **Middle-click** — toggle the item-level reference window.
+- The tooltip now lists all three click actions and is fully localized in French, English, Spanish and German.
+
+**Great Vault summary panel**
+- A new **Great Vault** panel has been added to the right side of the main window, anchored below the weekly summary menu panel.
+- Displays a **3 × 3 grid** showing unlock progress for all nine Great Vault slots across the three activity types: **Raid** (thresholds: 2 / 4 / 6), **Dungeon** (1 / 4 / 8), and **World** (2 / 4 / 8).
+- Each cell is color-coded in real time using `C_WeeklyRewards.GetActivities()`:
+  - **Green** — slot unlocked (threshold reached).
+  - **Amber** — in progress (at least one activity completed).
+  - **Red** — not started.
+  - **Dark grey** — data unavailable.
+- Hovering a cell shows a tooltip with the slot's threshold and current progress.
+- The panel refreshes automatically every 3 seconds while the main window is open.
+- Fully integrated with the Midnight theming system: accent color, window background color, and border are all synchronized with the rest of the addon.
+- Localized in **French** and **English** (title, row labels, tooltip strings).
+
+**Panel visibility options**
+- Two new checkboxes have been added to the **Options** panel:
+  - **"Show Crests summary"** — toggles the horizontal crest bar displayed at the bottom of the main window.
+  - **"Show Great Vault"** — toggles the Great Vault 3×3 grid panel.
+- Both settings are saved in `MidnightObjectiveTrackerDB` (`showCrestPanel`, `showVaultPanel`) and persist across sessions and version upgrades.
+- Both panels default to **visible** on a fresh install.
+
+**Crest panel extracted into its own module**
+- The horizontal crest bar (previously inlined in the main file) has been moved to a dedicated module: `modules/MidnightObjectiveTracker.crestpanel.lua`.
+- Functionality and positioning are unchanged; its `UpdateCrestPanel` function is now exported via `MidnightTracker.UpdateCrestPanel` for use by the main file.
+- The hover-opacity system has been extended to include both `MidnightCrestPanel` and `MidnightVaultPanel`, so hovering either panel at reduced opacity restores full visibility as expected.
+- The summary menu panel dynamically adjusts its height to match the number of visible weeks; the Great Vault panel stays flush against the bottom of the menu at all times.
+
+**Localization**
+- Keys `show_crest_panel` and `show_vault_panel` added in French and English.
+- `reset_info` simplified in all four languages: now reads *"Dates are based on your local timezone."* (and equivalents in FR, DE, ES), removing the EU reset reference.
+
 ---
 
 ## [5.6] – 2026-03-08
@@ -19,10 +63,6 @@
 **Crest detection — extended language coverage (`ecus.lua`)**
 - Veteran tier detection broadened from the literal `"veteran dawn"` to the plain substring `"veteran"`, now correctly covering DE (`Veteran-Morgenwappen`) and ES (`veterano`) in addition to EN.
 - Champion tier detection extended with the `"campe"` pattern to cover ES `campeón`, which was previously unrecognized and fell through to an uncoloured white fallback.
-
----
-
-## [5.5.1] – 2026-03-08
 
 **Crest panel — redesign**
 - **Full rework (CSV-based multi-section layout)** — The Crests window has been completely rewritten. Data is now driven by per-locale CSV strings, split into independent sections (Raids, Mythic+, Delves, Prey). Each section renders its own titled block with a column-header row and data rows, all dynamically laid out. The window auto-resizes its height to fit all content.
