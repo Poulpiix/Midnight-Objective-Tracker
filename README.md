@@ -1,7 +1,7 @@
 # MidnightObjectiveTracker
-[![Donate to Midnight Objective Tracker](https://img.shields.io/badge/buy_me_a_coffee-681bc1?logo=buymeacoffee&amp;style=for-the-badge)](buymeacoffee.com/poulpix)
-[![On Curseforge](https://img.shields.io/badge/download-Curseforge-orange)]([https://www.curseforge.com/wow/addons/auctionator)](https://www.curseforge.com/wow/addons/midnight-objective-tracker))
-[![On Wago](https://img.shields.io/badge/download-Wago-3a3a3a)]([https://addons.wago.io/addons/auctionator/)](https://addons.wago.io/addons/midnight-objective-tracker))
+[![Donate to Midnight Objective Tracker](https://img.shields.io/badge/buy_me_a_coffee-681bc1?logo=buymeacoffee&style=for-the-badge)](https://buymeacoffee.com/poulpix)
+[![On Curseforge](https://img.shields.io/badge/download-Curseforge-orange)](https://www.curseforge.com/wow/addons/midnight-objective-tracker)
+[![On Wago](https://img.shields.io/badge/download-Wago-3a3a3a)](https://addons.wago.io/addons/midnight-objective-tracker)
 
 **A week-by-week in-game progression guide for World of Warcraft: Midnight.** Automatically detects your WoW client language and displays in French, English, German or Spanish.
 
