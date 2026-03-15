@@ -1,3 +1,4 @@
+<div align="center">
 # MidnightObjectiveTracker
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/buy_me_a_coffee-681bc1?logo=buymeacoffee&style=for-the-badge)](https://buymeacoffee.com/poulpix)
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/ko_fi-74a4ed?logo=kofi&amp;style=for-the-badge)](https://ko-fi.com/poulpix)
@@ -6,9 +7,6 @@
 [![On Wago](https://img.shields.io/badge/download-Wago-3a3a3a)](https://addons.wago.io/addons/midnight-objective-tracker)
 
 **A week-by-week in-game progression guide for World of Warcraft: Midnight.** Automatically detects your WoW client language and displays in French, English, German or Spanish.
-
-<div align="center">
-<img src="https://i.ibb.co/ZzHCS6G0/ezgif-76c5de27c753f082.webp" alt="Texte alternatif" width="917">
 </div>
 
 ## Key Features
