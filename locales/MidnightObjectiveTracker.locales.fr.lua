@@ -64,8 +64,10 @@ L.fr.esc_closes = "Échap ferme l'addon"
 L.fr.golden_border = "Bordure des fenêtres"
 L.fr.golden_border_desc = "Afficher ou supprimer complètement la bordure sur toutes les fenêtres."
 L.fr.custom_colors_title = "Couleurs personnalisées"
-L.fr.title_color_label = "Couleur principale du texte"
-L.fr.title_color_desc = "Couleur utilisée pour les titres de semaine, les boutons de menu et les accents."
+L.fr.title_color_label = "Couleur des titres & entêtes"
+L.fr.title_color_desc  = "Couleur utilisée pour les titres, sous-titres, entêtes de tableaux et bordures d'accent."
+L.fr.btn_text_color_label = "Couleur du texte des boutons"
+L.fr.btn_text_color_desc  = "Couleur utilisée pour le texte affiché à l'intérieur des boutons."
 L.fr.elvui_sync_title = "Synchronisation ElvUI"
 L.fr.elvui_sync_btn = "Sync avec ElvUI"
 L.fr.elvui_sync_desc = "Synchronise les couleurs des fenêtres avec ton profil ElvUI."
@@ -223,29 +225,28 @@ L.fr.weeks = {
             "Mythique 0 (hors-saison) : accomplissez tous les donjons en Mythique 0 (hors-saison), offrant de l'équipement Vétéran 3/6 (240) (n'améliorez pas l'équipement obtenu).",
             "Artisanat : préparez les composants d'artisanat si vous raidez le 18 mars.",
             "Optimisation : dépensez tous les Écus de l'aube d'aventure si vous le souhaitez.",
-            "Niveau d'équipement estimé (selon RNG) : 10x 240, 4x 246"
+            "Niveau d'équipement estimé (selon RNG) : 11x 240, 4x 246"
         }
     },
     {
         title = "Semaine 4 : 18 - 24 mars",
         objectives = {
             "Ne dépensez aucun Écus de l'aube de Champion, Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
-            "Catalyseur : en attente d'informations par Blizzard.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
             "Boss monde : tuez le Boss monde pour obtenir de l'équipement Champion 2/6 (250).",
             "Étincelle : accomplissez la quête hebdomadaire pour obtenir votre Étincelle.",
             "Cache : accomplissez la quêtre hebdomadaire pour obtenir votre cache de la semaine.",
             "Renom bonus : accomplissez la quête de donjon hebdomadaire d'Halduron Luisaile pour obtenir 1 000 points de renom.",
-            "Traque : accomplissez des Traques en mode cauchemar (4 par semaine), offrant de l'équipement Champion 1/6 (246).",
+            "Traque : accomplissez des Traques en mode cauchemar (4 par semaine), offrant de l'équipement Champion 1/6 (246) (seulement les 2 premières).",
             "Traque aléatoire : accomplissez des Traques aléatoires en mode cauchemar données par Astalor Ligessang pour obtenir des Écus de l'aube de champion.",
-            "JcJ : faites la quête JcJ pour obtenir le collier ou l'anneau Hero garanti (si disponible, car disparu de la bêta recemment).",
+            "JcJ : achetez 2 Monture galactique de joaillerie auprès du marchand pour 5 000 points d'honneur et 3 Héliotrope imprégné. Vous les utiliserez pour ajouter des châsses aux objets fabriqués. Ces objets n'apparaîtront chez le marchand qu'à partir de cette semaine. Cela sert essentiellement à obtenir 2 châsses supplémentaires.",
             "Gouffre : accomplissez des Gouffres abondants (palier 8 minimum) avec clés et carte pour obtenir de l'équipement Champion 2/6 (250).",
-            "Mythique 0 (Pré-saison) : réalisez un World Tour (journalier) des donjons Mythique 0 (Pré-saison), offrant désormais de l'équipement Champion 2/6 (250).",
-            "Artisanat : fabriquez 2 équipements Vétéran 5/5 (246) en utilisant 80 Écus de l'aube vétéran chacun avec 2 embellissements (Priorisez les Poignets, Ceinture et Bottes) (celà ne consomme pas d'étincelle).",
+            "Mythique 0 (Pré-saison) : réalisez un World Tour (journalier) des donjons Mythique 0 (Pré-saison), offrant désormais de l'équipement Champion 1/6 (246).",
+            "Artisanat : fabriquez 2 équipements 246 en utilisant 80 Écus de l'aube vétéran chacun avec 2 embellissements (Priorisez les Poignets, Ceinture et Bottes).",
             "Optimisation : dépensez tous les Écus de l'aube vétéran et les Écus de l'aube de Champion avant d'entrer en raid.",
             "Set de classe : utilisez l'outil Raids (LFR) pour obtenir des pièces de sets.",
             "Raid : accomplissez le mode Normal et Héroïque.",
-            "Niveau d'équipement estimé (selon RNG) : 2x 246, 3x 240, 10x 250"
+            "Niveau d'équipement estimé (selon RNG) : 2x 246, 13x 250"
         }
     },
     {
@@ -253,14 +254,13 @@ L.fr.weeks = {
         objectives = {
             "Ne dépensez aucun Écus de l'aube de Champion, Écus de l'aube héroïque et Écus de l'aube mythique sauf si demandé.",
             "Écus : atteignez le cap hebdomadaire de tous vos Écus.",
-            "Catalyseur : en attente d'informations par Blizzard.",
             "Set de classe : si vous n'avez pas encore votre bonus 4-pièces (4p), utilisez l'outil Raids (LFR) pour récupérer les pièces manquantes.",
             "Artisanat : si votre discord de classe le recommande, utilisez 1 étincelle pour fabriquer un Mythe 1/5 (272) avec embellissement (ce cas de figure sera plutôt rare, donc adaptez-vous pour la suite du guide).",
             "Étincelle : accomplissez la quête hebdomadaire pour obtenir votre Étincelle.",
             "Cache : accomplissez la quête hebdomadaire pour obtenir votre cache de la semaine.",
             "Renom bonus : accomplissez la quête de donjon hebdomadaire d'Halduron Luisaile pour obtenir 1 000 points de renom.",
             "Logis : accompllissez la quête du Logis pour obtenir des Écus de l'aube héroïque.",
-            "Traque : accomplissez des Traques en mode cauchemar (4 par semaine), offrant de l'équipement Champion 1/6 (246).",
+            "Traque : accomplissez des Traques en mode cauchemar (4 par semaine), offrant de l'équipement Champion 1/6 (246) (seulement les 2 premières).",
             "Traque aléatoire : accomplissez des Traques aléatoires en mode cauchemar données par Astalor Ligessang pour obtenir des Écus de l'aube de champion.",
             "Gouffre : accomplissez au minimum un Gouffre abonddant (palier 11) pour obtenir la quête de la Clé fêlée.",
             "Mythique + (Saison 1) : accomplissez des donjons +10 (minimum) pour obtenir de l'équipement Hero 3/6 (266), si c'est trop difficile, faites du +8 pour obtenir de l'équipement Hero 2/6 (263).",
@@ -354,17 +354,15 @@ Mythique,?? x Écu de l'aube mythique
 
 L.fr.mplus_csv_mplus = [[
 Source,Quantités
-Mythique +2,?? x Écu de l'aube de champion
-Mythique +3,?? x Écu de l'aube de champion
-Mythique +4,?? x Écu de l'aube héroïque
-Mythique +5,?? x Écu de l'aube héroïque
-Mythique +6,?? x Écu de l'aube héroïque
-Mythique +7,?? x Écu de l'aube héroïque
-Mythique +8,?? x Écu de l'aube héroïque
-Mythique +9,?? x Écu de l'aube mythique
-Mythique +10,?? x Écu de l'aube mythique
-Mythique +11,?? x Écu de l'aube mythique
-Mythique +12,?? x Écu de l'aube mythique
+Mythique +2,10 x Écu de l'aube héroïque
+Mythique +3,12 x Écu de l'aube héroïque
+Mythique +4,14 x Écu de l'aube héroïque
+Mythique +5,16 x Écu de l'aube héroïque
+Mythique +6,18 x Écu de l'aube héroïque
+Mythique +7,10 x Écu de l'aube mythique
+Mythique +8,12 x Écu de l'aube mythique
+Mythique +9,14 x Écu de l'aube mythique
+Mythique +10,16 x Écu de l'aube mythique
 ]]
 
 L.fr.mplus_csv_traque = [[

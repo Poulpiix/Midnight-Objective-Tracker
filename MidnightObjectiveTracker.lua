@@ -25,9 +25,11 @@ do
             titleColor    = MidnightObjectiveTrackerDB.titleColor,
             colorblindMode = MidnightObjectiveTrackerDB.colorblindMode,
             buttonBgColor  = MidnightObjectiveTrackerDB.buttonBgColor,
+            buttonTextColor = MidnightObjectiveTrackerDB.buttonTextColor,
             windowBgColor  = MidnightObjectiveTrackerDB.windowBgColor,
             showCrestPanel = MidnightObjectiveTrackerDB.showCrestPanel,
             showVaultPanel = MidnightObjectiveTrackerDB.showVaultPanel,
+            framePos       = MidnightObjectiveTrackerDB.framePos,
         }
     end
 end
@@ -40,6 +42,7 @@ MidnightObjectiveTrackerDB.goldenBorder = (MidnightObjectiveTrackerDB.goldenBord
 MidnightObjectiveTrackerDB.titleColor = MidnightObjectiveTrackerDB.titleColor or { r = 1, g = 0.82, b = 0 }
 MidnightObjectiveTrackerDB.colorblindMode = MidnightObjectiveTrackerDB.colorblindMode or "none"
 MidnightObjectiveTrackerDB.buttonBgColor  = MidnightObjectiveTrackerDB.buttonBgColor  or { r = 0.5, g = 0.0, b = 0.0 }
+MidnightObjectiveTrackerDB.buttonTextColor = MidnightObjectiveTrackerDB.buttonTextColor or { r = 1, g = 1, b = 1 }
 MidnightObjectiveTrackerDB.windowBgColor  = MidnightObjectiveTrackerDB.windowBgColor  or { r = 0, g = 0, b = 0 }
 MidnightObjectiveTrackerDB.showCrestPanel = (MidnightObjectiveTrackerDB.showCrestPanel == nil) and true or MidnightObjectiveTrackerDB.showCrestPanel
 MidnightObjectiveTrackerDB.showVaultPanel = (MidnightObjectiveTrackerDB.showVaultPanel == nil) and true or MidnightObjectiveTrackerDB.showVaultPanel
@@ -126,12 +129,11 @@ local ApplyMidnightAccentColor
 ApplyMidnightBorder = function(enabled)
     enabled = (enabled ~= false)
     MidnightObjectiveTrackerDB.goldenBorder = enabled
-    local ar, ag, ab, aa
+    local ar, ag, ab = 0, 0, 0
+    local aa = 0
     if enabled then
         ar, ag, ab = GetAccentColor()
         aa = 1
-    else
-        ar, ag, ab, aa = 0, 0, 0, 0
     end
     for _, f in ipairs(allBorderedFrames) do
         if f and f.SetBackdropBorderColor then
@@ -155,11 +157,6 @@ ApplyMidnightAccentColor = function(r, g, b)
             tex:SetColorTexture(r, g, b, 1)
         end
     end
-    for _, fs in ipairs(allButtonFontStrings) do
-        if fs and fs:GetObjectType() == "FontString" then
-            fs:SetTextColor(r, g, b)
-        end
-    end
     for _, fn in ipairs(allAccentColorCallbacks) do
         pcall(fn, r, g, b)
     end
@@ -170,6 +167,15 @@ local ApplyButtonBgColor = function(r, g, b)
     for _, btn in ipairs(allPanelButtons) do
         if btn and btn._midnightBg then
             btn._midnightBg:SetColorTexture(r, g, b, 1)
+        end
+    end
+end
+
+local ApplyButtonTextColor = function(r, g, b)
+    MidnightObjectiveTrackerDB.buttonTextColor = { r = r, g = g, b = b }
+    for _, fs in ipairs(allButtonFontStrings) do
+        if fs and fs:GetObjectType() == "FontString" then
+            fs:SetTextColor(r, g, b)
         end
     end
 end
@@ -192,7 +198,8 @@ Midnight.RegisterButtonText          = RegisterButtonText
 Midnight.RegisterPanelButton         = RegisterPanelButton
 Midnight.RegisterAccentColorCallback = RegisterAccentColorCallback
 Midnight.GetAccentColor              = GetAccentColor
-Midnight.ApplyWindowBgColor          = function(r, g, b) ApplyWindowBgColor(r, g, b) end
+Midnight.ApplyWindowBgColor          = ApplyWindowBgColor
+Midnight.ApplyButtonTextColor        = ApplyButtonTextColor
 Midnight.GetAccentColorHex           = GetAccentColorHex
 
 local function getWeeks()
@@ -220,10 +227,15 @@ frame:SetBackdrop({
 frame:SetBackdropColor(0,0,0,1)
 frame:SetBackdropBorderColor(1, 0.82, 0, 1)
 frame:SetMovable(true)
+frame:SetToplevel(true)
 frame:EnableMouse(true)
 frame:RegisterForDrag("LeftButton")
-frame:SetScript("OnDragStart", frame.StartMoving)
-frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+frame:SetScript("OnDragStart", function(self) self:StartMoving(); self:Raise() end)
+frame:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+    local point, _, relPoint, x, y = self:GetPoint()
+    MidnightObjectiveTrackerDB.framePos = { point = point, relPoint = relPoint, x = math.floor(x + 0.5), y = math.floor(y + 0.5) }
+end)
 frame:Hide()
 RegisterBorderedFrame(frame)
 RegisterWindowBgFrame(frame)
@@ -480,6 +492,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('[Vv]eteran [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Hh]eroic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Mm]ythic [Dd]awn [Cc]rest[s]?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub("Galactic Jeweler's Setting", function(m) ph[#ph+1]='|TInterface\\Icons\\inv_10_specialization_jewelcrafting_setting_color2:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Infused Heliotrope', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_misc_gem_ruby_01:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub("[Aa]dventur[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
             s = s:gsub("%f[%a][Hh]eroic%f[%A]", "|cff" .. cHero .. "%0|r")
             s = s:gsub("%f[%a][Mm]ythic%f[%A]", "|cff" .. cMyth .. "%0|r")
@@ -493,6 +507,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('Champion%-Morgenwappen', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Veteran%-Morgenwappen', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Abenteurer%-Morgenwappen', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff'..cAdv..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Galaktische Juweliersfassung', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_10_specialization_jewelcrafting_setting_color2:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Erfüllter Heliotrop', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_misc_gem_ruby_01:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Aa]benteurer[^ %.,%(]*', "|cff" .. cAdv .. "%0|r")
             s = s:gsub('[Vv]eteran[^ %.,%(]*', "|cff" .. cVet .. "%0|r")
             s = s:gsub('[Cc]hampion[^ %.,%(]*', "|cff" .. cChamp .. "%0|r")
@@ -505,6 +521,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('Blasones? del amanecer [Cc]ampeón', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_champion:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Blasones? del amanecer [Vv]eteranos?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_veteran:14:14:0:0|t |cff'..cVet..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('Blasones? del amanecer [Aa]ventureros?', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_adventurer:14:14:0:0|t |cff'..cAdv..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Engarce de joyero galáctico', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_10_specialization_jewelcrafting_setting_color2:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Heliotropo imbuido', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_misc_gem_ruby_01:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Aa]ventureros?[^ %.,%(]*', "|cff" .. cAdv .. "%0|r")
             s = s:gsub('[Vv]eteranos?[^ %.,%(]*', "|cff" .. cVet .. "%0|r")
             s = s:gsub('[Cc]ampeón', "|cff" .. cChamp .. "%0|r")
@@ -522,6 +540,8 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
             s = s:gsub('Écus? de l.aube [Hh]éroïque',      function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_hero:14:14:0:0|t |cff'..cHero..m..'|r';    return '@@PH'..#ph..'@@' end)
             s = s:gsub('[Ee]cus? de l.aube mythique',       function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
             s = s:gsub('Écus? de l.aube mythique',          function(m) ph[#ph+1]='|TInterface\\Icons\\inv_120_crest_myth:14:14:0:0|t |cff'..cMyth..m..'|r';    return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Monture galactique de joaillerie', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_10_specialization_jewelcrafting_setting_color2:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
+            s = s:gsub('Héliotrope imprégné', function(m) ph[#ph+1]='|TInterface\\Icons\\inv_misc_gem_ruby_01:14:14:0:0|t |cff'..cChamp..m..'|r'; return '@@PH'..#ph..'@@' end)
             s = s:gsub("[Aa]vent[^ %.,%(]*", "|cff" .. cAdv .. "%0|r")
             s = s:gsub("Héroïque",  "|cff" .. cHero .. "%0|r")
             s = s:gsub("héroïque",  "|cff" .. cHero .. "%0|r")
@@ -654,7 +674,7 @@ local function CreateObjective(parent, text, index, yOffset, weekIndex)
 
     local rowHeight = label:GetStringHeight() + 12
 
-local rowBtn = CreateFrame("Button", nil, parent)
+    local rowBtn = CreateFrame("Button", nil, parent)
     rowBtn:SetPoint("TOPLEFT", parent, "TOPLEFT", 24, yOffset)
     rowBtn:SetWidth(computeAvailableW(24))
     rowBtn:SetHeight(rowHeight)
@@ -743,10 +763,10 @@ function Midnight:Refresh()
         weekScrolls[vIdx] = -yOffset - 4
         yOffset = yOffset - 30
 
-            for oIndex, objective in ipairs(week.objectives) do
-                local height = CreateObjective(content, objective, oIndex, yOffset, wIndex)
-                yOffset = yOffset - height
-            end
+        for oIndex, objective in ipairs(week.objectives) do
+            local height = CreateObjective(content, objective, oIndex, yOffset, wIndex)
+            yOffset = yOffset - height
+        end
     end
 
     yOffset = yOffset - 10
@@ -765,7 +785,11 @@ function Midnight:Refresh()
         btn:SetPoint("TOPLEFT", 0, -((vIdx - 1) * 20))
         btn:EnableMouse(true)
         btn:SetFrameLevel(menu:GetFrameLevel() + 2)
-        btn:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+
+        local menuHoverTex = btn:CreateTexture(nil, "BACKGROUND")
+        menuHoverTex:SetAllPoints()
+        do local hr, hg, hb = GetAccentColor(); menuHoverTex:SetColorTexture(hr, hg, hb, 0.18) end
+        menuHoverTex:Hide()
 
         local bullet = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         bullet:SetPoint("LEFT", 2, 0)
@@ -793,10 +817,12 @@ function Midnight:Refresh()
             if menuButtons[vIdx] and menuButtons[vIdx].txt then
                 local mar, mag, mab = GetAccentColor()
                 menuButtons[vIdx].txt:SetTextColor(mar, mag, mab)
+                menuHoverTex:SetColorTexture(mar, mag, mab, 0.18)
             end
-            if self.LockHighlight then self:LockHighlight() end
+            menuHoverTex:Show()
         end)
-        btn:SetScript("OnLeave", function(self)
+        btn:SetScript("OnLeave", function()
+            menuHoverTex:Hide()
             if activeMenuIndex == vIdx then
                 if menuButtons[vIdx] and menuButtons[vIdx].txt then
                     local mar, mag, mab = GetAccentColor()
@@ -805,11 +831,10 @@ function Midnight:Refresh()
             else
                 if menuButtons[vIdx] and menuButtons[vIdx].txt then menuButtons[vIdx].txt:SetTextColor(1,1,1) end
             end
-            if self.UnlockHighlight then self:UnlockHighlight() end
         end)
     end
 
-local numVisible = #visibleWeeks
+    local numVisible = #visibleWeeks
     local newMenuH = (numVisible > 0) and ((numVisible - 1) * 20 + 34) or 34
     menu:SetHeight(newMenuH)
 
@@ -922,15 +947,6 @@ resetButton:SetHighlightFontObject("GameFontNormalSmall")
 resetButton:SetScript("OnClick", function()
     ShowResetConfirmPopup()
 end)
-resetButton:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_NONE")
-    GameTooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -4, 0)
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("reset_checks"))
-    GameTooltip:AddLine(MidnightL.S("reset_checks_desc"), 1,1,1, true)
-    GameTooltip:Show()
-end)
-resetButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 resetButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 RegisterPanelButton(resetButton)
 
@@ -1016,6 +1032,10 @@ do
         _hoverTimer = _hoverTimer + elapsed
         if _hoverTimer < 0.05 then return end
         _hoverTimer = 0
+        if not frame:IsShown() then
+            _hoverActive = false
+            return
+        end
         local savedOpacity = MidnightObjectiveTrackerDB.opacity or 1.0
         if savedOpacity >= 1.0 then
             _hoverActive = false
@@ -1162,7 +1182,7 @@ mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
 RegisterPanelButton(mplusButton)
 
 local cbSettingsFrame = CreateFrame("Frame", "MidnightColorblindFrame", UIParent, "BackdropTemplate")
-cbSettingsFrame:SetSize(185, 468)
+cbSettingsFrame:SetSize(185, 518)
 cbSettingsFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", 6, 0)
 cbSettingsFrame:SetBackdrop({
     bgFile = "Interface/Buttons/WHITE8X8",
@@ -1365,111 +1385,8 @@ end)
 
 local colorTopY = borderTopY - 92
 
-local bgSwatchBg
-
-local colorTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-colorTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, colorTopY)
-colorTitle:SetTextColor(1, 0.82, 0)
-colorTitle:SetText(MidnightL.S("title_color_label"))
-colorTitle:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("title_color_label"), 1, 0.82, 0)
-    GameTooltip:AddLine(MidnightL.S("title_color_desc"), 1, 1, 1, true)
-    GameTooltip:Show()
-end)
-colorTitle:SetScript("OnLeave", function() GameTooltip:Hide() end)
-colorTitle:EnableMouse(true)
-RegisterTitleFontString(colorTitle)
-
-local colorSwatch = CreateFrame("Button", nil, cbSettingsFrame)
-colorSwatch:SetSize(26, 18)
-colorSwatch:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, colorTopY - 20)
-
-local colorSwatchBg = colorSwatch:CreateTexture(nil, "BACKGROUND")
-colorSwatchBg:SetAllPoints()
-do
-    local cr, cg, cb2 = GetAccentColor()
-    colorSwatchBg:SetColorTexture(cr, cg, cb2, 1)
-end
-
-local colorSwatchBorder = colorSwatch:CreateTexture(nil, "OVERLAY")
-colorSwatchBorder:SetAllPoints()
-colorSwatchBorder:SetColorTexture(0.8, 0.8, 0.8, 0.5)
-colorSwatchBorder:SetSize(26, 18)
-
-local colorResetBtn = CreateFrame("Button", nil, cbSettingsFrame, "UIPanelButtonTemplate")
-colorResetBtn:SetSize(100, 18)
-colorResetBtn:SetPoint("TOPLEFT", colorSwatch, "TOPRIGHT", 6, 0)
-colorResetBtn:SetText("Reset")
-colorResetBtn:SetNormalFontObject("GameFontNormalSmall")
-colorResetBtn:SetHighlightFontObject("GameFontNormalSmall")
-RegisterPanelButton(colorResetBtn)
-colorResetBtn:SetScript("OnClick", function()
-    ApplyMidnightAccentColor(1, 0.82, 0)
-    colorSwatchBg:SetColorTexture(1, 0.82, 0, 1)
-    borderCheckTex:SetColorTexture(1, 0.82, 0, 1)
-    ApplyWindowBgColor(0, 0, 0)
-    if bgSwatchBg then bgSwatchBg:SetColorTexture(0, 0, 0, 1) end
-    ApplyMidnightOpacity(MidnightObjectiveTrackerDB.opacity or 1.0)
-    if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
-end)
-
-colorSwatch:SetScript("OnClick", function()
-    local tc = MidnightObjectiveTrackerDB.titleColor or { r = 1, g = 0.82, b = 0 }
-    local function onColorChanged()
-        local r, g, b
-        if ColorPickerFrame.GetColorRGB then
-            r, g, b = ColorPickerFrame:GetColorRGB()
-        else
-            r, g, b = ColorPickerFrame.r or tc.r, ColorPickerFrame.g or tc.g, ColorPickerFrame.b or tc.b
-        end
-        ApplyMidnightAccentColor(r, g, b)
-        colorSwatchBg:SetColorTexture(r, g, b, 1)
-        if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
-    end
-    local function onColorCancelled(prevValues)
-        local r, g, b
-        if type(prevValues) == "table" then
-            r, g, b = prevValues.r, prevValues.g, prevValues.b
-        else
-            r, g, b = prevValues or tc.r, ColorPickerFrame.previousValues or tc.g, tc.b
-        end
-        r = r or tc.r; g = g or tc.g; b = b or tc.b
-        ApplyMidnightAccentColor(r, g, b)
-        colorSwatchBg:SetColorTexture(r, g, b, 1)
-        if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
-    end
-    if ColorPickerFrame.SetupColorPickerAndShow then
-
-        ColorPickerFrame:SetupColorPickerAndShow({
-            r = tc.r, g = tc.g, b = tc.b, opacity = nil,
-            hasOpacity = false,
-            swatchFunc  = onColorChanged,
-            cancelFunc  = onColorCancelled,
-        })
-    else
-
-        ColorPickerFrame:SetColorRGB(tc.r, tc.g, tc.b)
-        ColorPickerFrame.previousValues = { r = tc.r, g = tc.g, b = tc.b }
-        ColorPickerFrame.func    = onColorChanged
-        ColorPickerFrame.cancelFunc = onColorCancelled
-        ColorPickerFrame:Show()
-    end
-end)
-colorSwatch:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:ClearLines()
-    GameTooltip:AddLine(MidnightL.S("title_color_label"), 1, 0.82, 0)
-    GameTooltip:AddLine(MidnightL.S("title_color_desc"), 1, 1, 1, true)
-    GameTooltip:Show()
-end)
-colorSwatch:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-local bgColorTopY = colorTopY - 50
-
 local bgColorTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-bgColorTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, bgColorTopY)
+bgColorTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, colorTopY)
 bgColorTitle:SetTextColor(1, 0.82, 0)
 bgColorTitle:SetText(MidnightL.S("window_bg_color_label"))
 bgColorTitle:SetScript("OnEnter", function(self)
@@ -1485,9 +1402,9 @@ RegisterTitleFontString(bgColorTitle)
 
 local bgColorSwatch = CreateFrame("Button", nil, cbSettingsFrame)
 bgColorSwatch:SetSize(26, 18)
-bgColorSwatch:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, bgColorTopY - 20)
+bgColorSwatch:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, colorTopY - 20)
 
-bgSwatchBg = bgColorSwatch:CreateTexture(nil, "BACKGROUND")
+local bgSwatchBg = bgColorSwatch:CreateTexture(nil, "BACKGROUND")
 bgSwatchBg:SetAllPoints()
 do
     local wc = MidnightObjectiveTrackerDB.windowBgColor or { r = 0, g = 0, b = 0 }
@@ -1558,6 +1475,99 @@ bgColorSwatch:SetScript("OnEnter", function(self)
     GameTooltip:Show()
 end)
 bgColorSwatch:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+local btnTextColorTopY = colorTopY - 50
+
+local btnTextColorTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+btnTextColorTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, btnTextColorTopY)
+btnTextColorTitle:SetTextColor(1, 0.82, 0)
+btnTextColorTitle:SetText(MidnightL.S("btn_text_color_label"))
+btnTextColorTitle:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("btn_text_color_label"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("btn_text_color_desc"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+btnTextColorTitle:SetScript("OnLeave", function() GameTooltip:Hide() end)
+btnTextColorTitle:EnableMouse(true)
+RegisterTitleFontString(btnTextColorTitle)
+
+local btnTextColorSwatch = CreateFrame("Button", nil, cbSettingsFrame)
+btnTextColorSwatch:SetSize(26, 18)
+btnTextColorSwatch:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, btnTextColorTopY - 20)
+
+local btnTextSwatchBg = btnTextColorSwatch:CreateTexture(nil, "BACKGROUND")
+btnTextSwatchBg:SetAllPoints()
+do
+    local btc = MidnightObjectiveTrackerDB.buttonTextColor or { r = 1, g = 1, b = 1 }
+    btnTextSwatchBg:SetColorTexture(btc.r, btc.g, btc.b, 1)
+end
+
+local btnTextSwatchBorder = btnTextColorSwatch:CreateTexture(nil, "OVERLAY")
+btnTextSwatchBorder:SetAllPoints()
+btnTextSwatchBorder:SetColorTexture(0.8, 0.8, 0.8, 0.5)
+btnTextSwatchBorder:SetSize(26, 18)
+
+local btnTextColorResetBtn = CreateFrame("Button", nil, cbSettingsFrame, "UIPanelButtonTemplate")
+btnTextColorResetBtn:SetSize(100, 18)
+btnTextColorResetBtn:SetPoint("TOPLEFT", btnTextColorSwatch, "TOPRIGHT", 6, 0)
+btnTextColorResetBtn:SetText("Reset")
+btnTextColorResetBtn:SetNormalFontObject("GameFontNormalSmall")
+btnTextColorResetBtn:SetHighlightFontObject("GameFontNormalSmall")
+RegisterPanelButton(btnTextColorResetBtn)
+RegisterButtonText(btnTextColorResetBtn)
+btnTextColorResetBtn:SetScript("OnClick", function()
+    ApplyButtonTextColor(1, 1, 1)
+    btnTextSwatchBg:SetColorTexture(1, 1, 1, 1)
+end)
+
+btnTextColorSwatch:SetScript("OnClick", function()
+    local btc = MidnightObjectiveTrackerDB.buttonTextColor or { r = 1, g = 1, b = 1 }
+    local function onBtnTextColorChanged()
+        local r, g, b
+        if ColorPickerFrame.GetColorRGB then
+            r, g, b = ColorPickerFrame:GetColorRGB()
+        else
+            r, g, b = ColorPickerFrame.r or btc.r, ColorPickerFrame.g or btc.g, ColorPickerFrame.b or btc.b
+        end
+        ApplyButtonTextColor(r, g, b)
+        btnTextSwatchBg:SetColorTexture(r, g, b, 1)
+    end
+    local function onBtnTextColorCancelled(prevValues)
+        local r, g, b
+        if type(prevValues) == "table" then
+            r, g, b = prevValues.r, prevValues.g, prevValues.b
+        else
+            r, g, b = btc.r, btc.g, btc.b
+        end
+        r = r or btc.r; g = g or btc.g; b = b or btc.b
+        ApplyButtonTextColor(r, g, b)
+        btnTextSwatchBg:SetColorTexture(r, g, b, 1)
+    end
+    if ColorPickerFrame.SetupColorPickerAndShow then
+        ColorPickerFrame:SetupColorPickerAndShow({
+            r = btc.r, g = btc.g, b = btc.b, opacity = nil,
+            hasOpacity = false,
+            swatchFunc  = onBtnTextColorChanged,
+            cancelFunc  = onBtnTextColorCancelled,
+        })
+    else
+        ColorPickerFrame:SetColorRGB(btc.r, btc.g, btc.b)
+        ColorPickerFrame.previousValues = { r = btc.r, g = btc.g, b = btc.b }
+        ColorPickerFrame.func       = onBtnTextColorChanged
+        ColorPickerFrame.cancelFunc = onBtnTextColorCancelled
+        ColorPickerFrame:Show()
+    end
+end)
+btnTextColorSwatch:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("btn_text_color_label"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("btn_text_color_desc"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+btnTextColorSwatch:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 local btnColorTopY = colorTopY - 100
 
@@ -1652,7 +1662,103 @@ btnColorSwatch:SetScript("OnEnter", function(self)
 end)
 btnColorSwatch:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-local elvTopY = colorTopY - 150
+local titleColorTopY = colorTopY - 150
+
+local colorTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+colorTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, titleColorTopY)
+colorTitle:SetTextColor(1, 0.82, 0)
+colorTitle:SetText(MidnightL.S("title_color_label"))
+colorTitle:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("title_color_label"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("title_color_desc"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+colorTitle:SetScript("OnLeave", function() GameTooltip:Hide() end)
+colorTitle:EnableMouse(true)
+RegisterTitleFontString(colorTitle)
+
+local colorSwatch = CreateFrame("Button", nil, cbSettingsFrame)
+colorSwatch:SetSize(26, 18)
+colorSwatch:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, titleColorTopY - 20)
+
+local colorSwatchBg = colorSwatch:CreateTexture(nil, "BACKGROUND")
+colorSwatchBg:SetAllPoints()
+do
+    local cr, cg, cb2 = GetAccentColor()
+    colorSwatchBg:SetColorTexture(cr, cg, cb2, 1)
+end
+
+local colorSwatchBorder = colorSwatch:CreateTexture(nil, "OVERLAY")
+colorSwatchBorder:SetAllPoints()
+colorSwatchBorder:SetColorTexture(0.8, 0.8, 0.8, 0.5)
+colorSwatchBorder:SetSize(26, 18)
+
+local colorResetBtn = CreateFrame("Button", nil, cbSettingsFrame, "UIPanelButtonTemplate")
+colorResetBtn:SetSize(100, 18)
+colorResetBtn:SetPoint("TOPLEFT", colorSwatch, "TOPRIGHT", 6, 0)
+colorResetBtn:SetText("Reset")
+colorResetBtn:SetNormalFontObject("GameFontNormalSmall")
+colorResetBtn:SetHighlightFontObject("GameFontNormalSmall")
+RegisterPanelButton(colorResetBtn)
+colorResetBtn:SetScript("OnClick", function()
+    ApplyMidnightAccentColor(1, 0.82, 0)
+    colorSwatchBg:SetColorTexture(1, 0.82, 0, 1)
+    borderCheckTex:SetColorTexture(1, 0.82, 0, 1)
+    if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
+end)
+
+colorSwatch:SetScript("OnClick", function()
+    local tc = MidnightObjectiveTrackerDB.titleColor or { r = 1, g = 0.82, b = 0 }
+    local function onColorChanged()
+        local r, g, b
+        if ColorPickerFrame.GetColorRGB then
+            r, g, b = ColorPickerFrame:GetColorRGB()
+        else
+            r, g, b = ColorPickerFrame.r or tc.r, ColorPickerFrame.g or tc.g, ColorPickerFrame.b or tc.b
+        end
+        ApplyMidnightAccentColor(r, g, b)
+        colorSwatchBg:SetColorTexture(r, g, b, 1)
+        if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
+    end
+    local function onColorCancelled(prevValues)
+        local r, g, b
+        if type(prevValues) == "table" then
+            r, g, b = prevValues.r, prevValues.g, prevValues.b
+        else
+            r, g, b = prevValues or tc.r, ColorPickerFrame.previousValues or tc.g, tc.b
+        end
+        r = r or tc.r; g = g or tc.g; b = b or tc.b
+        ApplyMidnightAccentColor(r, g, b)
+        colorSwatchBg:SetColorTexture(r, g, b, 1)
+        if Midnight and Midnight.Refresh and frame and frame:IsShown() then Midnight:Refresh() end
+    end
+    if ColorPickerFrame.SetupColorPickerAndShow then
+        ColorPickerFrame:SetupColorPickerAndShow({
+            r = tc.r, g = tc.g, b = tc.b, opacity = nil,
+            hasOpacity = false,
+            swatchFunc  = onColorChanged,
+            cancelFunc  = onColorCancelled,
+        })
+    else
+        ColorPickerFrame:SetColorRGB(tc.r, tc.g, tc.b)
+        ColorPickerFrame.previousValues = { r = tc.r, g = tc.g, b = tc.b }
+        ColorPickerFrame.func    = onColorChanged
+        ColorPickerFrame.cancelFunc = onColorCancelled
+        ColorPickerFrame:Show()
+    end
+end)
+colorSwatch:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(MidnightL.S("title_color_label"), 1, 0.82, 0)
+    GameTooltip:AddLine(MidnightL.S("title_color_desc"), 1, 1, 1, true)
+    GameTooltip:Show()
+end)
+colorSwatch:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+local elvTopY = colorTopY - 200
 
 local elvTitle = cbSettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 elvTitle:SetPoint("TOPLEFT", cbSettingsFrame, "TOPLEFT", 14, elvTopY)
@@ -1822,10 +1928,11 @@ end
 cbDropdown:SetSize(DROPDOWN_W, totalH)
 
 local function UpdateCBDropdownSelection(selectedMode)
+    local ar, ag, ab = GetAccentColor()
     for _, e in ipairs(cbDropdownEntries) do
         if e.entryType == "item" and e.fs then
             if e.mode == selectedMode then
-                e.fs:SetTextColor(1, 0.82, 0)
+                e.fs:SetTextColor(ar, ag, ab)
                 if e.bullet then e.bullet:Show() end
             else
                 e.fs:SetTextColor(1, 1, 1)
@@ -1887,6 +1994,7 @@ for _, e in ipairs(cbDropdownEntries) do
         fs:SetTextColor(1, 1, 1)
 
         btn:SetScript("OnEnter", function(self)
+            do local hr, hg, hb = GetAccentColor(); hover:SetColorTexture(hr, hg, hb, 0.18) end
             hover:Show()
             local descKey = "colorblind_" .. e.mode .. "_desc"
             if MidnightL.S(descKey) ~= descKey then
@@ -1953,6 +2061,10 @@ cbDropdown:SetScript("OnShow", function()
 end)
 
 UpdateCBDropdownSelection(MidnightObjectiveTrackerDB.colorblindMode or "none")
+
+RegisterAccentColorCallback(function()
+    UpdateCBDropdownSelection(MidnightObjectiveTrackerDB.colorblindMode or "none")
+end)
 
 local gearBtn = CreateFrame("Button", nil, frame)
 gearBtn:SetSize(20, 20)
@@ -2158,6 +2270,12 @@ C_Timer.After(0, function()
     ApplyMidnightScale(savedScale)
     ApplyMidnightOpacity(MidnightObjectiveTrackerDB.opacity or 1.0)
     UpdateEscBehavior(MidnightObjectiveTrackerDB.escCloses)
+    ApplyMidnightBorder(MidnightObjectiveTrackerDB.goldenBorder ~= false)
+    local pos = MidnightObjectiveTrackerDB.framePos
+    if pos and pos.point then
+        frame:ClearAllPoints()
+        frame:SetPoint(pos.point, UIParent, pos.relPoint or "CENTER", pos.x or 0, pos.y or 0)
+    end
     local tc = MidnightObjectiveTrackerDB.titleColor or { r = 1, g = 0.82, b = 0 }
 
     colorSwatchBg:SetColorTexture(tc.r or 1, tc.g or 0.82, tc.b or 0, 1)
@@ -2171,6 +2289,10 @@ C_Timer.After(0, function()
     local wbc = MidnightObjectiveTrackerDB.windowBgColor or { r = 0, g = 0, b = 0 }
     bgSwatchBg:SetColorTexture(wbc.r, wbc.g, wbc.b, 1)
     ApplyWindowBgColor(wbc.r, wbc.g, wbc.b)
+
+    local btc = MidnightObjectiveTrackerDB.buttonTextColor or { r = 1, g = 1, b = 1 }
+    btnTextSwatchBg:SetColorTexture(btc.r, btc.g, btc.b, 1)
+    ApplyButtonTextColor(btc.r, btc.g, btc.b)
 end)
 
 do

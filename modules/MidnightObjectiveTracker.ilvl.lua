@@ -15,16 +15,22 @@ local function colorizeTrack(text)
     local heroColor  = MidnightL.C("heroic")
     local mythColor  = MidnightL.C("mythic")
 
+    local sAdv   = MidnightL.S("ilvl_adventurer")
+    local sVet   = MidnightL.S("ilvl_veteran")
+    local sChamp = MidnightL.S("ilvl_champion")
+    local sHero  = MidnightL.S("ilvl_hero")
+    local sMyth  = MidnightL.S("ilvl_myth")
+
     local function colorPart(part)
-        if part:find("Aventurier") or part:find("Adventurer") then
+        if part:find(sAdv, 1, true) then
             return "|cff" .. advColor   .. part .. "|r"
-        elseif part:find("Vétéran") or part:find("Veteran") then
+        elseif part:find(sVet, 1, true) then
             return "|cff" .. vetColor   .. part .. "|r"
-        elseif part:find("Champion") then
+        elseif part:find(sChamp, 1, true) then
             return "|cff" .. champColor .. part .. "|r"
-        elseif part:find("Héro") or part:find("Hero") then
+        elseif part:find(sHero, 1, true) then
             return "|cff" .. heroColor  .. part .. "|r"
-        elseif part:find("Mythe") or part:find("Myth") then
+        elseif part:find(sMyth, 1, true) then
             return "|cff" .. mythColor  .. part .. "|r"
         end
         return part
@@ -96,10 +102,10 @@ local function getLocalizedData()
 
     local dungeonData = {
         { source = "Normal", endLoot = "214", vault = "n/a" },
-        { source = locale == "fr" and "Héroïque (Hors-saison)" or "Heroic (Off-Season)", endLoot = "224", vault = "n/a" },
-        { source = locale == "fr" and "Héroïque (Pré-saison)" or "Heroic (Pre-Season)", endLoot = "230", vault = "243" },
-        { source = locale == "fr" and "M0 (Hors-saison)" or "M0 (Off-Season)", endLoot = "240", vault = "n/a" },
-        { source = locale == "fr" and "M0 (Pré-saison)" or "M0 (Pre-Season)", endLoot = "246", vault = "256" },
+        { source = (locale == "fr" and "Héroïque (Hors-saison)") or (locale == "de" and "Heroisch (Außersaison)") or (locale == "es" and "Heroico (Fuera temp.)") or "Heroic (Off-Season)", endLoot = "224", vault = "n/a" },
+        { source = (locale == "fr" and "Héroïque (Pré-saison)") or (locale == "de" and "Heroisch (Vorsaison)") or (locale == "es" and "Heroico (Pretemporada)") or "Heroic (Pre-Season)", endLoot = "230", vault = "243" },
+        { source = (locale == "fr" and "M0 (Hors-saison)") or (locale == "de" and "M0 (Außersaison)") or (locale == "es" and "M0 (Fuera temp.)") or "M0 (Off-Season)", endLoot = "240", vault = "n/a" },
+        { source = (locale == "fr" and "M0 (Pré-saison)") or (locale == "de" and "M0 (Vorsaison)") or (locale == "es" and "M0 (Pretemporada)") or "M0 (Pre-Season)", endLoot = "246", vault = "256" },
         { source = "M2", endLoot = "250", vault = "259" },
         { source = "M3", endLoot = "250", vault = "259" },
         { source = "M4", endLoot = "253", vault = "263" },
@@ -109,22 +115,28 @@ local function getLocalizedData()
         { source = "M8", endLoot = "263", vault = "269" },
         { source = "M9", endLoot = "263", vault = "269" },
         { source = "M10", endLoot = "266", vault = "272" },
-        { source = "M11", endLoot = "266", vault = "272" },
-        { source = "M12", endLoot = "266", vault = "272" },
+        { source = "M11", endLoot = "269", vault = "272" },
+        { source = "M12", endLoot = "269", vault = "276" },
+        { source = "M13", endLoot = "269", vault = "276" },
+        { source = "M14", endLoot = "269", vault = "276" },
+        { source = "M15", endLoot = "272", vault = "279" },
+        { source = "M16", endLoot = "272", vault = "279" },
+        { source = "M17", endLoot = "272", vault = "279" },
+        { source = "M18", endLoot = "276", vault = "282" },
     }
 
     local raidData = {
         { difficulty = "LFR",    normal = "233 - 237 - 240 - 243", mid = "237 - 240", late = "n/a" },
         { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "246 - 250 - 253 - 256", mid = "250 - 253", late = "n/a" },
-        { difficulty = locale == "fr" and "Héroïque" or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "n/a" },
-        { difficulty = locale == "fr" and "Mythique" or "Mythic",  normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "n/a" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "n/a" },
+        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "n/a" },
     }
 
     local raidData2 = {
         { difficulty = "LFR",    normal = "240 - 243", mid = "240", late = "n/a" },
         { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "253 - 256", mid = "253", late = "n/a" },
-        { difficulty = locale == "fr" and "Héroïque" or "Heroic",  normal = "266 - 269", mid = "266", late = "n/a" },
-        { difficulty = locale == "fr" and "Mythique" or "Mythic",  normal = "279 - 282", mid = "279", late = "n/a" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "266 - 269", mid = "266", late = "n/a" },
+        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "279 - 282", mid = "279", late = "n/a" },
     }
 
     local delveData = {
@@ -162,11 +174,17 @@ iframe:SetBackdrop({
 })
 iframe:SetBackdropColor(0, 0, 0, 1)
 iframe:SetBackdropBorderColor(1, 0.82, 0, 1)
-if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(iframe) end
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame  then MidnightTracker.RegisterBorderedFrame(iframe)  end
+if MidnightTracker and MidnightTracker.RegisterWindowBgFrame  then MidnightTracker.RegisterWindowBgFrame(iframe)   end
 iframe:SetMovable(true)
+iframe:SetToplevel(true)
+iframe:HookScript("OnShow", function()
+    local wbc = MidnightObjectiveTrackerDB and MidnightObjectiveTrackerDB.windowBgColor or { r = 0, g = 0, b = 0 }
+    iframe:SetBackdropColor(wbc.r, wbc.g, wbc.b, 1)
+end)
 iframe:EnableMouse(true)
 iframe:RegisterForDrag("LeftButton")
-iframe:SetScript("OnDragStart", iframe.StartMoving)
+iframe:SetScript("OnDragStart", function(self) self:StartMoving(); self:Raise() end)
 iframe:SetScript("OnDragStop", iframe.StopMovingOrSizing)
 iframe:Hide()
 table.insert(UISpecialFrames, "MidnightIlvlFrame")
@@ -279,7 +297,8 @@ local function renderTable(x, y, headers, dataRows, colWidths, title, colorFirst
             elseif noColorCol and ci == noColorCol then
                 displayText = cellText
             elseif specialColorCol and ci == specialColorCol then
-                if title and (title:find("Paliers") or title:find("Upgrade") or title:find("upgrade")) then
+                if title and (title:find("Paliers") or title:find("Upgrade") or title:find("upgrade")
+                    or title:find("Aufwertung") or title:find("Mejoras")) then
                     displayText = colorizeTrack(cellText)
                 end
             else
@@ -374,11 +393,11 @@ local function RefreshIlvl()
     col3Y = col3Y - 12
 
     local locale = MidnightL.GetLocale()
-    local advHeader  = locale == "fr" and "Aventurier" or "Adventurer"
-    local vetHeader  = locale == "fr" and "Vétéran" or "Veteran"
-    local heroHeader = locale == "fr" and "Héro" or "Hero"
-    local mythHeader = locale == "fr" and "Mythe" or "Myth"
-    local craftHeaders = {MidnightL.S("ilvl_quality"), advHeader, vetHeader, "Champion", heroHeader, mythHeader}
+    local advHeader  = MidnightL.S("ilvl_adventurer")
+    local vetHeader  = MidnightL.S("ilvl_veteran")
+    local heroHeader = MidnightL.S("ilvl_hero")
+    local mythHeader = MidnightL.S("ilvl_myth")
+    local craftHeaders = {MidnightL.S("ilvl_quality"), advHeader, vetHeader, MidnightL.S("ilvl_champion"), heroHeader, mythHeader}
     local craftRows = {}
     for _, row in ipairs(data.crafted) do
         table.insert(craftRows, {row.quality, row.adv, row.vet, row.champ, row.hero, row.myth})

@@ -64,8 +64,10 @@ L.de.esc_closes = "Escape schließt das Addon"
 L.de.golden_border = "Fensterrahmen anzeigen"
 L.de.golden_border_desc = "Den Rahmen aller Fenster anzeigen oder vollständig ausblenden."
 L.de.custom_colors_title = "Benutzerdefinierte Farben"
-L.de.title_color_label = "Haupttextfarbe"
-L.de.title_color_desc = "Farbe für Wochentitel, Menüeinträge und Akzente."
+L.de.title_color_label = "Titel- & Kopfzeilenfarbe"
+L.de.title_color_desc  = "Farbe für Titel, Untertitel, Tabellenüberschriften und Akzentrahmen."
+L.de.btn_text_color_label = "Schaltflächentextfarbe"
+L.de.btn_text_color_desc  = "Farbe des Textes, der in den Schaltflächen angezeigt wird."
 L.de.elvui_sync_title = "ElvUI-Stil synchronisieren"
 L.de.elvui_sync_btn = "Mit ElvUI sync."
 L.de.elvui_sync_desc = "Fensterfarben mit deinem ElvUI-Profil synchronisieren."
@@ -210,29 +212,28 @@ L.de.weeks = {
             "Mythisch 0 (außerh. der Saison): Schließt alle Mythisch 0 (außerh. der Saison) Dungeons ab, die Veteran 3/6 (240) Ausrüstung gewähren (verbessert die erhaltene Ausrüstung nicht).",
             "Handwerk: Bereitet Handwerksmaterialien vor, wenn ihr am 18. März raiden möchtet.",
             "Optimierung: Gebt alle Abenteurer-Morgenwappen aus, wenn ihr möchtet.",
-            "Gegenstandsstufe (geschätzt, nach Zufall): 10x 240, 4x 246"
+            "Gegenstandsstufe (geschätzt, nach Zufall): 11x 240, 4x 246"
         }
     },
     {
         title = "Woche 4: 18. – 24. März",
         objectives = {
             "Gebt keine Champion-Morgenwappen, Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
-            "Katalysator: Warten auf Informationen von Blizzard.",
             "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
             "Klassen-Set: Nutzt das Schlachtzugs-Tool (SR) um Set-Teile zu erhalten.",
-            "Mythisch 0 (Vorsaison): Absolviert eine Weltreise der Mythisch 0 (Vorsaison) Dungeons, die jetzt Champion 2/6 (250) Ausrüstung gewähren.",
+            "Mythisch 0 (Vorsaison): Absolviert eine Weltreise der Mythisch 0 (Vorsaison) Dungeons, die jetzt Champion 1/6 (246) Ausrüstung gewähren.",
             "Weltboss: Tötet den Weltboss für Champion 2/6 (250) Ausrüstung.",
             "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
             "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
             "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
-            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren.",
+            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren (Nur die ersten zwei).",
             "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
-            "PvP: Schließt die PvP-Quest ab, um ein garantiertes Held Halsband oder Ring zu erhalten (falls verfügbar, da kürzlich aus der Beta verschwunden).",
+            "PvP: Kauft 2 Galaktische Juweliersfassung beim Händler für 5.000 Ehrenpunkte und 3 Erfüllter Heliotrop. Verwendet sie, um Fassungen zu gefertigten Gegenständen hinzuzufügen. Diese Gegenstände erscheinen erst ab dieser Woche beim Händler. Dies dient hauptsächlich dazu, 2 zusätzliche Fassungen zu erhalten.",
             "Gewölbe: Schließt Reiche Gewölbe (Stufe 8 mindestens) mit Schlüsseln und Karte ab für Champion 2/6 (250) Ausrüstung.",
             "Handwerk: Stellt 2 Veteran 5/5 (246) Ausrüstungen her, je mit 80x Veteran-Morgenwappen und 2 Veredelungen (Priorisiert Handgelenke, Gürtel und Stiefel) (dies verbraucht keinen Funken).",
             "Schlachtzug: Schließt den Normal- und Heroisch-Modus ab.",
             "Optimierung: Gebt alle Veteran-Morgenwappen und Champion-Morgenwappen aus, bevor ihr den Schlachtzug betretet.",
-            "Gegenstandsstufe (geschätzt, nach Zufall): 2x 246, 3x 240, 10x 250"
+            "Gegenstandsstufe (geschätzt, nach Zufall): 2x 246, 13x 250"
         }
     },
     {
@@ -247,7 +248,7 @@ L.de.weeks = {
             "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
             "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
             "Unterkunft: Schließt die Unterkunfts-Quest ab, um Heroische Morgenwappen zu erhalten.",
-            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren.",
+            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren (Nur die ersten zwei).",
             "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
             "Gewölbe: Schließt mindestens ein Reiches Gewölbe (Stufe 11) ab, um die Quest des gerissenen Schlusssteins zu erhalten.",
             "Mythisch+ (Saison 1): Schließt +10 Dungeons ab (Minimum) für Held 3/6 (266) Ausrüstung; falls zu schwierig, macht +8 für Held 2/6 (263) Ausrüstung.",
@@ -341,17 +342,15 @@ Mythisch,?? x Mythisches Morgenwappen
 
 L.de.mplus_csv_mplus = [[
 Quelle,Mengen
-Mythisch +2,?? x Champion-Morgenwappen
-Mythisch +3,?? x Champion-Morgenwappen
-Mythisch +4,?? x Heroisches Morgenwappen
-Mythisch +5,?? x Heroisches Morgenwappen
-Mythisch +6,?? x Heroisches Morgenwappen
-Mythisch +7,?? x Heroisches Morgenwappen
-Mythisch +8,?? x Heroisches Morgenwappen
-Mythisch +9,?? x Mythisches Morgenwappen
-Mythisch +10,?? x Mythisches Morgenwappen
-Mythisch +11,?? x Mythisches Morgenwappen
-Mythisch +12,?? x Mythisches Morgenwappen
+Mythisch +2,10 x Heroisches Morgenwappen
+Mythisch +3,12 x Heroisches Morgenwappen
+Mythisch +4,14 x Heroisches Morgenwappen
+Mythisch +5,16 x Heroisches Morgenwappen
+Mythisch +6,18 x Heroisches Morgenwappen
+Mythisch +7,10 x Mythisches Morgenwappen
+Mythisch +8,12 x Mythisches Morgenwappen
+Mythisch +9,14 x Mythisches Morgenwappen
+Mythisch +10,16 x Mythisches Morgenwappen
 ]]
 
 L.de.mplus_csv_traque = [[

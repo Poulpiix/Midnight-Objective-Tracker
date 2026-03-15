@@ -80,7 +80,7 @@ local function parseCSV(s)
                 local buf = {}
                 while j <= L do
                     local ch2 = line:sub(j,j)
-                    if ch2 == ',' then j = j + 1 break end
+                    if ch2 == ',' then j = j + 1; break end
                     table.insert(buf, ch2)
                     j = j + 1
                 end
@@ -118,11 +118,17 @@ mframe:SetBackdrop({
 })
 mframe:SetBackdropColor(0, 0, 0, 1)
 mframe:SetBackdropBorderColor(1, 0.82, 0, 1)
-if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(mframe) end
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame  then MidnightTracker.RegisterBorderedFrame(mframe)  end
+if MidnightTracker and MidnightTracker.RegisterWindowBgFrame  then MidnightTracker.RegisterWindowBgFrame(mframe)   end
 mframe:SetMovable(true)
+mframe:SetToplevel(true)
+mframe:HookScript("OnShow", function()
+    local wbc = MidnightObjectiveTrackerDB and MidnightObjectiveTrackerDB.windowBgColor or { r = 0, g = 0, b = 0 }
+    mframe:SetBackdropColor(wbc.r, wbc.g, wbc.b, 1)
+end)
 mframe:EnableMouse(true)
 mframe:RegisterForDrag("LeftButton")
-mframe:SetScript("OnDragStart", mframe.StartMoving)
+mframe:SetScript("OnDragStart", function(self) self:StartMoving(); self:Raise() end)
 mframe:SetScript("OnDragStop",  mframe.StopMovingOrSizing)
 mframe:Hide()
 table.insert(UISpecialFrames, "MidnightMplusFrame")

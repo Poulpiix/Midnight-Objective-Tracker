@@ -2,6 +2,47 @@
 
 --
 
+## [5.6.3] – 2026-03-15
+
+**Content update — Week 4 objectives (all locales)**
+- Removed the Catalyst entry (no new information from Blizzard).
+- Replaced the PvP line with guidance on buying **2 Galactic Jeweler's Setting** (5,000 honor + 3 Infused Heliotrope each) to add sockets to crafted items. Updated for EN, DE, and ES.
+- Fixed the M0 Pre-season gear tier: `Champion 2/6 (250)` → `Champion 1/6 (246)`.
+- Updated the weekly estimate: `2x 246, 3x 240, 10x 250` → `2x 246, 13x 250`.
+
+**Item Level reference — DE/ES locale support**
+- `colorizeTrack()` now resolves tier labels via `MidnightL.S()` (plain-text search) instead of hardcoded FR/EN strings, so German and Spanish upgrade tracks are colored correctly.
+- Dungeon and raid source strings (Heroic/Mythic off-season rows) are now properly localized for DE and ES.
+- `renderTable()` now triggers track colorization for German ("Aufwertung") and Spanish ("Mejoras") table titles.
+- Craft-tier column headers now use `MidnightL.S()` keys instead of hardcoded FR/EN strings.
+
+**Visuals — champion-color icons for jeweler items**
+- "Galactic Jeweler's Setting" / "Monture galactique de joaillerie" and equivalents in DE/ES are now rendered with their item icon and champion color in the weekly objective text (`colorizeText()`).
+- "Infused Heliotrope" / "Héliotrope imprégné" and equivalents in DE/ES receive the same treatment.
+- Icons used: `inv_10_specialization_jewelcrafting_setting_color2` and `inv_misc_gem_ruby_01`.
+
+---
+
+## [5.6.2] – 2026-03-09
+
+**Bug fixes**
+- **Window overlap** — When dragging a window over another, the background would render behind it while text remained on top, causing visual overlap. Fixed by adding `SetToplevel(true)` on the main frame and an explicit `Raise()` call on drag start.
+- **Summary menu hover** — The hover color on the week summary menu buttons was always the default yellow regardless of the chosen accent color. Replaced `SetHighlightTexture` with a custom `menuHoverTex` texture colored dynamically via `GetAccentColor()` on each `OnEnter`.
+- **Color Accessibility dropdown** — The selected item and hover highlight in the colorblind mode dropdown were hardcoded to yellow. `UpdateCBDropdownSelection` now uses `GetAccentColor()`, the hover texture is updated on `OnEnter`, and a `RegisterAccentColorCallback` refreshes the selection immediately when the accent color changes.
+- **Sub-window overlap** — The Crests table (`MidnightMplusFrame`), Item Level reference (`MidnightIlvlFrame`) and Content Planning (`MidnightPlanningContenuFrame`) windows had the same drag-overlap bug as the main frame. All three now use `SetToplevel(true)` and `Raise()` on drag start.
+
+**Cleanup & code quality**
+- Removed inline comment lines from Lua files.
+- Removed tooltip from the Reset button.
+- Removed two redundant anonymous function wrappers (`ApplyWindowBgColor`, `ApplyButtonTextColor`) on the `Midnight` export table — replaced with direct function references.
+- Simplified `ApplyMidnightBorder`: replaced a split `if/else` variable initialization with a cleaner default-then-override pattern.
+- Fixed three indentation errors in `Midnight:Refresh()` (`local numVisible`, `for oIndex` inner loop) and in `CreateObjective` (`local rowBtn`).
+- Removed dead code: `if self.UnlockHighlight then self:UnlockHighlight() end` in the menu button `OnLeave` (leftover from the `SetHighlightTexture` removal); cleaned up the unused `self` parameter.
+- Added an early-return guard in the hover-opacity poll (`_hoverPoll`) when the main frame is hidden, avoiding unnecessary polling every 50 ms.
+- Fixed a missing semicolon between two statements on one line in the `parseCSV` inner loop of `ecus.lua` (`j = j + 1; break`).
+
+---
+
 ## [5.6.1] – 2026-03-09
 
 **Minimap icon — LibDBIcon**

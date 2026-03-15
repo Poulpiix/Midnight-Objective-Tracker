@@ -1,7 +1,7 @@
 ## Interface: 120000, 120001
 ## Title: MidnightObjectiveTracker
 ## Author: Poulpix (https://x.com/poulpi_x)
-## Version: 5.6.1
+## Version: 5.6.2
 ## License: All Rights Reserved
 ## Notes: Week-by-week objective tracker for World of Warcraft: Midnight
 ## Notes-frFR: Suivi d'objectifs pour le lancement de Midnight
@@ -10,7 +10,7 @@
 ## Notes-esES: Seguimiento semanal de objetivos para World of Warcraft: Midnight
 ## Notes-esMX: Seguimiento semanal de objetivos para World of Warcraft: Midnight
 ## X-Curse-Project-ID: 1469813
-## SavedVariables: MidnightObjectiveTrackerDB
+## SavedVariablesPerCharacter: MidnightObjectiveTrackerDB
 ## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
 
 lib\LibStub\LibStub.lua

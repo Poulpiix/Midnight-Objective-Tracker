@@ -218,11 +218,17 @@ pframe:SetBackdrop({
 })
 pframe:SetBackdropColor(0, 0, 0, 1)
 pframe:SetBackdropBorderColor(1, 0.82, 0, 1)
-if MidnightTracker and MidnightTracker.RegisterBorderedFrame then MidnightTracker.RegisterBorderedFrame(pframe) end
+if MidnightTracker and MidnightTracker.RegisterBorderedFrame  then MidnightTracker.RegisterBorderedFrame(pframe)  end
+if MidnightTracker and MidnightTracker.RegisterWindowBgFrame  then MidnightTracker.RegisterWindowBgFrame(pframe)   end
 pframe:SetMovable(true)
+pframe:SetToplevel(true)
+pframe:HookScript("OnShow", function()
+    local wbc = MidnightObjectiveTrackerDB and MidnightObjectiveTrackerDB.windowBgColor or { r = 0, g = 0, b = 0 }
+    pframe:SetBackdropColor(wbc.r, wbc.g, wbc.b, 1)
+end)
 pframe:EnableMouse(true)
 pframe:RegisterForDrag("LeftButton")
-pframe:SetScript("OnDragStart", pframe.StartMoving)
+pframe:SetScript("OnDragStart", function(self) self:StartMoving(); self:Raise() end)
 pframe:SetScript("OnDragStop",  pframe.StopMovingOrSizing)
 pframe:Hide()
 table.insert(UISpecialFrames, "MidnightPlanningContenuFrame")

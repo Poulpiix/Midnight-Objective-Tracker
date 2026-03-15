@@ -64,8 +64,10 @@ L.es.esc_closes = "Escape cierra el addon"
 L.es.golden_border = "Mostrar borde de ventana"
 L.es.golden_border_desc = "Mostrar u ocultar completamente el borde en todas las ventanas."
 L.es.custom_colors_title = "Colores personalizados"
-L.es.title_color_label = "Color principal del texto"
-L.es.title_color_desc = "Color usado para los títulos de semana, etiquetas del menú y acentos."
+L.es.title_color_label = "Color de títulos y encabezados"
+L.es.title_color_desc  = "Color para títulos, subtítulos, encabezados de tabla y bordes de acento."
+L.es.btn_text_color_label = "Color del texto de los botones"
+L.es.btn_text_color_desc  = "Color utilizado para el texto mostrado dentro de los botones."
 L.es.elvui_sync_title = "Sincronización con ElvUI"
 L.es.elvui_sync_btn = "Sync con ElvUI"
 L.es.elvui_sync_desc = "Sincroniza los colores de la ventana con tu perfil ElvUI."
@@ -208,29 +210,28 @@ L.es.weeks = {
             "Mítico 0 (fuera de temporada): Completad todas las mazmorras Mítico 0 (fuera de temporada), ofreciendo equipo Veterano 3/6 (240) (no mejoréis el equipo obtenido).",
             "Artesanía: Preparad los materiales de artesanía si planeáis hacer incursión el 18 de marzo.",
             "Optimización: gastad todos los Blasones del amanecer aventureros si lo deseáis.",
-            "Nivel de objeto estimado (según aleatoriedad): 10x 240, 4x 246"
+            "Nivel de objeto estimado (según aleatoriedad): 11x 240, 4x 246"
         }
     },
     {
         title = "Semana 4: 18 – 24 mar.",
         objectives = {
             "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
-            "Catalizador: en espera de información de Blizzard.",
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
             "Conjunto de clase: Usad la herramienta Incursiones (Buscador) para obtener piezas del conjunto.",
-            "Mítico 0 (Pretemporada): Realizad un Tour Mundial de mazmorras Mítico 0 (Pretemporada), ofreciendo ahora equipo Campeón 2/6 (250).",
+            "Mítico 0 (Pretemporada): Realizad un Tour Mundial de mazmorras Mítico 0 (Pretemporada), ofreciendo ahora equipo Campeón 1/6 (246).",
             "Jefe del mundo: Matad al Jefe del mundo para obtener equipo Campeón 2/6 (250).",
             "Destello: completad la misión semanal para obtener vuestro Destello.",
             "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
             "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
-            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246).",
+            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246) (Solo las dos primeras).",
             "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
-            "JcJ: Completad la misión de JcJ para obtener un collar o anillo Héroe garantizado (si está disponible, ya que desapareció recientemente de la beta).",
+            "JcJ: Comprad 2 Engarce de joyero galáctico al vendedor por 5.000 puntos de honor y 3 Heliotropo imbuido. Usadlos para añadir engastes a objetos fabricados. Estos objetos solo aparecerán en el vendedor a partir de esta semana. Sirve esencialmente para obtener 2 engastes adicionales.",
             "Escarpe: Completad Escarpes abundantes (nivel 8 mínimo) con llaves y carta para obtener equipo Campéon 2/6 (250).",
             "Artesanía: Fabricad 2 equipos Veterano 5/5 (246) usando 80x Blasones del amanecer veteranos cada uno con 2 ennoblecimientos (Priorizad Muñequeras, Cinturón y Botas) (esto no consume una chispa).",
             "Incursión: Completad el modo Normal y Heroico.",
             "Optimización: Gastad todos los Blasones del amanecer veteranos y del amanecer campeón antes de entrar en la incursión.",
-            "Nivel de objeto estimado (según aleatoriedad): 2x 246, 3x 240, 10x 250"
+            "Nivel de objeto estimado (según aleatoriedad): 2x 246, 13x 250"
         }
     },
     {
@@ -238,14 +239,13 @@ L.es.weeks = {
         objectives = {
             "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
             "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
-            "Catalizador: en espera de información de Blizzard.",
             "Artesanía: Si vuestro Discord de clase lo recomienda, usad 1 chispa para fabricar un Mítico 1/5 (272) con ennoblecimiento (esto será bastante raro, así que adaptaos para el resto de la guía).",
             "Conjunto de clase: Si aún no tenéis el bonus de 4 piezas (4p), usad la herramienta Incursiones (Buscador) para obtener las piezas que faltan.",
             "Destello: completad la misión semanal para obtener vuestro Destello.",
             "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
             "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
             "Alojamiento: completad la misión del Alojamiento para obtener Blasones del amanecer heroicos.",
-            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246).",
+            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246) (Solo las dos primeras).",
             "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
             "Escarpe: completad al menos un Escarpe abundante (nivel 11) para obtener la misión de la Piedra angular agrietada.",
             "Mítico+ (Temporada 1): Completad mazmorras +10 (mínimo) para equipo Héroe 3/6 (266); si es demasiado difícil, haced +8 para equipo Héroe 2/6 (263).",
@@ -339,17 +339,15 @@ Mítico,?? x Blasón del amanecer mítico
 
 L.es.mplus_csv_mplus = [[
 Fuente,Cantidades
-Mítico +2,?? x Blasón del amanecer campeón
-Mítico +3,?? x Blasón del amanecer campeón
-Mítico +4,?? x Blasón del amanecer heroico
-Mítico +5,?? x Blasón del amanecer heroico
-Mítico +6,?? x Blasón del amanecer heroico
-Mítico +7,?? x Blasón del amanecer heroico
-Mítico +8,?? x Blasón del amanecer heroico
-Mítico +9,?? x Blasón del amanecer mítico
-Mítico +10,?? x Blasón del amanecer mítico
-Mítico +11,?? x Blasón del amanecer mítico
-Mítico +12,?? x Blasón del amanecer mítico
+Mítico +2,10 x Blasón del amanecer heroico
+Mítico +3,12 x Blasón del amanecer heroico
+Mítico +4,14 x Blasón del amanecer heroico
+Mítico +5,16 x Blasón del amanecer heroico
+Mítico +6,18 x Blasón del amanecer heroico
+Mítico +7,10 x Blasón del amanecer mítico
+Mítico +8,12 x Blasón del amanecer mítico
+Mítico +9,14 x Blasón del amanecer mítico
+Mítico +10,16 x Blasón del amanecer mítico
 ]]
 
 L.es.mplus_csv_traque = [[

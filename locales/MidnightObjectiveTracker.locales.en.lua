@@ -61,8 +61,10 @@ L.en.esc_closes = "Escape closes addon"
 L.en.golden_border = "Show window border"
 L.en.golden_border_desc = "Show or completely hide the border on all windows."
 L.en.custom_colors_title = "Custom Colors"
-L.en.title_color_label = "Main text color"
-L.en.title_color_desc = "Color used for week titles, menu labels, and accents."
+L.en.title_color_label = "Title & header color"
+L.en.title_color_desc  = "Color used for titles, subtitles, table headers, and accent borders."
+L.en.btn_text_color_label = "Button text color"
+L.en.btn_text_color_desc  = "Color used for the text displayed inside buttons."
 L.en.elvui_sync_title = "ElvUI Style Sync"
 L.en.elvui_sync_btn = "Sync with ElvUI"
 L.en.elvui_sync_desc = "Synchronize window colors with your ElvUI profile."
@@ -229,29 +231,28 @@ L.en.weeks = {
             "Mythic 0 (off-season): complete all Mythic 0 (off-season) dungeons, offering Veteran 3/6 (240) gear (do not upgrade obtained gear).",
             "Crafting: prepare crafting materials if you plan to raid on March 18.",
             "Optimization: spend all Adventurer Dawn Crests if you wish.",
-            "Estimated gear level (based on RNG): 10x 240, 4x 246"
+            "Estimated gear level (based on RNG): 11x 240, 4x 246"
         }
     },
     {
         title = "Week 4: Mar 18 - 24",
         objectives = {
             "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
-            "Catalyst: awaiting information from Blizzard.",
             "Crests: reach the weekly cap for all your Crests.",
             "Class Set: use the Raids tool (LFR) to obtain set pieces.",
-            "Mythic 0 (Pre-season): complete a World Tour of Mythic 0 (Pre-season) dungeons, now offering Champion 2/6 (250) gear.",
+            "Mythic 0 (Pre-season): complete a World Tour of Mythic 0 (Pre-season) dungeons, now offering Champion 1/6 (246) gear.",
             "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
             "Spark: complete the weekly quest to obtain your Spark.",
             "Cache: complete the weekly quest to obtain your weekly cache.",
             "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
-            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
+            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear (Only the first two).",
             "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
-            "PvP: complete the PvP quest to get a guaranteed Hero necklace or ring (if available, as it recently disappeared from the beta).",
+            "PvP: Buy 2 Galactic Jeweler's Setting from the vendor for 5,000 honor points and 3 Infused Heliotrope. Use them to add sockets to crafted items. These items will only appear at the vendor from this week onwards. This is primarily used to obtain 2 additional sockets.",
             "Delve: complete Bountiful Delves (tier 8 minimum) with keys and map for Champion 2/6 (250) gear.",
             "Crafting: craft 2 Veteran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots) (this doesn't consume a spark).",
             "Raid: complete Normal and Heroic mode.",
             "Optimization: spend all Veteran Dawn Crests and Champion Dawn Crests before entering the raid.",
-            "Estimated gear level (based on RNG): 2x 246, 3x 240, 10x 250"
+            "Estimated gear level (based on RNG): 2x 246, 13x 250"
         }
     },
     {
@@ -259,14 +260,13 @@ L.en.weeks = {
         objectives = {
             "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
             "Crests: reach the weekly cap for all your Crests.",
-            "Catalyst: awaiting information from Blizzard.",
             "Crafting: if your class Discord recommends it, use 1 spark to craft a Myth 1/5 (272) with embellishment (this will be rather rare, so adapt for the rest of the guide).",
             "Class Set: if you don't have your 4-piece bonus (4p) yet, use the Raids tool (LFR) to get the missing pieces.",
             "Spark: complete the weekly quest to obtain your Spark.",
             "Cache: complete the weekly quest to obtain your weekly cache.",
             "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
             "Lodgement: complete the Lodgement quest to obtain Heroic Dawn Crests.",
-            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear.",
+            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear (Only the first two).",
             "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
             "Delve: complete at minimum one Bountiful Delve (tier 11) to obtain the Cracked Keystone quest.",
             "Mythic+ (Season 1): complete +10 dungeons (minimum) for Hero 3/6 (266) gear, if too difficult, do +8 for Hero 2/6 (263) gear.",
@@ -360,17 +360,15 @@ Mythic,?? x Mythic Dawn Crest
 
 L.en.mplus_csv_mplus = [[
 Source,Quantities
-Mythic +2,?? x Champion Dawn Crest
-Mythic +3,?? x Champion Dawn Crest
-Mythic +4,?? x Heroic Dawn Crest
-Mythic +5,?? x Heroic Dawn Crest
-Mythic +6,?? x Heroic Dawn Crest
-Mythic +7,?? x Heroic Dawn Crest
-Mythic +8,?? x Heroic Dawn Crest
-Mythic +9,?? x Mythic Dawn Crest
-Mythic +10,?? x Mythic Dawn Crest
-Mythic +11,?? x Mythic Dawn Crest
-Mythic +12,?? x Mythic Dawn Crest
+Mythic +2,10 x Heroic Dawn Crest
+Mythic +3,12 x Heroic Dawn Crest
+Mythic +4,14 x Heroic Dawn Crest
+Mythic +5,16 x Heroic Dawn Crest
+Mythic +6,18 x Heroic Dawn Crest
+Mythic +7,10 x Mythic Dawn Crest
+Mythic +8,12 x Mythic Dawn Crest
+Mythic +9,14 x Mythic Dawn Crest
+Mythic +10,16 x Mythic Dawn Crest
 ]]
 
 L.en.mplus_csv_traque = [[
