@@ -6,7 +6,7 @@
 > Automatically detects your WoW client language and displays in French, English, German or Spanish.
 
 <p align="center">
-  <img src="https://giphy.com/gifs/world-of-warcraft-addon-midnight-objective-tracker-wSNvdp0wqi2LSxHNbn" alt="Midnight Objective Tracker" width="917">
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWQ2bGt1a2h0Ym5rMWFncm53eDBiZms2aHVqY2hucHNnd2Rpcm41OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaW" alt="Mon animation" width="500">
 </p>
 
 ### Features
