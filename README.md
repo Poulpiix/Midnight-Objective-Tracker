@@ -5,6 +5,10 @@
 > **A week-by-week in-game progression guide for World of Warcraft: Midnight.**
 > Automatically detects your WoW client language and displays in French, English, German or Spanish.
 
+<p align="center">
+  <img src="https://giphy.com/gifs/world-of-warcraft-addon-midnight-objective-tracker-wSNvdp0wqi2LSxHNbn" alt="Midnight Objective Tracker" width="917">
+</p>
+
 ### Features
 
 - **Step-by-step weekly guide** — A draggable, in-game window detailing exactly what to do each week from Midnight launch to endgame optimization.
