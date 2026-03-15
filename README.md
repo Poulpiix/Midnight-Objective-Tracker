@@ -1,4 +1,5 @@
 <div align="center">
+
 # MidnightObjectiveTracker
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/buy_me_a_coffee-681bc1?logo=buymeacoffee&style=for-the-badge)](https://buymeacoffee.com/poulpix)
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/ko_fi-74a4ed?logo=kofi&amp;style=for-the-badge)](https://ko-fi.com/poulpix)
