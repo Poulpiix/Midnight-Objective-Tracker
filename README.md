@@ -9,7 +9,7 @@
 
 **A week-by-week in-game progression guide for World of Warcraft: Midnight.** Automatically detects your WoW client language and displays in French, English, German or Spanish.
 
-<img src="https://files.catbox.moe/wgbxhx.webp" width="917">
+![Description de l'image](https://files.catbox.moe/wgbxhx.webp)
 </div>
 
 ## Key Features
