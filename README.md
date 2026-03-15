@@ -9,7 +9,7 @@
 
 **A week-by-week in-game progression guide for World of Warcraft: Midnight.** Automatically detects your WoW client language and displays in French, English, German or Spanish.
 
-<img src="https://s7.ezgif.com/tmp/ezgif-76c5de27c753f082.webp" alt="webp animation midnight objective tracker" width="917">
+<img src="https://player.cloudinary.com/embed/?cloud_name=dj6r1gk5z&public_id=Enregistrement_de_l_%C3%A9cran_2026-03-15_163203_dmqtt8" width="917">
 </div>
 
 ## Key Features
