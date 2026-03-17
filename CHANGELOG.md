@@ -1,6 +1,11 @@
 # Changelog — MidnightObjectiveTracker
 
 --
+## [5.6.4] – 2026-03-15
+
+- Added Russian language. Thanks to Hubbotu for their contribution via GitHub.
+
+---
 
 ## [5.6.3] – 2026-03-15
 

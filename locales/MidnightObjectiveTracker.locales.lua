@@ -15,6 +15,8 @@ function L.Init()
         currentLocale = "de"
     elseif gameLocale == "esES" or gameLocale == "esMX" then
         currentLocale = "es"
+    elseif gameLocale == "ruRU" then
+        currentLocale = "ru"
     else
         currentLocale = "en"
     end

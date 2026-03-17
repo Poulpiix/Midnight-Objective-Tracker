@@ -9,6 +9,7 @@
 ## Notes-deDE: Wöchentlicher Ziele-Verfolger für World of Warcraft: Midnight
 ## Notes-esES: Seguimiento semanal de objetivos para World of Warcraft: Midnight
 ## Notes-esMX: Seguimiento semanal de objetivos para World of Warcraft: Midnight
+## Notes-ruRU: Еженедельный трекер целей для World of Warcraft: Midnight
 ## X-Curse-Project-ID: 1469813
 ## SavedVariablesPerCharacter: MidnightObjectiveTrackerDB
 ## IconTexture: Interface\AddOns\MidnightObjectiveTracker\logo-32-circle
@@ -22,6 +23,7 @@ locales\MidnightObjectiveTracker.locales.fr.lua
 locales\MidnightObjectiveTracker.locales.en.lua
 locales\MidnightObjectiveTracker.locales.de.lua
 locales\MidnightObjectiveTracker.locales.es.lua
+locales\MidnightObjectiveTracker.locales.ru.lua
 MidnightObjectiveTracker.lua
 modules\MidnightObjectiveTracker.planningcontenu.lua
 modules\MidnightObjectiveTracker.ecus.lua
