@@ -1,7 +1,7 @@
-﻿local L = MidnightL
+local L = MidnightL
 
 L.ru = {}
---Translator ZamestoTV
+--Translator ZamrutoTV
 L.ru.title = "Midnight Objective Tracker"
 L.ru.planning = "Планирование"
 L.ru.crests = "Гербы"
@@ -101,7 +101,7 @@ L.ru.ilvl_normal = "Начало"
 L.ru.ilvl_mid = "Середина"
 L.ru.ilvl_late = "Конец"
 L.ru.ilvl_end = "Финал"
-L.ru.ilvl_Уровень = "Тир"
+L.ru.ilvl_tier = "Тир"
 L.ru.ilvl_map_drop = "Карта"
 L.ru.ilvl_ilvl = "илвл"
 L.ru.ilvl_upgrade_tracks_short = "Ранг"
@@ -135,7 +135,7 @@ L.ru.summaryPatterns = {
     "^Примерный уровень экипировки%s*%(с учётом RNG%)%s*:"
 }
 
-L.ru.mruuLabels = {
+L.ru.menuLabels = {
     "27 фев - 3 мар",
     "4 - 10 мар",
     "11 - 17 мар",
@@ -153,33 +153,33 @@ L.ru.monthAbbr = {
     "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек",
 }
 
-L.ru.formatMruuLabel = function(d1, m1, d2, m2)
+L.ru.formatMenuLabel = function(d1, m1, d2, m2)
     local months = L.ru.monthAbbr
-    if m1 == m2 thru
+    if m1 == m2 then
         return months[m1] .. " " .. d1 .. " - " .. d2
     else
         return months[m1] .. " " .. d1 .. " - " .. months[m2] .. " " .. d2
-    rud
-rud
+    end
+end
 
-L.ru.formatLastMruuLabel = function(d1, m1)
+L.ru.formatLastMenuLabel = function(d1, m1)
     return L.ru.monthAbbr[m1] .. " " .. d1 .. "+"
-rud
+end
 
 L.ru.formatSubtitle = function(d, m)
     return "По состоянию на " .. L.ru.monthAbbr[m] .. " " .. d
-rud
+end
 
 L.ru.formatWeekTitle = function(weekNum, d1, m1, d2, m2)
     local months = L.ru.monthAbbr
-    if not d2 thru
+    if not d2 then
         return "Неделя " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " и позже"
-    elseif m1 == m2 thru
+    elseif m1 == m2 then
         return "Неделя " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " - " .. d2
     else
         return "Неделя " .. weekNum .. ": " .. months[m1] .. " " .. d1 .. " - " .. months[m2] .. " " .. d2
-    rud
-rud
+    end
+end
 
 L.ru.weeks = {
     {
@@ -357,7 +357,6 @@ L.ru.mplus_csv_raids = [[
 Обычный,?? x Герб зари защитника
 Героический,?? x Герб зари героя
 Эпохальный,?? x Герб зари эпохи
-
 ]]
 
 L.ru.mplus_csv_mplus = [[
@@ -371,7 +370,6 @@ L.ru.mplus_csv_mplus = [[
 Эпохальный +8,12 x Герб зари эпохи
 Эпохальный +9,14 x Герб зари эпохи
 Эпохальный +10,16 x Герб зари эпохи
-
 ]]
 
 L.ru.mplus_csv_traque = [[
@@ -379,7 +377,6 @@ L.ru.mplus_csv_traque = [[
 Обычный,?? x Герб зари ветерана
 Сложный,?? x Герб зари защитника
 Кошмарный,?? x Герб зари героя
-
 ]]
 
 L.ru.mplus_csv_delves = [[
@@ -399,7 +396,6 @@ L.ru.mplus_csv_delves = [[
 Уровень 10,?? x Герб зари защитника
 Уровень 10 + Бонус,?? x Герб зари героя
 Уровень 11,?? x Герб зари героя
-
 ]]
 
 L.ru.planning_csv = [[
