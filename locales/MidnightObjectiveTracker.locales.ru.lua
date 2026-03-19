@@ -1,7 +1,7 @@
 local L = MidnightL
 
 L.ru = {}
---Translator ZamrutoTV
+--Translator ZamestoTV
 L.ru.title = "Midnight Objective Tracker"
 L.ru.planning = "Планирование"
 L.ru.crests = "Гербы"
