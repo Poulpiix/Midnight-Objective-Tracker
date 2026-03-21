@@ -1,6 +1,15 @@
 # Changelog — MidnightObjectiveTracker
 
 --
+
+## [5.6.5] – 2026-03-21
+
+- **Great Vault** — Fix.
+- **Reset safety polish** — The reset confirmation dialog is fixed in place, Oui/Non buttons sit directly under the message, and the main Reset button re-anchors itself so it never disappears when optional shortcut buttons are hidden.
+- **License file** — Added `Licence.md` with explicit reuse restrictions for the addon package.
+
+---
+
 ## [5.6.4] – 2026-03-15
 
 - Added Russian language. Thanks to Hubbotu for their contribution via GitHub.

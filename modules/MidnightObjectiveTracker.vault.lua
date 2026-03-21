@@ -18,7 +18,7 @@ local PANEL_W      = 110
 local PAD_L        = 10
 local PAD_R        = 10
 local PAD_T        = 16
-local PAD_B        = 8
+local PAD_B        = 11
 local TITLE_H      = 14
 local SEP_OFFSET   = PAD_T + TITLE_H + 3
 local GRID_TOP_Y   = -(SEP_OFFSET + 1 + 4)
@@ -101,6 +101,80 @@ local cellInfo      = {}
 local rowLabels     = {}
 local progCache     = {}
 local rewardLevels  = { {}, {}, {} }
+
+local MIN_VALID_ITEM_LEVEL = 100 -- Filters out difficulty IDs (14/15/16) masquerading as ilvl.
+
+local function IsValidItemLevel(value)
+    return type(value) == "number" and value >= MIN_VALID_ITEM_LEVEL
+end
+
+local function ExtractItemLevelFromLink(link)
+    if type(link) ~= "string" or link == "" then
+        return nil
+    end
+
+    local effective, preview
+    if C_Item and C_Item.GetDetailedItemLevelInfo then
+        effective, preview = C_Item.GetDetailedItemLevelInfo(link)
+    elseif GetDetailedItemLevelInfo then
+        effective, preview = GetDetailedItemLevelInfo(link)
+    end
+
+    local best = preview or effective
+    if IsValidItemLevel(best) then
+        return best
+    end
+
+    if GetItemInfo then
+        local _, _, _, ilvl = GetItemInfo(link)
+        if IsValidItemLevel(ilvl) then
+            return ilvl
+        end
+    end
+
+    return nil
+end
+
+local function ExtractItemLevelFromTable(tbl)
+    if type(tbl) ~= "table" then
+        return nil
+    end
+
+    local candidates = {
+        tbl.rewardItemLevel,
+        tbl.itemLevel,
+        tbl.level,
+        tbl.qualityLevel,
+        tbl.ilvl,
+    }
+    for _, candidate in ipairs(candidates) do
+        if IsValidItemLevel(candidate) then
+            return candidate
+        end
+    end
+
+    local link = tbl.rewardItemLink or tbl.itemLink or tbl.hyperlink
+    return ExtractItemLevelFromLink(link)
+end
+
+local function ExtractRewardItemLevel(activity)
+    local direct = ExtractItemLevelFromTable(activity)
+    if direct then
+        return direct
+    end
+
+    if not (C_WeeklyRewards and C_WeeklyRewards.GetActivityInfo) then
+        return nil
+    end
+
+    local activityID = activity and (activity.id or activity.activityID)
+    if not activityID then
+        return nil
+    end
+
+    local info = C_WeeklyRewards.GetActivityInfo(activityID)
+    return ExtractItemLevelFromTable(info)
+end
 
 local function ClearRewardLevels()
     for r = 1, 3 do
@@ -246,8 +320,8 @@ local function PopulateRewardLevels(activities)
     for _, act in ipairs(activities) do
         local rowIndex = act and act.type and typeToRow[act.type]
         local colIndex = act and act.index
-        local level    = act and act.level
-        if rowIndex and type(colIndex) == "number" and colIndex >= 1 and colIndex <= 3 and type(level) == "number" then
+        local level    = ExtractRewardItemLevel(act)
+        if rowIndex and type(colIndex) == "number" and colIndex >= 1 and colIndex <= 3 and level then
             rewardLevels[rowIndex][colIndex] = level
         end
     end
