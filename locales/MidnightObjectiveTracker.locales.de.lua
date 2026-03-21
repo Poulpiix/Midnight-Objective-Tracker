@@ -82,7 +82,6 @@ L.de.window_bg_color_desc  = "Klicken, um die Hintergrundfarbe aller Fenster zu 
 L.de.ilvl_raid_synth = "Kuriosität"
 
 L.de.mplus_title = "Wappen"
-L.de.mplus_subtitle = "Ab dem 18. März"
 L.de.planning_title = "Zeitplan"
 L.de.ilvl_title = "Saison 1 – Ausrüstungsstufen nach Inhalt"
 L.de.ilvl_upgrade_tracks = "Aufwertungsstufen (20 Wappen pro Stufe)"
@@ -115,6 +114,19 @@ L.de.ilvl_crest_vet = "Veteran-Morgenwappen"
 L.de.ilvl_crest_champ = "Champion-Morgenwappen"
 L.de.ilvl_crest_hero = "Heroische Morgenwappen"
 L.de.ilvl_crest_myth = "Mythische Morgenwappen"
+
+L.de.vault_title     = "Große Schatzkammer"
+L.de.vault_raid      = "Schlachtzug"
+L.de.vault_dungeon   = "Dungeon"
+L.de.vault_world     = "Welt"
+L.de.vault_slot      = "Slot"
+L.de.vault_na        = "k. A."
+L.de.vault_threshold = "Schwelle"
+L.de.vault_unlocked  = "Freigeschaltet!"
+L.de.vault_progress  = "Fortschritt"
+
+L.de.show_crest_panel = "Wappen-Zusammenfassung anzeigen"
+L.de.show_vault_panel = "Große Schatzkammer anzeigen"
 
 L.de.summaryPatterns = {
     "^Verwendete Wappen%s*:",
@@ -218,44 +230,49 @@ L.de.weeks = {
     {
         title = "Woche 4: 18. – 24. März",
         objectives = {
-            "Gebt keine Champion-Morgenwappen, Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
-            "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
-            "Klassen-Set: Nutzt das Schlachtzugs-Tool (SR) um Set-Teile zu erhalten.",
-            "Mythisch 0 (Vorsaison): Absolviert eine Weltreise der Mythisch 0 (Vorsaison) Dungeons, die jetzt Champion 1/6 (246) Ausrüstung gewähren.",
-            "Weltboss: Tötet den Weltboss für Champion 2/6 (250) Ausrüstung.",
-            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
-            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
-            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
-            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren (Nur die ersten zwei).",
-            "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
-            "PvP: Kauft 2 Galaktische Juweliersfassung beim Händler für 5.000 Ehrenpunkte und 3 Erfüllter Heliotrop. Verwendet sie, um Fassungen zu gefertigten Gegenständen hinzuzufügen. Diese Gegenstände erscheinen erst ab dieser Woche beim Händler. Dies dient hauptsächlich dazu, 2 zusätzliche Fassungen zu erhalten.",
-            "Gewölbe: Schließt Reiche Gewölbe (Stufe 8 mindestens) mit Schlüsseln und Karte ab für Champion 2/6 (250) Ausrüstung.",
-            "Handwerk: Stellt 2 Veteran 5/5 (246) Ausrüstungen her, je mit 80x Veteran-Morgenwappen und 2 Veredelungen (Priorisiert Handgelenke, Gürtel und Stiefel) (dies verbraucht keinen Funken).",
-            "Schlachtzug: Schließt den Normal- und Heroisch-Modus ab.",
-            "Optimierung: Gebt alle Veteran-Morgenwappen und Champion-Morgenwappen aus, bevor ihr den Schlachtzug betretet.",
-            "Gegenstandsstufe (geschätzt, nach Zufall): 2x 246, 13x 250"
+            "Gib keine Wappen des heroischen Anbruchs oder Wappen des mythischen Anbruchs aus, außer es wird verlangt.",
+            "Wappen: Erreiche die wöchentliche Obergrenze für alle deine Wappen.",
+            "Obergrenze für Wappen des heroischen Anbruchs: Schließe die Heimatquest, 4 Tiefen der Stufe 11, 1 Mal die Tiefe „Eminenz der Qual“ (Leerensturm), 4 Jagden im Albtraummodus und 2 Bosse im heroischen Schlachtzug ab.",
+            "Weltboss: Töte den Weltboss, um Ausrüstung der Stufe Champion 3/6 (253) zu erhalten.",
+            "Funke: Schließe die wöchentliche Quest ab, um deinen Funken zu erhalten.",
+            "Truhe: Schließe die wöchentliche Quest ab, um deine Truhe der Woche zu erhalten.",
+            "Bonusruhm: Schließe die wöchentliche Dungeon-Quest von Halduron Hellflügel ab, um 1.000 Ruhmpunkte zu erhalten.",
+            "Jagd: Schließe Jagden im Albtraummodus ab (4 pro Woche für deine 20x Wappen des heroischen Anbruchs), die Champion 1/6 (246) Ausrüstung bieten (nur die ersten 2).",
+            "Zufällige Jagd: Schließe zufällige Jagden im Albtraummodus ab, die von Astalor Blutpakt gegeben werden, um Wappen des Anbruchs des Champions zu erhalten.",
+            "Katalysator: Erhöhe deine PvP-Wertung auf 1600 für eine Katalysator-Aufladung (dies ist dieselbe Aufladung, die mit der 2000 M+-Wertung der folgenden Woche geteilt wird). Wenn du diese Woche 2 Set-Teile in deinem Schlachtzug erhältst, kannst du 2 Gegenstände katalysieren und nächste Woche damit beginnen, Katalysator-Aufladungen in M+ zu erhalten.",
+            "PvP: Kaufe 2 Juwelenbesetzte Galaktische Reittiere beim Händler für 5.000 Ehrenpunkte und 3 Erfüllte Heliotrope. Du wirst sie verwenden, um Sockel zu hergestellten PvP-Gegenständen hinzuzufügen. Diese Gegenstände erscheinen erst ab dieser Woche beim Händler. Dies dient im Wesentlichen dazu, 2 zusätzliche Sockel zu erhalten.",
+            "Tiefe: Schließe großzügige Tiefen (mindestens Stufe 8) mit Schlüsseln und Karten ab, falls du welche hast (Karten sind recht selten).",
+            "Tiefe (Nullaeus): Schließe die Tiefe „Eminenz der Qual“ (Leerensturm) auf Schwierigkeit ? und ?? ab, um 60x Wappen des heroischen Anbruchs und 30x unbegrenzte Wappen des mythischen Anbruchs zu erhalten.",
+            "Tiefe (Schlüssel): Kaufe den (kostenlosen) Schlüsselbeutel beim Tiefenhändler, um 2x zusätzliche unbegrenzte Schlüssel für großzügige Tiefen zu erhalten.",
+            "Mythisch 0 (Vorsaison): Mach eine (tägliche) World Tour der Mythisch 0 Dungeons (Vorsaison), die jetzt Champion 1/6 (246) Ausrüstung bieten.",
+            "Handwerk: Überprüfe die Angaben auf Archon.GG / Wowhead.com bezüglich deiner BiS-Handwerksausrüstung (stelle nur deine Klassen-BiS her, die du in den folgenden Wochen umschmieden kannst).",
+            "Optimierung: Gib alle Wappen des Veteranen-Anbruchs und Wappen des Anbruchs des Champions aus, bevor du den Schlachtzug betrittst.",
+            "Klassenset: Nutze den Schlachtzugsbrowser (LFR), um Set-Teile zu erhalten.",
+            "Schlachtzug: Schließe den normalen und heroischen Modus ab.",
+            "Geschätzte Gegenstandsstufe (je nach RNG): 15x 250"
         }
     },
     {
         title = "Woche 5: 25. – 31. März",
         objectives = {
-            "Gebt keine Champion-Morgenwappen, Heroischen Morgenwappen oder Mythischen Morgenwappen aus, es sei denn, es wird verlangt.",
-            "Wappen: Erreicht die wöchentliche Obergrenze für alle eure Wappen.",
-            "Katalysator: Warten auf Informationen von Blizzard.",
-            "Handwerk: Falls euer Klassen-Discord es empfiehlt, verwendet 1 Funken um ein Mythisch 1/5 (272) mit Veredelung herzustellen (dies wird eher selten der Fall sein, passt euch für den Rest des Leitfadens an).",
-            "Klassen-Set: Falls ihr noch keinen 4-Teile-Bonus (4p) habt, nutzt das Schlachtzugs-Tool (SR) um die fehlenden Teile zu erhalten.",
-            "Funken: Schließt die wöchentliche Quest ab, um euren Funken zu erhalten.",
-            "Cache: Schließt die wöchentliche Quest ab, um euren wöchentlichen Cache zu erhalten.",
-            "Ansehen-Bonus: Schließt die wöchentliche Dungeon-Quest von Halduron Luisaile ab, um 1.000 Ansehen-Punkte zu erhalten.",
-            "Unterkunft: Schließt die Unterkunfts-Quest ab, um Heroische Morgenwappen zu erhalten.",
-            "Jagd: Schließt Jagden im Alptraumodus ab (4 pro Woche), die Champion 1/6 (246) Ausrüstung gewähren (Nur die ersten zwei).",
-            "Zufällige Jagd: Schließt zufällige Alptraum-Jagden von Astalor Ligessang ab, um Champion-Morgenwappen zu erhalten.",
-            "Gewölbe: Schließt mindestens ein Reiches Gewölbe (Stufe 11) ab, um die Quest des gerissenen Schlusssteins zu erhalten.",
-            "Mythisch+ (Saison 1): Schließt +10 Dungeons ab (Minimum) für Held 3/6 (266) Ausrüstung; falls zu schwierig, macht +8 für Held 2/6 (263) Ausrüstung.",
-            "Schlachtzug: Schließt den Normal- und Heroisch-Modus ab, bevor ihr mit der Mythisch-Progression beginnt.",
-            "Mythischer Schlachtzug: Verbessert 11 Held 3/6 (266) -> 4/6 (269) Ausrüstungen gegen 220x Heroische Morgenwappen (priorisiert Ringe / Schmuckstücke oder Set-Teile, die ihr lange behalten wollt).",
-            "Tipp: Falls ihr das Glück habt, Mythisch-Ausrüstung im Schlachtzug zu erhalten, könnt ihr diese 2 Mal verbessern (passt einfach die Tipps an, bis es sich wieder ausgleicht).",
-            "Gegenstandsstufe (geschätzt, nach Zufall): 4x 266, 11x 269"
+            "Gib keine Wappen des heroischen Anbruchs oder Wappen des mythischen Anbruchs aus, außer es wird verlangt.",
+            "Wappen: Erreiche die wöchentliche Obergrenze für alle deine Wappen.",
+            "Große Schatzkammer: Öffne sie, um Hero-Ausrüstung zu erhalten.",
+            "Klassenset: Wenn du deinen 4-Teile-Bonus (4p) noch nicht hast, nutze den Schlachtzugsbrowser (LFR), um die fehlenden Teile zu sammeln.",
+            "Funke: Schließe die wöchentliche Quest ab, um deinen Funken zu erhalten.",
+            "Truhe: Schließe die wöchentliche Quest ab, um deine Truhe der Woche zu erhalten.",
+            "Bonusruhm: Schließe die wöchentliche Dungeon-Quest von Halduron Hellflügel ab, um 1.000 Ruhmpunkte zu erhalten.",
+            "Heimstätte: Schließe die Quest der Heimstätte ab, um Wappen des heroischen Anbruchs zu erhalten.",
+            "Jagd: Schließe Jagden im Albtraummodus ab (4 pro Woche für deine 20x Wappen des heroischen Anbruchs), die Champion 1/6 (246) Ausrüstung bieten (nur die ersten 2).",
+            "Zufällige Jagd: Schließe zufällige Jagden im Albtraummodus ab, die von Astalor Blutpakt gegeben werden, um Wappen des Anbruchs des Champions zu erhalten.",
+            "Katalysator: Erhöhe deine M+-Wertung auf 2000, um eine Katalysator-Aufladung über den Erfolg zu erhalten (außer du hast sie bereits letzte Woche über die PvP-Wertung erhalten).",
+            "Tiefe: Schließe mindestens eine großzügige Tiefe (Stufe 11) ab, um die Quest für den „Gesprungenen Schlüssel“ zu erhalten.",
+            "Mythisch + (Saison 1): Schließe Dungeons auf +10 (Minimum) ab, um Hero 3/6 (266) Ausrüstung zu erhalten. Wenn dies zu schwierig ist, mache +8 für Hero 2/6 (263) Ausrüstung.",
+            "Handwerk: Überprüfe auf Archon.GG oder Wowhead.com, was du mit der Herstellung beginnen kannst (stelle nur deine Klassen-BiS her, die du in den folgenden Wochen umschmieden kannst).",
+            "Schlachtzug: Schließe den normalen und heroischen Modus ab, bevor du mit dem mythischen Fortschritt beginnst.",
+            "Mythischer Schlachtzug: Werte 11 Hero-Ausrüstungsteile von 3/6 (266) auf 4/6 (269) auf für 220x Wappen des heroischen Anbruchs (priorisiere Ringe / Schmuckstücke oder Set-Teile, die du lange behalten willst).",
+            "Tipp: Wenn du das Glück hast, Mythisch-Ausrüstung im Schlachtzug zu erhalten, kannst du diese 2 Mal aufwerten (passe die Ratschläge einfach an, bis es sich wieder ausgleicht).",
+            "Geschätzte Gegenstandsstufe (je nach RNG): 4x 266, 11x 269, 1x 272"
         }
     },
     {
@@ -362,21 +379,21 @@ Alptraum,?? x Heroisches Morgenwappen
 
 L.de.mplus_csv_delves = [[
 Quelle,Mengen
-Stufe 2,?? x Abenteurer-Morgenwappen
-Stufe 3,?? x Abenteurer-Morgenwappen
-Stufe 4,?? x Abenteurer-Morgenwappen
-Stufe 5,?? x Veteran-Morgenwappen
-Stufe 6,?? x Veteran-Morgenwappen
-Stufe 6 + Bonus,?? x Champion-Morgenwappen
-Stufe 7,?? x Champion-Morgenwappen
-Stufe 7 + Bonus,?? x Champion-Morgenwappen
-Stufe 8,?? x Champion-Morgenwappen
-Stufe 8 + Bonus,?? x Heroisches Morgenwappen
-Stufe 9,?? x Champion-Morgenwappen
-Stufe 9 + Bonus,?? x Heroisches Morgenwappen
-Stufe 10,?? x Champion-Morgenwappen
-Stufe 10 + Bonus,?? x Heroisches Morgenwappen
-Stufe 11,?? x Heroisches Morgenwappen
+Stufe 4,Wappen des Abenteureranbruchs
+Stufe 4 + Bonus,Wappen des Veteranenanbruchs
+Stufe 5,Wappen des Veteranenanbruchs
+Stufe 5 + Bonus,Wappen des Veteranenanbruchs
+Stufe 6,Wappen des Veteranenanbruchs
+Stufe 6 + Bonus,Wappen des Championanbruchs
+Stufe 7,Wappen des Championanbruchs
+Stufe 7 + Bonus,Wappen des Championanbruchs
+Stufe 8,Wappen des Championanbruchs
+Stufe 8 + Bonus,Wappen des heroischen Anbruchs
+Stufe 9,Wappen des Championanbruchs
+Stufe 9 + Bonus,Wappen des heroischen Anbruchs
+Stufe 10,Wappen des Championanbruchs
+Stufe 10 + Bonus,Wappen des heroischen Anbruchs
+Stufe 11,Wappen des heroischen Anbruchs
 ]]
 
 L.de.planning_csv = [[

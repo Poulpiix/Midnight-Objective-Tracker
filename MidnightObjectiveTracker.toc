@@ -1,7 +1,7 @@
-## Interface: 120000, 120001
+## Interface: 120000, 120001, 120005
 ## Title: MidnightObjectiveTracker
 ## Author: Poulpix (https://x.com/poulpi_x)
-## Version: 5.6.2
+## Version: 5.6.5
 ## License: All Rights Reserved
 ## Notes: Week-by-week objective tracker for World of Warcraft: Midnight
 ## Notes-frFR: Suivi d'objectifs pour le lancement de Midnight

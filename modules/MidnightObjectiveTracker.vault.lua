@@ -1,6 +1,14 @@
-﻿local GV_TYPE_MPLUS = (Enum and Enum.WeeklyRewardChestActivityType and Enum.WeeklyRewardChestActivityType.MythicPlus) or 1
-local GV_TYPE_WORLD = (Enum and Enum.WeeklyRewardChestActivityType and Enum.WeeklyRewardChestActivityType.World)     or 2
-local GV_TYPE_RAID  = (Enum and Enum.WeeklyRewardChestActivityType and Enum.WeeklyRewardChestActivityType.Raid)      or 3
+﻿local function GetThresholdType(key, fallback)
+    local enum = Enum and Enum.WeeklyRewardChestThresholdType
+    if enum and enum[key] then
+        return enum[key]
+    end
+    return fallback
+end
+
+local GV_TYPE_MPLUS = GetThresholdType("Activities", 1)
+local GV_TYPE_RAID  = GetThresholdType("Raid", 3)
+local GV_TYPE_WORLD = GetThresholdType("World", 6)
 
 local GV_THRESHOLDS = { { 2, 4, 6 }, { 1, 4, 8 }, { 2, 4, 8 } }
 local GV_ROW_TYPES  = { GV_TYPE_RAID, GV_TYPE_MPLUS, GV_TYPE_WORLD }
@@ -39,6 +47,7 @@ local VAULT_DEFAULTS = {
     vault_threshold = "Seuil",
     vault_unlocked  = "Déverrouillé !",
     vault_progress  = "Progression",
+    vault_ilvl      = "iLvl",
 }
 
 local function VS(key)
@@ -88,9 +97,19 @@ if MidnightTracker and MidnightTracker.RegisterAccentColorCallback then
     end)
 end
 
-local cellInfo  = {}
-local rowLabels = {}
-local progCache = {}
+local cellInfo      = {}
+local rowLabels     = {}
+local progCache     = {}
+local rewardLevels  = { {}, {}, {} }
+
+local function ClearRewardLevels()
+    for r = 1, 3 do
+        rewardLevels[r] = rewardLevels[r] or {}
+        for c = 1, 3 do
+            rewardLevels[r][c] = nil
+        end
+    end
+end
 
 for r = 1, 3 do
     local rowY = GRID_TOP_Y - (r - 1) * (ROW_H + ROW_GAP)
@@ -146,6 +165,10 @@ for r = 1, 3 do
                     GameTooltip:AddLine(VS("vault_progress") .. ": " .. prog .. "/" .. thresh, 1.00, 0.75, 0.20)
                 end
             end
+            local lvl = rewardLevels[captureR] and rewardLevels[captureR][captureC]
+            if lvl then
+                GameTooltip:AddLine(VS("vault_ilvl") .. ": " .. lvl, 0.80, 0.80, 1.00)
+            end
             GameTooltip:Show()
         end)
         btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -154,34 +177,100 @@ for r = 1, 3 do
     end
 end
 
+local function NewRowState()
+    return { done = 0, progress = 0, total = 0 }
+end
+
+local function InitRowStates()
+    local states = {}
+    for r = 1, 3 do
+        states[r] = NewRowState()
+    end
+    return states
+end
+
+local function PopulateFromSorted(rowIndex, state)
+    if not (C_WeeklyRewards and C_WeeklyRewards.GetSortedProgressForActivity) then
+        return false
+    end
+
+    local typeId = GV_ROW_TYPES[rowIndex]
+    local sorted = C_WeeklyRewards.GetSortedProgressForActivity(typeId, true)
+    if type(sorted) ~= "table" or #sorted == 0 then
+        return false
+    end
+
+    state.total = #sorted
+    for tierIndex, tierInfo in ipairs(sorted) do
+        local points = type(tierInfo.numPoints) == "number" and tierInfo.numPoints or 0
+        if points > state.progress then
+            state.progress = points
+        end
+        local threshold = GV_THRESHOLDS[rowIndex][tierIndex]
+        if threshold and points >= threshold then
+            state.done = state.done + 1
+        end
+    end
+    return true
+end
+
+local function PopulateFromActivities(rowType, state, activities)
+    if type(activities) ~= "table" then
+        return false
+    end
+
+    local hadData = false
+    for _, act in ipairs(activities) do
+        if act and act.type == rowType then
+            hadData = true
+            state.total = state.total + 1
+            local prog   = type(act.progress)  == "number" and act.progress  or 0
+            local thresh = type(act.threshold) == "number" and act.threshold or 0
+            local done   = (act.isComplete == true) or (thresh > 0 and prog >= thresh)
+            if done then state.done = state.done + 1 end
+            if prog > state.progress then state.progress = prog end
+        end
+    end
+    return hadData
+end
+
+local function PopulateRewardLevels(activities)
+    if type(activities) ~= "table" then return end
+
+    local typeToRow = {
+        [GV_TYPE_RAID]  = 1,
+        [GV_TYPE_MPLUS] = 2,
+        [GV_TYPE_WORLD] = 3,
+    }
+
+    for _, act in ipairs(activities) do
+        local rowIndex = act and act.type and typeToRow[act.type]
+        local colIndex = act and act.index
+        local level    = act and act.level
+        if rowIndex and type(colIndex) == "number" and colIndex >= 1 and colIndex <= 3 and type(level) == "number" then
+            rewardLevels[rowIndex][colIndex] = level
+        end
+    end
+end
+
 local function RefreshVault()
+    local rowStates = InitRowStates()
     local activities = C_WeeklyRewards
                    and C_WeeklyRewards.GetActivities
                    and C_WeeklyRewards.GetActivities()
 
-    local typeCount = {
-        [GV_TYPE_RAID]  = { done = 0, progress = 0, total = 0 },
-        [GV_TYPE_MPLUS] = { done = 0, progress = 0, total = 0 },
-        [GV_TYPE_WORLD] = { done = 0, progress = 0, total = 0 },
-    }
+    ClearRewardLevels()
+    PopulateRewardLevels(activities)
 
-    if type(activities) == "table" then
-        for _, act in ipairs(activities) do
-            local t = act and act.type
-            local d = t and typeCount[t]
-            if d then
-                d.total = d.total + 1
-                local prog   = type(act.progress)  == "number" and act.progress  or 0
-                local thresh = type(act.threshold) == "number" and act.threshold or 0
-                local done   = (act.isComplete == true) or (thresh > 0 and prog >= thresh)
-                if done then d.done = d.done + 1 end
-                if prog > d.progress then d.progress = prog end
-            end
+    for r = 1, 3 do
+        local filled = PopulateFromSorted(r, rowStates[r])
+        if not filled then
+            PopulateFromActivities(GV_ROW_TYPES[r], rowStates[r], activities)
         end
     end
 
     for r = 1, 3 do
-        local d = typeCount[GV_ROW_TYPES[r]]
+        local d = rowStates[r]
         progCache[r].done     = d.done
         progCache[r].progress = d.progress
         progCache[r].total    = d.total
@@ -207,6 +296,73 @@ local function RefreshVault()
                 ci.numFS:SetText(tostring(thresh))
                 ci.numFS:SetTextColor(1.00, 0.30, 0.30)
             end
+        end
+    end
+end
+
+local function EnumKeyForValue(enumTable, value)
+    if not enumTable or value == nil then return nil end
+    for name, enumValue in pairs(enumTable) do
+        if enumValue == value then
+            return name
+        end
+    end
+end
+
+local function VaultDebugMessage(msg)
+    local prefix = "|cff44ff88MOT Vault|r "
+    if DEFAULT_CHAT_FRAME then
+        DEFAULT_CHAT_FRAME:AddMessage(prefix .. msg)
+    else
+        print("[MOT Vault] " .. msg)
+    end
+end
+
+local function DumpVaultActivities()
+    local activities = C_WeeklyRewards
+                   and C_WeeklyRewards.GetActivities
+                   and C_WeeklyRewards.GetActivities()
+    if type(activities) ~= "table" or #activities == 0 then
+        VaultDebugMessage("Aucune activité renvoyée.")
+        return
+    end
+    VaultDebugMessage("Dump des activités hebdo :")
+    for _, act in ipairs(activities) do
+        local typeVal = act.type
+        local typeName = EnumKeyForValue(Enum and Enum.WeeklyRewardChestActivityType, typeVal)
+                      or EnumKeyForValue(Enum and Enum.WeeklyRewardActivityType, typeVal)
+                      or EnumKeyForValue(Enum and Enum.WeeklyRewardChestThresholdType, typeVal)
+                      or "?"
+        local progress = type(act.progress) == "number" and act.progress or 0
+        local threshold = type(act.threshold) == "number" and act.threshold or 0
+        local line = string.format("[%d] type=%s (%s) prog=%d/%d id=%d", act.index or 0, tostring(typeVal or "nil"), typeName, progress, threshold, act.id or 0)
+        VaultDebugMessage(line)
+    end
+end
+
+local function DumpSortedProgress()
+    if not (C_WeeklyRewards and C_WeeklyRewards.GetSortedProgressForActivity) then
+        VaultDebugMessage("API GetSortedProgressForActivity indisponible.")
+        return
+    end
+
+    VaultDebugMessage("Dump du progress trié :")
+    for r = 1, 3 do
+        local typeId   = GV_ROW_TYPES[r]
+        local typeName = EnumKeyForValue(Enum and Enum.WeeklyRewardChestThresholdType, typeId)
+                      or tostring(typeId)
+        local tiers    = C_WeeklyRewards.GetSortedProgressForActivity(typeId, true)
+        if type(tiers) == "table" and #tiers > 0 then
+            for tierIndex, tierInfo in ipairs(tiers) do
+                local tierId    = tierInfo.activityTierID or 0
+                local diff      = tierInfo.difficulty or 0
+                local points    = tierInfo.numPoints or 0
+                local threshold = GV_THRESHOLDS[r][tierIndex] or 0
+                local line = string.format("[%s #%d] tierId=%d diff=%d points=%d threshold=%d", typeName, tierIndex, tierId, diff, points, threshold)
+                VaultDebugMessage(line)
+            end
+        else
+            VaultDebugMessage(string.format("[%s] aucune donnée.", typeName))
         end
     end
 end
@@ -252,3 +408,9 @@ MidnightTrackerFrame:HookScript("OnShow", function()
         vaultPanel:Hide()
     end
 end)
+
+SLASH_MOTVAULT1 = "/motvault"
+SlashCmdList.MOTVAULT = function()
+    DumpVaultActivities()
+    DumpSortedProgress()
+end

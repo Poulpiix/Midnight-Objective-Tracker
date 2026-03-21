@@ -50,6 +50,8 @@ MidnightObjectiveTrackerDB.showVaultPanel = (MidnightObjectiveTrackerDB.showVaul
 MidnightL.Init()
 MidnightL.SetColorblindMode(MidnightObjectiveTrackerDB.colorblindMode)
 
+local CREST_BUTTON_ENABLED = false
+
 local allBorderedFrames        = {}
 local allTitleFontStrings      = {}
 local allAccentTextures        = {}
@@ -895,6 +897,8 @@ RegisterBorderedFrame(resetConfirmPopup)
 RegisterWindowBgFrame(resetConfirmPopup)
 resetConfirmPopup:SetFrameStrata("DIALOG")
 resetConfirmPopup:SetFrameLevel(100)
+resetConfirmPopup:SetMovable(false)
+resetConfirmPopup:EnableMouse(false)
 resetConfirmPopup:Hide()
 
 local resetConfirmTitle = resetConfirmPopup:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -911,7 +915,7 @@ resetConfirmMsg:SetTextColor(1, 1, 1)
 
 local resetConfirmYes = CreateFrame("Button", nil, resetConfirmPopup, "UIPanelButtonTemplate")
 resetConfirmYes:SetSize(80, 22)
-resetConfirmYes:SetPoint("BOTTOMRIGHT", resetConfirmPopup, "BOTTOM", -6, 10)
+resetConfirmYes:SetPoint("TOPRIGHT", resetConfirmMsg, "BOTTOM", -8, -12)
 resetConfirmYes:SetNormalFontObject("GameFontNormalSmall")
 resetConfirmYes:SetHighlightFontObject("GameFontNormalSmall")
 resetConfirmYes:SetScript("OnClick", function()
@@ -923,7 +927,7 @@ RegisterPanelButton(resetConfirmYes)
 
 local resetConfirmNo = CreateFrame("Button", nil, resetConfirmPopup, "UIPanelButtonTemplate")
 resetConfirmNo:SetSize(80, 22)
-resetConfirmNo:SetPoint("BOTTOMLEFT", resetConfirmPopup, "BOTTOM", 6, 10)
+resetConfirmNo:SetPoint("TOPLEFT", resetConfirmMsg, "BOTTOM", 8, -12)
 resetConfirmNo:SetNormalFontObject("GameFontNormalSmall")
 resetConfirmNo:SetHighlightFontObject("GameFontNormalSmall")
 resetConfirmNo:SetScript("OnClick", function()
@@ -948,6 +952,7 @@ resetButton:SetScript("OnClick", function()
     ShowResetConfirmPopup()
 end)
 resetButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+resetButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 60, -10)
 RegisterPanelButton(resetButton)
 
 local ilvlRefButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -1163,23 +1168,37 @@ RegisterPanelButton(planningButton)
 ilvlRefButton:ClearAllPoints()
 ilvlRefButton:SetPoint("TOPRIGHT", planningButton, "TOPLEFT", -4, 0)
 
-local mplusButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-mplusButton:SetSize(55, 20)
-mplusButton:SetPoint("TOPRIGHT", ilvlRefButton, "TOPLEFT", -4, 0)
-mplusButton:SetText(MidnightL.S("crests"))
-mplusButton:SetNormalFontObject("GameFontNormalSmall")
-mplusButton:SetHighlightFontObject("GameFontNormalSmall")
-mplusButton:SetScript("OnClick", function()
-    if MidnightMplus and MidnightMplus.Show and MidnightMplus.Hide then
-        if MidnightMplusFrame and MidnightMplusFrame:IsShown() then
-            MidnightMplus.Hide()
-        else
-            MidnightMplus.Show()
+local mplusButton
+if CREST_BUTTON_ENABLED then
+    mplusButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    mplusButton:SetSize(55, 20)
+    mplusButton:SetPoint("TOPRIGHT", ilvlRefButton, "TOPLEFT", -4, 0)
+    mplusButton:SetText(MidnightL.S("crests"))
+    mplusButton:SetNormalFontObject("GameFontNormalSmall")
+    mplusButton:SetHighlightFontObject("GameFontNormalSmall")
+    mplusButton:SetScript("OnClick", function()
+        if MidnightMplus and MidnightMplus.Show and MidnightMplus.Hide then
+            if MidnightMplusFrame and MidnightMplusFrame:IsShown() then
+                MidnightMplus.Hide()
+            else
+                MidnightMplus.Show()
+            end
         end
+    end)
+    mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
+    RegisterPanelButton(mplusButton)
+end
+
+local function AnchorResetButton()
+    if not resetButton then return end
+    local anchor = mplusButton or ilvlRefButton
+    if anchor then
+        resetButton:ClearAllPoints()
+        resetButton:SetPoint("TOPRIGHT", anchor, "TOPLEFT", -4, 0)
     end
-end)
-mplusButton:SetFrameLevel(frame:GetFrameLevel() + 5)
-RegisterPanelButton(mplusButton)
+end
+
+AnchorResetButton()
 
 local cbSettingsFrame = CreateFrame("Frame", "MidnightColorblindFrame", UIParent, "BackdropTemplate")
 cbSettingsFrame:SetSize(185, 518)
@@ -2083,8 +2102,6 @@ gearBtn:SetScript("OnClick", function()
     end
 end)
 
-resetButton:SetPoint("TOPRIGHT", mplusButton, "TOPLEFT", -4, 0)
-
 local copyrightFrame = CreateFrame("Frame", "MidnightCopyrightFrame", UIParent, "BackdropTemplate")
 copyrightFrame:SetSize(230, 180)
 copyrightFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", 6, 0)
@@ -2298,11 +2315,14 @@ end)
 do
     local allTextBtns = {
         resetButton, ilvlRefButton, scaleDownBtn, scaleUpBtn, closeBtn,
-        planningButton, mplusButton, copyrightButton,
+        planningButton, copyrightButton,
         cbCloseBtn, colorResetBtn, elvBtn,
         resetConfirmYes, resetConfirmNo,
         crCloseBtn, contactBtn, supportBtn,
     }
+    if mplusButton then
+        table.insert(allTextBtns, 7, mplusButton)
+    end
     for _, btn in ipairs(allTextBtns) do
         RegisterButtonText(btn)
     end

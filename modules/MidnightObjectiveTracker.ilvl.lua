@@ -127,15 +127,15 @@ local function getLocalizedData()
 
     local raidData = {
         { difficulty = "LFR",    normal = "233 - 237 - 240 - 243", mid = "237 - 240", late = "n/a" },
-        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "246 - 250 - 253 - 256", mid = "250 - 253", late = "n/a" },
-        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "n/a" },
+        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "246 - 250 - 253 - 256", mid = "250 - 253", late = "256" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "263" },
         { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "n/a" },
     }
 
     local raidData2 = {
         { difficulty = "LFR",    normal = "240 - 243", mid = "240", late = "n/a" },
-        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "253 - 256", mid = "253", late = "n/a" },
-        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "266 - 269", mid = "266", late = "n/a" },
+        { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "253 - 256", mid = "253", late = "256" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "266 - 269", mid = "266", late = "263" },
         { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "279 - 282", mid = "279", late = "n/a" },
     }
 

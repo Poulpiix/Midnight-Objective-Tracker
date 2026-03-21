@@ -82,7 +82,6 @@ L.es.window_bg_color_desc  = "Haz clic para elegir el color de fondo de todas la
 L.es.ilvl_raid_synth = "Curiosidad"
 
 L.es.mplus_title = "Blasones"
-L.es.mplus_subtitle = "A partir del 18 de marzo"
 L.es.planning_title = "Planificación"
 L.es.ilvl_title = "Temporada 1 – Nivel de equipo por contenido"
 L.es.ilvl_upgrade_tracks = "Mejoras (20 blasones por paso)"
@@ -115,6 +114,19 @@ L.es.ilvl_crest_vet = "Blasones del amanecer veteranos"
 L.es.ilvl_crest_champ = "Blasones del amanecer de campeón"
 L.es.ilvl_crest_hero = "Blasones del amanecer heroicos"
 L.es.ilvl_crest_myth = "Blasones del amanecer míticos"
+
+L.es.vault_title     = "Gran Bóveda"
+L.es.vault_raid      = "Incursión"
+L.es.vault_dungeon   = "Mazmorra"
+L.es.vault_world     = "Mundo"
+L.es.vault_slot      = "Ranura"
+L.es.vault_na        = "N/D"
+L.es.vault_threshold = "Umbral"
+L.es.vault_unlocked  = "¡Desbloqueado!"
+L.es.vault_progress  = "Progreso"
+
+L.es.show_crest_panel = "Mostrar resumen de blasones"
+L.es.show_vault_panel = "Mostrar Gran Bóveda"
 
 L.es.summaryPatterns = {
     "^Blasones gastados%s*:",
@@ -216,43 +228,49 @@ L.es.weeks = {
     {
         title = "Semana 4: 18 – 24 mar.",
         objectives = {
-            "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
-            "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
-            "Conjunto de clase: Usad la herramienta Incursiones (Buscador) para obtener piezas del conjunto.",
-            "Mítico 0 (Pretemporada): Realizad un Tour Mundial de mazmorras Mítico 0 (Pretemporada), ofreciendo ahora equipo Campeón 1/6 (246).",
-            "Jefe del mundo: Matad al Jefe del mundo para obtener equipo Campeón 2/6 (250).",
-            "Destello: completad la misión semanal para obtener vuestro Destello.",
-            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
-            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
-            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246) (Solo las dos primeras).",
-            "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
-            "JcJ: Comprad 2 Engarce de joyero galáctico al vendedor por 5.000 puntos de honor y 3 Heliotropo imbuido. Usadlos para añadir engastes a objetos fabricados. Estos objetos solo aparecerán en el vendedor a partir de esta semana. Sirve esencialmente para obtener 2 engastes adicionales.",
-            "Escarpe: Completad Escarpes abundantes (nivel 8 mínimo) con llaves y carta para obtener equipo Campéon 2/6 (250).",
-            "Artesanía: Fabricad 2 equipos Veterano 5/5 (246) usando 80x Blasones del amanecer veteranos cada uno con 2 ennoblecimientos (Priorizad Muñequeras, Cinturón y Botas) (esto no consume una chispa).",
-            "Incursión: Completad el modo Normal y Heroico.",
-            "Optimización: Gastad todos los Blasones del amanecer veteranos y del amanecer campeón antes de entrar en la incursión.",
-            "Nivel de objeto estimado (según aleatoriedad): 2x 246, 13x 250"
+            "No gastes ningún Blasón del alba heroica ni Blasón del alba mítica a menos que se te pida.",
+            "Blasones: alcanza el límite semanal de todos tus blasones.",
+            "Límite de Blasones del alba heroica: completa la misión del hogar, 4 profundidades de nivel 11, 1 vez la profundidad Eminencia del Tormento (Tormenta del vacío), 4 Cacerías en modo pesadilla y 2 jefes en banda heroica.",
+            "Jefe de mundo: mata al Jefe de mundo para obtener equipo de Defensor 3/6 (253).",
+            "Chispa: completa la misión semanal para obtener tu Chispa.",
+            "Alijo: completa la misión semanal para obtener tu alijo de la semana.",
+            "Renombre extra: completa la misión de mazmorra semanal de Halduron Alaluz para obtener 1.000 puntos de renombre.",
+            "Cacería: completa Cacerías en modo pesadilla (4 por semana para tus 20x Blasones del alba heroica) que ofrecen equipo de Defensor 1/6 (246) (solo las 2 primeras).",
+            "Cacería aleatoria: completa Cacerías aleatorias en modo pesadilla dadas por Astalor Jurajura para obtener Blasones del alba de defensor.",
+            "Catalizador: sube tu índice de JcJ a 1600 para obtener una carga de catalizador (es la misma carga compartida con los 2000 de índice de M+ de la semana siguiente). Si obtienes 2 piezas de set en tu banda esta semana, esto te permitiría catalizar 2 objetos y empezar a recibir cargas de catalizador en M+ la semana que viene.",
+            "PvP: compra 2 Monturas galácticas de joyería al vendedor por 5.000 puntos de honor y 3 Heliotropo imbuido. Los usarás para añadir ranuras a los objetos JcJ fabricados. Estos objetos no aparecerán en el vendedor hasta esta semana. Esto sirve esencialmente para obtener 2 ranuras adicionales.",
+            "Profundidad: completa Profundidades abundantes (nivel 8 mínimo) con llaves y mapas si los tienes (los mapas son bastante raros).",
+            "Profundidad (Nullaeus): completa la profundidad Eminencia del Tormento (Tormenta del vacío) en dificultad ? y ?? para obtener 60x Blasones del alba heroica y 30x Blasones del alba mítica sin límite.",
+            "Profundidad (Llave): compra la bolsa de llaves (gratuita) al vendedor de profundidades para obtener 2x llaves adicionales sin límite para las profundidades abundantes.",
+            "Mítica 0 (Pretemporada): realiza un World Tour (diario) de las mazmorras Mítica 0 (Pretemporada), que ahora ofrecen equipo de Defensor 1/6 (246).",
+            "Profesiones: consulta lo que proponen Archon.GG / Wowhead.com como indicaciones respecto a tu equipo de artesanía BiS (haz solo tus BiS de clase que podrás reforjar en las semanas siguientes).",
+            "Optimización: gasta todos los Blasones del alba de veterano y los Blasones del alba de defensor antes de entrar en la banda.",
+            "Set de clase: usa el buscador de bandas (LFR) para obtener piezas de set.",
+            "Banda: completa el modo Normal y Heroico.",
+            "Nivel de equipo estimado (según RNG): 15x 250"
         }
     },
     {
         title = "Semana 5: 25 – 31 mar.",
         objectives = {
-            "No gastéis ningún Blasón del amanecer de campeón, Blasón del amanecer heroico ni Blasón del amanecer mítico a menos que se indique.",
-            "Blasones: Alcanzad el límite semanal de todos vuestros blasones.",
-            "Artesanía: Si vuestro Discord de clase lo recomienda, usad 1 chispa para fabricar un Mítico 1/5 (272) con ennoblecimiento (esto será bastante raro, así que adaptaos para el resto de la guía).",
-            "Conjunto de clase: Si aún no tenéis el bonus de 4 piezas (4p), usad la herramienta Incursiones (Buscador) para obtener las piezas que faltan.",
-            "Destello: completad la misión semanal para obtener vuestro Destello.",
-            "Caché: completad la misión semanal para obtener vuestra caché de la semana.",
-            "Renombre bonus: completad la misión de mazmorra semanal de Halduron Luisaile para obtener 1.000 puntos de renombre.",
-            "Alojamiento: completad la misión del Alojamiento para obtener Blasones del amanecer heroicos.",
-            "Cacería: Completad Cacerías en modo Pesadilla (4 por semana), ofreciendo equipo Campeón 1/6 (246) (Solo las dos primeras).",
-            "Cacería aleatoria: completad Cacerías aleatorias en modo Pesadilla dadas por Astalor Ligessang para obtener Blasones del amanecer campeón.",
-            "Escarpe: completad al menos un Escarpe abundante (nivel 11) para obtener la misión de la Piedra angular agrietada.",
-            "Mítico+ (Temporada 1): Completad mazmorras +10 (mínimo) para equipo Héroe 3/6 (266); si es demasiado difícil, haced +8 para equipo Héroe 2/6 (263).",
-            "Incursión: Completad el modo Normal y Heroico antes de iniciar la progresión Mítica.",
-            "Incursión Mítica: Mejorad 11 equipos Héroe 3/6 (266) -> 4/6 (269) por 220x Blasones del amanecer heroicos (priorizad anillos / amuletos o piezas del conjunto que planeéis conservar a largo plazo).",
-            "Consejo: Si tenéis la suerte de obtener equipo Mítico en incursión, podéis mejorarlo 2 veces (ajustad los consejos hasta que se equilibre de nuevo).",
-            "Nivel de objeto estimado (según aleatoriedad): 4x 266, 11x 269"
+            "No gastes ningún Blasón del alba heroica ni Blasón del alba mítica a menos que se te pida.",
+            "Blasones: alcanza el límite semanal de todos tus blasones.",
+            "Gran Cámara: ábrela para obtener equipo Héroe.",
+            "Set de clase: si aún no tienes tu bono de 4 piezas (4p), usa el buscador de bandas (LFR) para recuperar las piezas que te falten.",
+            "Chispa: completa la misión semanal para obtener tu Chispa.",
+            "Alijo: completa la misión semanal para obtener tu alijo de la semana.",
+            "Renombre extra: completa la misión de mazmorra semanal de Halduron Alaluz para obtener 1.000 puntos de renombre.",
+            "Hogar: completa la misión del Hogar para obtener Blasones del alba heroica.",
+            "Cacería: completa Cacerías en modo pesadilla (4 por semana para tus 20x Blasones del alba heroica) que ofrecen equipo de Defensor 1/6 (246) (solo las 2 primeras).",
+            "Cacería aleatoria: completa Cacerías aleatorias en modo pesadilla dadas por Astalor Jurajura para obtener Blasones del alba de defensor.",
+            "Catalizador: sube tu índice de M+ a 2000 para obtener una carga de catalizador mediante el logro (a menos que ya la hayas obtenido la semana pasada con el índice de PvP).",
+            "Profundidad: completa al menos una Profundidad abundante (nivel 11) para obtener la misión de la Llave resquebrajada.",
+            "Mítica + (Temporada 1): completa mazmorras +10 (mínimo) para obtener equipo Héroe 3/6 (266), si es demasiado difícil, haz +8 para obtener equipo Héroe 2/6 (263).",
+            "Profesiones: consulta en Archon.GG o Wowhead.com qué puedes empezar a fabricar (haz solo tus BiS de clase que podrás reforjar en las semanas siguientes).",
+            "Banda: completa el modo Normal y Heroico antes de comenzar el progreso Mítico.",
+            "Banda Mítica: mejora 11 piezas de equipo Héroe 3/6 (266) -> 4/6 (269) a cambio de 220x Blasones del alba heroica (prioriza anillos / abalorios o piezas de set que pienses conservar mucho tiempo).",
+            "Truco: si tienes la suerte de obtener equipo Mito en la banda, puedes mejorarlo 2 veces (simplemente ajusta los consejos hasta que se equilibre de nuevo).",
+            "Nivel de equipo estimado (según RNG): 4x 266, 11x 269, 1x 272"
         }
     },
     {
@@ -359,21 +377,21 @@ Pesadilla,?? x Blasón del amanecer heroico
 
 L.es.mplus_csv_delves = [[
 Fuente,Cantidades
-Nivel 2,?? x Blasón del amanecer aventurero
-Nivel 3,?? x Blasón del amanecer aventurero
-Nivel 4,?? x Blasón del amanecer aventurero
-Nivel 5,?? x Blasón del amanecer veterano
-Nivel 6,?? x Blasón del amanecer veterano
-Nivel 6 + Bono,?? x Blasón del amanecer campeón
-Nivel 7,?? x Blasón del amanecer campeón
-Nivel 7 + Bono,?? x Blasón del amanecer campeón
-Nivel 8,?? x Blasón del amanecer campeón
-Nivel 8 + Bono,?? x Blasón del amanecer heroico
-Nivel 9,?? x Blasón del amanecer campeón
-Nivel 9 + Bono,?? x Blasón del amanecer heroico
-Nivel 10,?? x Blasón del amanecer campeón
-Nivel 10 + Bono,?? x Blasón del amanecer heroico
-Nivel 11,?? x Blasón del amanecer heroico
+Rango 4,Blasón del alba de aventurero
+Rango 4 + Bonus,Blasón del alba de veterano
+Rango 5,Blasón del alba de veterano
+Rango 5 + Bonus,Blasón del alba de veterano
+Rango 6,Blasón del alba de veterano
+Rango 6 + Bonus,Blasón del alba de defensor
+Rango 7,Blasón del alba de defensor
+Rango 7 + Bonus,Blasón del alba de defensor
+Rango 8,Blasón del alba de defensor
+Rango 8 + Bonus,Blasón del alba heroica
+Rango 9,Blasón del alba de defensor
+Rango 9 + Bonus,Blasón del alba heroica
+Rango 10,Blasón del alba de defensor
+Rango 10 + Bonus,Blasón del alba heroica
+Rango 11,Blasón del alba heroica
 ]]
 
 L.es.planning_csv = [[

@@ -83,7 +83,6 @@ L.en.minimap_drag = "Drag: reposition"
 L.en.ilvl_raid_synth = "Curio"
 
 L.en.mplus_title = "Crests"
-L.en.mplus_subtitle = "As of March 18"
 L.en.planning_title = "Planning"
 L.en.ilvl_title = "Season 1 Gear Tier by Content"
 L.en.ilvl_upgrade_tracks = "Upgrade (20 crests per step)"
@@ -237,43 +236,49 @@ L.en.weeks = {
     {
         title = "Week 4: Mar 18 - 24",
         objectives = {
-            "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
+            "Do not spend any Heroic Dawn Crests and Mythic Dawn Crests unless requested.",
             "Crests: reach the weekly cap for all your Crests.",
-            "Class Set: use the Raids tool (LFR) to obtain set pieces.",
-            "Mythic 0 (Pre-season): complete a World Tour of Mythic 0 (Pre-season) dungeons, now offering Champion 1/6 (246) gear.",
-            "World Boss: kill the World Boss for Champion 2/6 (250) gear.",
+            "Heroic Dawn Crests Cap: complete the home quest, 4 level 11 Delves, 1 instance of the Eminence of Torment Delve (Void Storm), 4 nightmare mode Hunts, and 2 Heroic raid bosses.",
+            "World Boss: kill the World Boss to obtain Champion 3/6 (253) equipment.",
             "Spark: complete the weekly quest to obtain your Spark.",
             "Cache: complete the weekly quest to obtain your weekly cache.",
-            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
-            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear (Only the first two).",
-            "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
-            "PvP: Buy 2 Galactic Jeweler's Setting from the vendor for 5,000 honor points and 3 Infused Heliotrope. Use them to add sockets to crafted items. These items will only appear at the vendor from this week onwards. This is primarily used to obtain 2 additional sockets.",
-            "Delve: complete Bountiful Delves (tier 8 minimum) with keys and map for Champion 2/6 (250) gear.",
-            "Crafting: craft 2 Veteran 5/5 (246) gear using 80x Veteran Dawn Crest each with 2 embellishments (Prioritize Wrists, Belt and Boots) (this doesn't consume a spark).",
-            "Raid: complete Normal and Heroic mode.",
-            "Optimization: spend all Veteran Dawn Crests and Champion Dawn Crests before entering the raid.",
-            "Estimated gear level (based on RNG): 2x 246, 13x 250"
+            "Bonus Renown: complete Halduron Brightwing's weekly dungeon quest to obtain 1,000 renown points.",
+            "Hunt: complete nightmare mode Hunts (4 per week for your 20x Heroic Dawn Crests) offering Champion 1/6 (246) equipment (only the first 2).",
+            "Random Hunt: complete random nightmare mode Hunts given by Astalor Bloodsworn to obtain Champion's Dawn Crests.",
+            "Catalyst: raise your PvP rating to 1600 for a catalyst charge (this is the same charge shared with the 2000 M+ rating the following week). If you get 2 set pieces in your raid this week, this would allow you to catalyze 2 items and start receiving catalyst charges in M+ next week.",
+            "PvP: buy 2 Jeweled Galactic Mounts from the vendor for 5,000 honor points and 3 Imbued Heliotrope. You will use them to add sockets to crafted PvP items. These items will only appear at the vendor starting this week. This is essentially used to get 2 extra sockets.",
+            "Delve: complete Bountiful Delves (tier 8 minimum) with keys and maps if you have them (maps are quite rare).",
+            "Delve (Nullaeus): complete the Eminence of Torment Delve (Void Storm) on ? and ?? difficulty to obtain 60x Heroic Dawn Crests and 30x uncapped Mythic Dawn Crests.",
+            "Delve (Key): buy the (free) key bag from the delve vendor to obtain 2x additional uncapped keys for Bountiful Delves.",
+            "Mythic 0 (Pre-season): complete a (daily) World Tour of Mythic 0 dungeons (Pre-season), now offering Champion 1/6 (246) equipment.",
+            "Crafting: check Archon.GG / Wowhead.com for indications regarding your BiS crafting equipment (only make your class BiS that you can reforge in the following weeks).",
+            "Optimization: spend all Veteran Dawn Crests and Champion's Dawn Crests before entering the raid.",
+            "Class Set: use the Raid Finder (LFR) to obtain set pieces.",
+            "Raid: complete Normal and Heroic modes.",
+            "Estimated Item Level (depending on RNG): 15x 250"
         }
     },
     {
         title = "Week 5: Mar 25 - 31",
         objectives = {
-            "Do not spend any Champion Dawn Crests, Heroic Dawn Crests or Mythic Dawn Crests unless asked.",
+            "Do not spend any Heroic Dawn Crests and Mythic Dawn Crests unless requested.",
             "Crests: reach the weekly cap for all your Crests.",
-            "Crafting: if your class Discord recommends it, use 1 spark to craft a Myth 1/5 (272) with embellishment (this will be rather rare, so adapt for the rest of the guide).",
-            "Class Set: if you don't have your 4-piece bonus (4p) yet, use the Raids tool (LFR) to get the missing pieces.",
+            "Great Vault: open it to obtain Hero equipment.",
+            "Class Set: if you don't have your 4-piece (4p) bonus yet, use the Raid Finder (LFR) to collect the missing pieces.",
             "Spark: complete the weekly quest to obtain your Spark.",
             "Cache: complete the weekly quest to obtain your weekly cache.",
-            "Renown bonus: complete the weekly dungeon quest from Halduron Luisaile to obtain 1,000 renown points.",
-            "Lodgement: complete the Lodgement quest to obtain Heroic Dawn Crests.",
-            "Hunt: complete Hunts in Nightmare mode (4 per week), offering Champion 1/6 (246) gear (Only the first two).",
-            "Random Hunt: complete random Nightmare Hunts given by Astalor Ligessang to obtain Champion Dawn Crests.",
-            "Delve: complete at minimum one Bountiful Delve (tier 11) to obtain the Cracked Keystone quest.",
-            "Mythic+ (Season 1): complete +10 dungeons (minimum) for Hero 3/6 (266) gear, if too difficult, do +8 for Hero 2/6 (263) gear.",
-            "Raid: complete Normal and Heroic mode before starting Mythic progression.",
-            "Mythic Raid: upgrade 11 Hero 3/6 (266) -> 4/6 (269) gear for 220x Heroic Dawn Crests (prioritize rings / trinkets or set pieces you plan to keep long-term).",
-            "Tip: if you're lucky enough to get Myth gear in raid, you can upgrade it 2 times (simply adjust the tips until it balances out again).",
-            "Estimated gear level (based on RNG): 4x 266, 11x 269"
+            "Bonus Renown: complete Halduron Brightwing's weekly dungeon quest to obtain 1,000 renown points.",
+            "Home: complete the home quest to obtain Heroic Dawn Crests.",
+            "Hunt: complete nightmare mode Hunts (4 per week for your 20x Heroic Dawn Crests) offering Champion 1/6 (246) equipment (only the first 2).",
+            "Random Hunt: complete random nightmare mode Hunts given by Astalor Bloodsworn to obtain Champion's Dawn Crests.",
+            "Catalyst: raise your M+ rating to 2000 to obtain a catalyst charge via the achievement (unless you already obtained it last week with the PvP rating).",
+            "Delve: complete at least one Bountiful Delve (tier 11) to obtain the Cracked Key quest.",
+            "Mythic + (Season 1): complete +10 dungeons (minimum) to obtain Hero 3/6 (266) equipment; if it's too difficult, do +8 to obtain Hero 2/6 (263) equipment.",
+            "Crafting: check Archon.GG or Wowhead.com for advice on what you can start crafting (only make your class BiS that you can reforge in the following weeks).",
+            "Raid: complete Normal and Heroic modes before starting Mythic progression.",
+            "Mythic Raid: upgrade 11 Hero 3/6 (266) items -> 4/6 (269) for 220x Heroic Dawn Crests (prioritize rings / trinkets or set pieces you plan to keep for a long time).",
+            "Tip: if you are lucky enough to get Mythic equipment in the raid, you can upgrade it twice (just adjust the advice until it balances out again).",
+            "Estimated Item Level (depending on RNG): 4x 266, 11x 269, 1x 272"
         }
     },
     {
@@ -380,21 +385,21 @@ Nightmare,?? x Heroic Dawn Crest
 
 L.en.mplus_csv_delves = [[
 Source,Quantities
-Tier 2,?? x Adventurer Dawn Crest
-Tier 3,?? x Adventurer Dawn Crest
-Tier 4,?? x Adventurer Dawn Crest
-Tier 5,?? x Veteran Dawn Crest
-Tier 6,?? x Veteran Dawn Crest
-Tier 6 + Bonus,?? x Champion Dawn Crest
-Tier 7,?? x Champion Dawn Crest
-Tier 7 + Bonus,?? x Champion Dawn Crest
-Tier 8,?? x Champion Dawn Crest
-Tier 8 + Bonus,?? x Heroic Dawn Crest
-Tier 9,?? x Champion Dawn Crest
-Tier 9 + Bonus,?? x Heroic Dawn Crest
-Tier 10,?? x Champion Dawn Crest
-Tier 10 + Bonus,?? x Heroic Dawn Crest
-Tier 11,?? x Heroic Dawn Crest
+Tier 4,Adventurer's Dawn Crest
+Tier 4 + Bonus,Veteran's Dawn Crest
+Tier 5,Veteran's Dawn Crest
+Tier 5 + Bonus,Veteran's Dawn Crest
+Tier 6,Veteran's Dawn Crest
+Tier 6 + Bonus,Champion's Dawn Crest
+Tier 7,Champion's Dawn Crest
+Tier 7 + Bonus,Champion's Dawn Crest
+Tier 8,Champion's Dawn Crest
+Tier 8 + Bonus,Heroic Dawn Crest
+Tier 9,Champion's Dawn Crest
+Tier 9 + Bonus,Heroic Dawn Crest
+Tier 10,Champion's Dawn Crest
+Tier 10 + Bonus,Heroic Dawn Crest
+Tier 11,Heroic Dawn Crest
 ]]
 
 L.en.planning_csv = [[
