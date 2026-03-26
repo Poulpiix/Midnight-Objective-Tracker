@@ -2,6 +2,18 @@
 
 --
 
+## [5.6.7] – 2026-03-21
+
+- **Minor bug and data** — Fix.
+
+---
+
+## [5.6.6] – 2026-03-21
+
+- **Russian Language** — Fix by ZamestoTV.
+
+---
+
 ## [5.6.5] – 2026-03-21
 
 - **Great Vault** — Fix.

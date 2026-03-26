@@ -278,7 +278,7 @@ L.en.weeks = {
             "Raid: complete Normal and Heroic modes before starting Mythic progression.",
             "Mythic Raid: upgrade 11 Hero 3/6 (266) items -> 4/6 (269) for 220x Heroic Dawn Crests (prioritize rings / trinkets or set pieces you plan to keep for a long time).",
             "Tip: if you are lucky enough to get Mythic equipment in the raid, you can upgrade it twice (just adjust the advice until it balances out again).",
-            "Estimated Item Level (depending on RNG): 4x 266, 11x 269, 1x 272"
+            "Estimated Item Level (depending on RNG): 3x 266, 11x 269, 1x 272"
         }
     },
     {

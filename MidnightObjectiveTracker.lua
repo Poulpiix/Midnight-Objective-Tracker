@@ -1,4 +1,5 @@
-﻿local Midnight = {}
+﻿---@diagnostic disable: undefined-global
+local Midnight = {}
 _G["MidnightTracker"] = Midnight
 
 MidnightObjectiveTrackerDB = MidnightObjectiveTrackerDB or {}
@@ -1746,7 +1747,12 @@ colorSwatch:SetScript("OnClick", function()
         if type(prevValues) == "table" then
             r, g, b = prevValues.r, prevValues.g, prevValues.b
         else
-            r, g, b = prevValues or tc.r, ColorPickerFrame.previousValues or tc.g, tc.b
+            local pv = ColorPickerFrame and ColorPickerFrame.previousValues
+            if type(pv) == "table" then
+                r, g, b = prevValues or tc.r, pv.g or tc.g, pv.b or tc.b
+            else
+                r, g, b = prevValues or tc.r, tc.g, tc.b
+            end
         end
         r = r or tc.r; g = g or tc.g; b = b or tc.b
         ApplyMidnightAccentColor(r, g, b)

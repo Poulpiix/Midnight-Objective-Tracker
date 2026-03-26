@@ -1,23 +1,13 @@
-<div align="center">
-
 # MidnightObjectiveTracker
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/buy_me_a_coffee-681bc1?logo=buymeacoffee&style=for-the-badge)](https://buymeacoffee.com/poulpix)
 [![Donate to Midnight Objective Tracker](https://img.shields.io/badge/ko_fi-74a4ed?logo=kofi&amp;style=for-the-badge)](https://ko-fi.com/poulpix)
 
-[![On Curseforge](https://img.shields.io/badge/download-Curseforge-orange)](https://www.curseforge.com/wow/addons/midnight-objective-tracker)
-[![On Wago](https://img.shields.io/badge/download-Wago-3a3a3a)](https://addons.wago.io/addons/midnight-objective-tracker)
-
 **A week-by-week in-game progression guide for World of Warcraft: Midnight.** Automatically detects your WoW client language and displays in French, English, German, Russian or Spanish.
-
-<img src="https://raw.githubusercontent.com/Poulpiix/media/refs/heads/main/ezgif-72a8e6f4ed7016b5.webp" width="917" alt="Mon image">
-
-</div>
 
 ## Key Features
 - **Step-by-step weekly guide** — A draggable, in-game window detailing exactly what to do each week from Midnight launch to endgame optimization.
 - **Auto-hide completed weeks** — Once all objectives in a week are checked, it disappears from the list automatically to keep the display clean.
 - **Full-row click interaction** — Clicking anywhere on an objective row (including the label) toggles its checked state. A subtle golden highlight appears on hover to indicate the clickable area.
-- **Crest panel** — Horizontal bar at the bottom of the main window showing real-time quantities held and weekly cap for each crest type (Adventurer, Veteran, Champion, Heroic, Mythic), plus Sparks of Awakening and Residual Memory.
 - **Great Vault panel** — 3 × 3 grid displayed below the weekly summary menu, showing unlock progress for all nine Great Vault slots across Raid (2 / 4 / 6), Dungeon (1 / 4 / 8) and World (2 / 4 / 8). Each cell is color-coded (green = unlocked, amber = in progress, red = not started) and refreshes every 3 seconds.
 - **Gear planning table** — Full ilvl roadmap with official release dates for all high-end content (Raids, Mythic+, Delves, Crafting, PvP, World Boss, Preys…).
 - **Item level reference (iLvl)** — Full item level table by content type (Dungeons, Raids, Delves, Crafting), with upgrade track and crest info.
@@ -45,3 +35,5 @@
 ## Troubleshooting
 
 If the addon shows errors, take a screenshot and send it to me on [X (Twitter)](https://x.com/poulpi_x).
+
+---

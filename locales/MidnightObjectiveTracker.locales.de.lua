@@ -272,7 +272,7 @@ L.de.weeks = {
             "Schlachtzug: Schließe den normalen und heroischen Modus ab, bevor du mit dem mythischen Fortschritt beginnst.",
             "Mythischer Schlachtzug: Werte 11 Hero-Ausrüstungsteile von 3/6 (266) auf 4/6 (269) auf für 220x Wappen des heroischen Anbruchs (priorisiere Ringe / Schmuckstücke oder Set-Teile, die du lange behalten willst).",
             "Tipp: Wenn du das Glück hast, Mythisch-Ausrüstung im Schlachtzug zu erhalten, kannst du diese 2 Mal aufwerten (passe die Ratschläge einfach an, bis es sich wieder ausgleicht).",
-            "Geschätzte Gegenstandsstufe (je nach RNG): 4x 266, 11x 269, 1x 272"
+            "Geschätzte Gegenstandsstufe (je nach RNG): 3x 266, 11x 269, 1x 272"
         }
     },
     {

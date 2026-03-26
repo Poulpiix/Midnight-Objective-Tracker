@@ -1,4 +1,5 @@
 ﻿
+---@diagnostic disable
 
 local DBICON10 = "LibDBIcon-1.0"
 local DBICON10_MINOR = 56

@@ -1,4 +1,5 @@
-﻿local function getCrestInfo(currencyID)
+﻿---@diagnostic disable: deprecated
+local function getCrestInfo(currencyID)
     if currencyID and currencyID > 0 and C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
         local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
         if info then

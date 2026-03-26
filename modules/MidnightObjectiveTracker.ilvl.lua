@@ -1,4 +1,5 @@
-﻿local Ilvl = {}
+﻿---@diagnostic disable: undefined-global
+local Ilvl = {}
 _G["MidnightIlvl"] = Ilvl
 
 local function getAccent()
@@ -101,11 +102,9 @@ local function getLocalizedData()
     }
 
     local dungeonData = {
-        { source = "Normal", endLoot = "214", vault = "n/a" },
-        { source = (locale == "fr" and "Héroïque (Hors-saison)") or (locale == "de" and "Heroisch (Außersaison)") or (locale == "es" and "Heroico (Fuera temp.)") or "Heroic (Off-Season)", endLoot = "224", vault = "n/a" },
-        { source = (locale == "fr" and "Héroïque (Pré-saison)") or (locale == "de" and "Heroisch (Vorsaison)") or (locale == "es" and "Heroico (Pretemporada)") or "Heroic (Pre-Season)", endLoot = "230", vault = "243" },
-        { source = (locale == "fr" and "M0 (Hors-saison)") or (locale == "de" and "M0 (Außersaison)") or (locale == "es" and "M0 (Fuera temp.)") or "M0 (Off-Season)", endLoot = "240", vault = "n/a" },
-        { source = (locale == "fr" and "M0 (Pré-saison)") or (locale == "de" and "M0 (Vorsaison)") or (locale == "es" and "M0 (Pretemporada)") or "M0 (Pre-Season)", endLoot = "246", vault = "256" },
+        { source = "Normal", endLoot = "214", vault = "-" },
+        { source = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic", endLoot = "230", vault = "243" },
+        { source = "M0", endLoot = "246", vault = "256" },
         { source = "M2", endLoot = "250", vault = "259" },
         { source = "M3", endLoot = "250", vault = "259" },
         { source = "M4", endLoot = "253", vault = "263" },
@@ -115,28 +114,20 @@ local function getLocalizedData()
         { source = "M8", endLoot = "263", vault = "269" },
         { source = "M9", endLoot = "263", vault = "269" },
         { source = "M10", endLoot = "266", vault = "272" },
-        { source = "M11", endLoot = "269", vault = "272" },
-        { source = "M12", endLoot = "269", vault = "276" },
-        { source = "M13", endLoot = "269", vault = "276" },
-        { source = "M14", endLoot = "269", vault = "276" },
-        { source = "M15", endLoot = "272", vault = "279" },
-        { source = "M16", endLoot = "272", vault = "279" },
-        { source = "M17", endLoot = "272", vault = "279" },
-        { source = "M18", endLoot = "276", vault = "282" },
     }
 
     local raidData = {
-        { difficulty = "LFR",    normal = "233 - 237 - 240 - 243", mid = "237 - 240", late = "n/a" },
+        { difficulty = "LFR",    normal = "233 - 237 - 240 - 243", mid = "237 - 240", late = "-" },
         { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "246 - 250 - 253 - 256", mid = "250 - 253", late = "256" },
-        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "263" },
-        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "n/a" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "259 - 263 - 266 - 269", mid = "263 - 266", late = "266" },
+        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "272 - 276 - 279 - 282", mid = "276 - 279", late = "272" },
     }
 
     local raidData2 = {
-        { difficulty = "LFR",    normal = "240 - 243", mid = "240", late = "n/a" },
+        { difficulty = "LFR",    normal = "240 - 243", mid = "240", late = "-" },
         { difficulty = locale == "fr" and "Normal"   or "Normal",  normal = "253 - 256", mid = "253", late = "256" },
-        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "266 - 269", mid = "266", late = "263" },
-        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "279 - 282", mid = "279", late = "n/a" },
+        { difficulty = (locale == "fr" and "Héroïque") or (locale == "de" and "Heroisch") or (locale == "es" and "Heroico") or "Heroic",  normal = "266 - 269", mid = "266", late = "266" },
+        { difficulty = (locale == "fr" and "Mythique") or (locale == "de" and "Mythisch") or (locale == "es" and "Mítico") or "Mythic",   normal = "279 - 282", mid = "279", late = "272" },
     }
 
     local delveData = {

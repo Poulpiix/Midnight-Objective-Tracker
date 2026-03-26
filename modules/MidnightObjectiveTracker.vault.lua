@@ -1,4 +1,5 @@
-﻿local function GetThresholdType(key, fallback)
+﻿---@diagnostic disable: deprecated
+local function GetThresholdType(key, fallback)
     local enum = Enum and Enum.WeeklyRewardChestThresholdType
     if enum and enum[key] then
         return enum[key]

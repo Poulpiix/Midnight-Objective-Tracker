@@ -270,7 +270,7 @@ L.es.weeks = {
             "Banda: completa el modo Normal y Heroico antes de comenzar el progreso Mítico.",
             "Banda Mítica: mejora 11 piezas de equipo Héroe 3/6 (266) -> 4/6 (269) a cambio de 220x Blasones del alba heroica (prioriza anillos / abalorios o piezas de set que pienses conservar mucho tiempo).",
             "Truco: si tienes la suerte de obtener equipo Mito en la banda, puedes mejorarlo 2 veces (simplemente ajusta los consejos hasta que se equilibre de nuevo).",
-            "Nivel de equipo estimado (según RNG): 4x 266, 11x 269, 1x 272"
+            "Nivel de equipo estimado (según RNG): 3x 266, 11x 269, 1x 272"
         }
     },
     {

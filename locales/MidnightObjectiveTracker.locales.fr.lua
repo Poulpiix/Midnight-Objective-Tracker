@@ -272,7 +272,7 @@ L.fr.weeks = {
             "Raid : accomplissez le mode Normal et Héroïque avant de commencer la progression Mythique.",
             "Raid Mythique : améliorez 11 équipements Hero 3/6 (266) -> 4/6 (269) contre 220x Écus de l'aube héroïque (priorisez les bagues / bijoux ou pièce de set que vous comptez garder longtemps).",
             "Astuce : si vous avez la chance d'obtenir de l'équipement Mythe en raid, vous pouvez l'améliorer 2 fois (ajustez simplement les conseils jusqu'à ce que cela s'équilibre à nouveau).",
-            "Niveau d'équipement estimé (selon RNG) : 4x 266, 11x 269, 1x 272"
+            "Niveau d'équipement estimé (selon RNG) : 3x 266, 11x 269, 1x 272"
         }
     },
     {
